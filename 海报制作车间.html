@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>海报制作车间 · NetShort 管理系统</title>
+<style>
+/* ===== 公共基线 ===== */
+:root{
+  --brand:#ff2e63;--brand-dark:#e0244f;--brand-light:#fff0f4;--brand-weak:rgba(255,46,99,.06);
+  --brand-grad:linear-gradient(135deg,#ff5c8a 0%,#ff2e63 100%);
+  --bg:#f7f8fa;--fill-1:#f7f8fa;--fill-2:#eef0f3;--card:#fff;
+  --border:#eef0f3;--border-strong:#e2e5ea;
+  --text:#1f2329;--text-2:#51565d;--text-3:#8a9199;
+  --ok:#16b364;--warn:#f0a020;--danger:#e5484d;--info:#3b82f6;
+  --radius-card:12px;--radius-btn:8px;--radius-input:8px;
+  --shadow-card:0 2px 12px rgba(20,24,30,.06);--shadow-pop:0 8px 30px rgba(20,24,30,.14);
+  --sidebar-w:220px;--topbar-h:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);background:var(--bg);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}ul,ol{list-style:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+input,select,textarea{font-family:inherit;font-size:14px;}
+.topbar{position:sticky;top:0;z-index:100;background:#fff;height:var(--topbar-h);border-bottom:1px solid var(--border);}
+.topbar-inner{max-width:1440px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-logo{width:30px;height:30px;border-radius:8px;background:var(--brand-grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;}
+.topbar-title{font-size:15px;font-weight:600;}
+.topbar-divider{width:1px;height:16px;background:var(--border-strong);}
+.topbar-sub{font-size:13px;color:var(--text-3);}
+.topbar-right{display:flex;align-items:center;gap:20px;}
+.topbar-user{display:flex;align-items:center;gap:8px;}
+.topbar-avatar{width:28px;height:28px;border-radius:50%;background:var(--brand-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;}
+.topbar-name{font-size:14px;}
+.layout{display:flex;min-height:calc(100vh - var(--topbar-h));max-width:1440px;margin:0 auto;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;padding:20px 12px;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 14px;margin-bottom:4px;border-radius:8px;color:var(--text-2);font-size:14px;cursor:pointer;transition:background .15s,color .15s;}
+.sidebar-item:hover{background:var(--fill-2);color:var(--text);}
+.sidebar-item.active{background:var(--brand-weak);color:var(--brand);font-weight:600;}
+.sidebar-item svg{width:18px;height:18px;flex-shrink:0;}
+.content{flex:1;min-width:0;padding:24px 32px 48px;}
+.crumb{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text);margin-bottom:16px;}
+.crumb .sep{color:var(--text-3);}
+.crumb .back{cursor:pointer;color:var(--text-2);display:flex;align-items:center;gap:4px;}
+.crumb .back:hover{color:var(--brand);}
+.card{background:var(--card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:24px;margin-bottom:20px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:var(--radius-btn);font-size:14px;font-weight:500;line-height:1.4;transition:all .15s;white-space:nowrap;}
+.btn-primary{background:var(--brand);color:#fff;}
+.btn-primary:hover{background:var(--brand-dark);}
+.btn-outline{border:1px solid var(--border-strong);color:var(--text-2);background:#fff;}
+.btn-outline:hover{border-color:var(--brand);color:var(--brand);}
+.btn-sm{padding:6px 14px;font-size:13px;}
+.op-link{font-size:13px;color:var(--brand);cursor:pointer;margin-right:10px;}
+.op-link:hover{text-decoration:underline;}
+.op-link.danger{color:var(--danger);}
+.form-item{margin-bottom:16px;}
+.form-label{display:block;font-size:13px;color:var(--text-2);margin-bottom:7px;}
+.form-label .req{color:var(--danger);margin-right:2px;}
+.ant-input{height:32px;padding:4px 11px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;color:var(--text);outline:none;background:#fff;transition:all .2s;width:100%;}
+.ant-input:hover{border-color:var(--brand);}
+.ant-input:focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(255,46,99,.1);}
+.ant-input::placeholder{color:#bfbfbf;}
+textarea.ant-input{height:auto;padding:8px 11px;resize:vertical;min-height:72px;line-height:1.6;}
+.form-item.has-error .ant-input{border-color:var(--danger);}
+.form-item .error{font-size:12px;color:var(--danger);margin-top:5px;display:none;}
+.form-item.has-error .error{display:block;}
+input[type=checkbox],input[type=radio]{accent-color:var(--brand);cursor:pointer;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
+.radio-group{display:flex;gap:24px;flex-wrap:wrap;align-items:center;height:32px;}
+.radio-opt{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;color:var(--text);}
+select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allowed;}
+.filter-box{background:#fafbfc;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
+.sf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px;}
+.search-item{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.search-item label{font-size:12px;color:var(--text-3);}
+.filter-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:14px;}
+.ops-row{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.ops-row .spacer{flex:1;}
+.table-wrap{overflow-x:auto;border-radius:6px;border:1px solid var(--border);}
+.table-wrap > .table{table-layout:fixed;width:100%;}
+.table{width:100%;border-collapse:separate;border-spacing:0;}
+.table th,.table td{text-align:center;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+.table th{color:var(--text-3);font-weight:500;background:#fafbfc;white-space:nowrap;position:sticky;top:0;z-index:2;}
+.table tbody tr:hover td{background:#fafbfc;}
+.table td{background:#fff;white-space:nowrap;}
+.table .cell-title{font-weight:500;}
+.table-fixed{table-layout:fixed;}
+.table-fixed .sticky-h{position:sticky;right:0;top:0;background:#fafbfc;z-index:3;}
+.table-fixed .sticky-col{position:sticky;right:0;background:#fff;z-index:1;}
+.ops-wrap{display:flex;flex-wrap:wrap;gap:2px 12px;justify-content:center;align-items:center;}
+.ops-wrap .op-link{margin:0;white-space:nowrap;}
+.table-fixed tbody tr:hover .sticky-col{background:#fafbfc;}
+.table-fixed .wrap-cell{white-space:normal;text-align:left;}
+.empty{text-align:center;padding:48px 20px;color:var(--text-3);}
+.empty-icon{font-size:22px;margin-bottom:8px;}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:12px;line-height:1.5;}
+.tag-green{background:#e8f7ee;color:#16b364;}
+.tag-gray{background:#f0f1f3;color:#6b7280;}
+.tag-pink{background:var(--brand-light);color:var(--brand);}
+.tag-blue{background:#e8f1ff;color:#2f6bdc;}
+.pagination{display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:16px 0 0;font-size:13px;color:var(--text-2);}
+.pagination .page{min-width:30px;height:30px;padding:0 8px;border:1px solid var(--border-strong);border-radius:6px;background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--text-2);font-size:13px;}
+.pagination .page.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+.pagination .page:disabled{opacity:.4;cursor:not-allowed;}
+/* 下拉多选 */
+.ms-wrap{position:relative;}
+.ms-box{min-height:32px;width:100%;padding:2px 28px 2px 6px;border:1px solid #d9d9d9;border-radius:6px;background:#fff;cursor:pointer;display:flex;align-items:center;flex-wrap:wrap;gap:3px;transition:all .2s;position:relative;}
+.ms-box:hover{border-color:var(--brand);}
+.ms-box.open{border-color:var(--brand);box-shadow:0 0 0 2px rgba(255,46,99,.1);}
+.ms-placeholder{color:#bfbfbf;font-size:14px;padding:0 5px;}
+.ms-tag{display:inline-flex;align-items:center;height:22px;padding:0 6px;background:#fafafa;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;color:var(--text-2);margin:1px 0;max-width:170px;}
+.ms-tag .ms-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ms-tag .ms-x{margin-left:4px;color:#999;cursor:pointer;font-size:12px;line-height:1;}
+.ms-tag .ms-x:hover{color:var(--brand);}
+.ms-arrow{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#bfbfbf;pointer-events:none;transition:transform .2s;display:flex;}
+.ms-box.open .ms-arrow{transform:translateY(-50%) rotate(180deg);}
+.ms-panel{position:absolute;top:calc(100% + 4px);left:0;z-index:90;width:100%;min-width:160px;background:#fff;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,.12);padding:4px;display:none;max-height:260px;overflow-y:auto;}
+.ms-panel.show{display:block;}
+.ms-panel.flip-up{top:auto;bottom:calc(100% + 4px);}
+.ms-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:4px;font-size:13px;cursor:pointer;color:var(--text-2);transition:background .15s;}
+.ms-opt:hover{background:#f5f5f5;}
+.ms-opt.disabled{color:#c8cdd4;cursor:not-allowed;}
+.ms-opt .opt-check{width:16px;text-align:center;color:var(--brand);font-weight:700;visibility:hidden;}
+.ms-opt.checked .opt-check{visibility:visible;}
+.ms-opt.checked{color:var(--brand);font-weight:600;}
+.ms-opt.ms-selall{color:var(--brand);font-weight:500;}
+.ms-sep{height:1px;background:var(--border);margin:4px 0;}
+.ms-search{width:calc(100% - 8px);margin:4px;height:28px;padding:0 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;outline:none;box-sizing:border-box;}
+.ms-search:focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(255,46,99,.1);}
+.ngroup-disabled{opacity:.55;pointer-events:none;filter:grayscale(.3);}
+/* 弹窗 */
+.modal-mask{position:fixed;inset:0;z-index:200;background:rgba(20,24,30,.45);display:none;align-items:flex-start;justify-content:center;padding:32px 24px;overflow-y:auto;}
+.modal-mask.show{display:flex;}
+.modal{background:#fff;border-radius:14px;width:760px;max-width:96vw;display:flex;flex-direction:column;box-shadow:var(--shadow-pop);animation:pop .18s ease;margin:0 auto;}
+.modal-sm{width:420px;}
+@keyframes pop{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-head{padding:22px 24px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.modal-title{font-size:16px;font-weight:600;}
+.modal-close{width:22px;height:22px;color:var(--text-3);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:0 24px;overflow-y:auto;flex:1;}
+.modal-foot{padding:16px 24px 22px;flex-shrink:0;display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:400;background:#fff;padding:10px 20px;border-radius:8px;box-shadow:var(--shadow-pop);font-size:13px;display:none;align-items:center;gap:8px;max-width:80vw;}
+#toast.show{display:flex;animation:pop .2s ease;}
+#toast.success{color:var(--ok);}#toast.error{color:var(--danger);}#toast.warning{color:var(--warn);}
+/* 视图切换 */
+.view{display:none;}
+.view.show{display:block;}
+/* ===== 详情视图 ===== */
+.sec-title{font-size:15px;font-weight:600;margin:22px 0 12px;display:flex;align-items:center;justify-content:space-between;}
+.sec-title:first-child{margin-top:0;}
+.sec-title .bar{width:3px;height:16px;background:var(--brand);border-radius:2px;margin-right:8px;display:inline-block;vertical-align:-3px;}
+.sec-title .sec-ops{display:flex;gap:10px;font-size:13px;font-weight:400;}
+.sec-ops .op-link{margin:0;}
+.info-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.info-table th,.info-table td{border:1px solid var(--border);padding:10px 12px;font-size:13px;}
+.info-table th{background:#fafbfc;color:var(--text-3);font-weight:500;white-space:nowrap;}
+.info-table td{background:#fff;}
+.info-table td.lab{background:#fafbfc;color:var(--text-3);width:110px;}
+.loc-table th,.loc-table td{text-align:center;padding:10px 12px;font-size:13px;border:1px solid var(--border);white-space:nowrap;}
+.loc-table th{background:#fafbfc;color:var(--text-3);font-weight:500;}
+.loc-table td{background:#fff;}
+.loc-table{width:100%;border-collapse:collapse;}
+.loc-table .wrap-cell{white-space:normal;text-align:left;line-height:1.7;}
+.op-col{display:flex;flex-direction:column;gap:4px;align-items:center;}
+.op-col .op-link{margin:0;}
+.diff-line{font-size:13px;color:var(--text-2);margin-bottom:10px;}
+.diff-line b{color:var(--text);}
+/* 子模块标题（详情页 tab 内独立模块） */
+.loc-list-head{display:flex;align-items:center;justify-content:space-between;margin:16px 0 10px;}
+.loc-list-head .loc-list-title{font-size:14px;font-weight:600;display:flex;align-items:center;}
+.loc-list-head .loc-list-title .bar{width:3px;height:14px;background:var(--brand);border-radius:2px;margin-right:8px;display:inline-block;}
+.loc-list-head .sec-ops{display:flex;align-items:center;gap:14px;}
+/* 已有海报平铺 */
+.poster-icon-grid{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:6px;}
+.poster-icon{width:80px;height:106px;background:#f0f1f3;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:24px;cursor:pointer;transition:all .15s;border:1px solid var(--border);}
+.poster-icon:hover{border-color:var(--brand);}
+.poster-detail-hero{display:flex;gap:20px;align-items:flex-start;}
+.poster-detail-hero .big-thumb{width:140px;height:186px;background:#f0f1f3;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:40px;flex-shrink:0;}
+.poster-detail-hero .pd-meta{flex:1;font-size:13px;line-height:2;}
+.loc-tabs{display:flex;gap:28px;margin-bottom:14px;border-bottom:1px solid var(--border);}
+.loc-tabs .tab-item{padding:8px 2px;font-size:14px;color:var(--text-2);cursor:pointer;position:relative;user-select:none;}
+.loc-tabs .tab-item:hover{color:var(--text);}
+.loc-tabs .tab-item.active{color:var(--brand);font-weight:600;}
+.loc-tabs .tab-item.active::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--brand);border-radius:1px;}
+/* ===== 海报车间专属 ===== */
+.poster-thumb{width:56px;height:74px;background:#f0f1f3;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:18px;}
+.prod-tags{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:150px;}
+.prod-tag{background:#e8f1ff;color:#2f6bdc;border-radius:4px;padding:1px 6px;font-size:12px;white-space:nowrap;}
+.pscene-sel{width:100%;min-width:190px;}
+.more-wrap{position:relative;display:inline-block;}
+.more-wrap > .btn{display:inline-flex;align-items:center;gap:5px;}
+.more-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:130;background:#fff;border-radius:8px;box-shadow:0 8px 30px rgba(20,24,30,.14);padding:4px;min-width:140px;}
+.more-wrap:hover .more-menu{display:block;}
+.more-item{display:block;padding:8px 12px;font-size:13px;color:var(--text-2);cursor:pointer;border-radius:4px;white-space:nowrap;}
+.more-item:hover{background:#f5f5f5;color:var(--brand);}
+/* 替换二级菜单（本地上传 / AI重新生成） */
+#replace-menu{display:none;position:fixed;z-index:300;background:#fff;border-radius:8px;box-shadow:0 8px 30px rgba(20,24,30,.18);padding:4px;min-width:140px;}
+#replace-menu .more-item{display:block;padding:8px 12px;font-size:13px;color:var(--text-2);cursor:pointer;border-radius:4px;}
+#replace-menu .more-item:hover{background:#f5f5f5;color:var(--brand);}
+.loc-table .name-cell{text-align:left;vertical-align:middle;white-space:normal;}
+.loc-table .sticky-h{position:sticky;right:0;top:0;background:#fafbfc;z-index:3;border-left:1px solid var(--border);}
+.loc-table .sticky-col{position:sticky;right:0;background:#fff;z-index:1;border-left:1px solid var(--border);}
+.loc-table tbody tr:hover .sticky-col{background:#fafbfc;}
+.up-tips{font-size:12px;color:var(--text-3);line-height:1.9;margin-bottom:14px;}
+.btn-dashed{width:100%;border:1px dashed #d9d9d9;border-radius:8px;padding:8px 0;font-size:13px;color:var(--text-2);background:#fff;transition:all .15s;margin-top:2px;cursor:pointer;}
+.btn-dashed:hover{border-color:var(--brand);color:var(--brand);}
+/* AI本地化海报生成弹窗 */
+.bz-module{border:1px solid var(--border-strong);border-radius:10px;padding:16px 18px;margin-bottom:16px;background:#fafbfc;}
+.bz-module-title{font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text);display:flex;align-items:center;}
+.bz-module-title::before{content:'';width:3px;height:14px;background:var(--brand);border-radius:2px;margin-right:8px;display:inline-block;}
+.bz-src{display:flex;gap:16px;margin-bottom:14px;}
+.bz-src-item{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--text-2);cursor:pointer;}
+.bz-src-item .poster-thumb{width:72px;height:96px;}
+.bz-head{display:grid;grid-template-columns:240px 260px 180px minmax(0,1fr);gap:10px;margin-bottom:8px;}
+.bz-head .h{font-size:12px;color:var(--text-2);font-weight:600;}
+.bz-row{display:grid;grid-template-columns:240px 260px 180px minmax(0,1fr);gap:10px;align-items:start;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--border);}
+.bz-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0;}
+.bz-prompt{grid-column:1 / -1;}
+.bz-sub-lab{font-size:12px;color:var(--text-2);font-weight:600;margin-bottom:6px;}
+.bz-row textarea.ant-input{min-height:56px;}
+.bz-row .ms-wrap,.bz-row select.ant-input{width:100%;}
+/* ===== 场景模式 / 剧封套编辑器 ===== */
+.mode-row{display:flex;align-items:center;gap:20px;padding-bottom:10px;margin-bottom:12px;border-bottom:1px dashed var(--border);}
+.mode-row .mr-label{font-size:13px;color:var(--text-2);flex-shrink:0;}
+.diff-scene-item{margin-bottom:0;width:460px;max-width:100%;}
+.grp-top-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.name-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.name-idx{flex-shrink:0;min-width:20px;height:30px;display:inline-flex;align-items:center;color:var(--text-3);font-size:13px;}
+.name-main{flex:1;min-width:0;}
+.cfg-box{border:1px solid #d9d9d9;border-radius:6px;background:#fff;padding:4px 8px;min-height:36px;display:flex;align-items:flex-start;gap:8px;transition:border .2s;}
+.cfg-box:hover{border-color:var(--brand);}
+.cfg-box.invalid{border-color:var(--danger);box-shadow:0 0 0 2px rgba(229,72,77,.08);}
+.cfg-chips{flex:1;display:flex;flex-wrap:wrap;gap:4px;padding:2px 0;min-width:0;}
+.cfg-ph{color:#bfbfbf;font-size:13px;padding:2px 0;}
+.cfg-chip{display:inline-flex;align-items:center;height:22px;padding:0 7px;background:var(--brand-light);color:var(--brand);border-radius:4px;font-size:12px;max-width:100%;}
+.cfg-btn{flex-shrink:0;margin:2px 0;border:1px solid var(--brand);color:var(--brand);border-radius:5px;padding:3px 10px;font-size:12px;cursor:pointer;line-height:1.4;background:#fff;white-space:nowrap;}
+.cfg-btn:hover{background:var(--brand-light);}
+.cfg-del{flex-shrink:0;margin-top:3px;border:1px solid var(--danger);color:var(--danger);border-radius:5px;padding:4px 12px;font-size:12px;cursor:pointer;background:#fff;line-height:1.4;}
+.cfg-del:hover{background:#fdeaea;}
+.cfg-err{font-size:12px;color:var(--danger);margin-top:4px;display:none;line-height:1.5;}
+.cfg-err.show{display:block;}
+.cfg-chip.app-merge,.tag.app-merge{background:#e8f1ff;color:#2f6bdc;cursor:default;}
+#app-tip{position:fixed;z-index:500;background:#1f2329;color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.8;max-width:380px;pointer-events:none;display:none;box-shadow:0 8px 30px rgba(0,0,0,.25);}
+/* 差异化场景行 / chips 间距 */
+.ds-line{display:flex;align-items:baseline;gap:8px;white-space:nowrap;}
+.ds-line .op-link{margin:0;}
+.ds-no{flex-shrink:0;color:var(--text-3);}
+.ds-count{font-size:12px;color:var(--text-3);margin-bottom:5px;}
+.chips-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+/* ---------- 选择应用子页面 ---------- */
+.pick-selected-box{border:1px solid var(--border-strong);border-radius:8px;background:#fff;padding:10px 12px;margin-bottom:12px;}
+.pick-selected-box .ps-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-3);margin-bottom:8px;}
+.pick-selected-box .ps-head .ps-title{font-weight:500;color:var(--text-2);}
+.pick-selected-box .ps-head b{color:var(--brand);font-weight:600;}
+.pick-selected-box .ps-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.ps-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;background:var(--brand-light);color:var(--brand);border-radius:5px;font-size:12px;}
+.ps-empty{color:#bfbfbf;font-size:13px;padding:2px 0;}
+.pick-filter-box{background:#fafbfc;border:1px solid var(--border);border-radius:8px;padding:12px 14px 6px;margin-bottom:12px;}
+.pick-filter{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
+.pick-table-wrap{border:1px solid var(--border);border-radius:8px;overflow-y:auto;max-height:300px;}
+.pick-table-wrap .table th{position:sticky;top:0;z-index:2;}
+#picker-modal{z-index:230;}
+/* ---------- 差异化场景详情查看 ---------- */
+.vw-grp{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;}
+.vw-grp-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;}
+.vw-row{display:flex;margin-bottom:6px;align-items:flex-start;}
+.vw-row:last-child{margin-bottom:0;}
+.vw-label{width:52px;flex-shrink:0;font-size:12px;color:var(--text-3);padding-top:3px;}
+.vw-chips{flex:1;display:flex;flex-wrap:wrap;gap:4px;}
+/* ---------- 视图切换（列表 / 主从） ---------- */
+.seg-toggle{display:inline-flex;padding:2px;border-radius:8px;background:var(--fill-2);}
+.seg-toggle .seg-btn{padding:5px 16px;border-radius:6px;font-size:13px;color:var(--text-2);cursor:pointer;user-select:none;transition:all .15s;font-weight:400;}
+.seg-toggle .seg-btn:hover{color:var(--text);}
+.seg-toggle .seg-btn.active{background:#fff;color:var(--brand);font-weight:600;box-shadow:0 1px 3px rgba(20,24,30,.08);}
+/* ---------- 主从视图 ---------- */
+.mv-sec{margin-bottom:20px;}
+.mv-sec:last-child{margin-bottom:0;}
+.mv-sec-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.mv-sec-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.mv-sec-title .bar{width:3px;height:14px;background:var(--brand);border-radius:2px;display:inline-block;}
+.mv-note{font-size:12px;color:var(--text-3);}
+.mv-meta{margin-left:auto;font-size:12px;color:var(--text-3);}
+.mv-ops{display:flex;align-items:center;gap:8px;}
+/* 已有海报：图片在上，剧名在图片下方（不压图）；点击图片看详情预览 */
+.mv-hcards{display:flex;gap:14px;flex-wrap:wrap;}
+.mv-hcard{width:96px;display:flex;flex-direction:column;}
+.mv-himg{width:96px;height:128px;border-radius:8px;background:linear-gradient(160deg,#9aa4b2,#5b6675);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;cursor:pointer;transition:box-shadow .15s;}
+.mv-himg:hover{box-shadow:0 4px 14px rgba(20,24,30,.18);}
+.mv-hname{margin-top:6px;font-size:12px;color:var(--text);line-height:1.45;text-align:center;overflow-wrap:anywhere;min-height:35px;}
+.mv-hstatus{margin-top:2px;font-size:11px;color:var(--text-3);text-align:center;}
+/* 备注信息：两个字段分块纯展示 */
+.mv-notes{display:flex;flex-direction:column;gap:10px;}
+.mv-note-block{border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+.mv-note-lab{font-size:12px;color:var(--text-3);margin-bottom:6px;}
+.mv-note-val{font-size:13px;color:var(--text);line-height:1.75;white-space:normal;overflow-wrap:anywhere;}
+.mv-note-val.muted{color:var(--text-3);}
+/* 剧名 / 剧封套 主从区 */
+.mv-body{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px;align-items:start;}
+.mv-list{display:flex;flex-direction:column;gap:8px;}
+.mv-item{padding:10px 12px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;transition:all .15s;}
+.mv-item:hover{border-color:#cfd4dc;}
+.mv-item.active{border-color:var(--brand);background:var(--brand-light);}
+.mv-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.mv-item-name{font-size:13px;font-weight:500;line-height:1.4;}
+.mv-item-apps{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.mv-item-sub{font-size:12px;color:var(--text-3);margin-top:6px;}
+.mv-badge{flex-shrink:0;font-size:11px;padding:1px 7px;border-radius:4px;line-height:18px;}
+.mv-badge.gap{background:#fff1f0;color:var(--danger);}
+.mv-badge.ok{background:#e9f9f0;color:var(--ok);}
+.mv-detail{border:1px solid var(--border);border-radius:10px;padding:16px;min-height:300px;}
+/* 一个剧封套一个模块 */
+.mv-cover{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:12px;background:#fcfcfd;}
+.mv-cover:last-child{margin-bottom:0;}
+.mv-cover-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.mv-cover-title{font-size:12px;color:var(--text-3);}
+.mv-cover-apps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:12px;}
+.mv-pgrid{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;}
+.mv-pcard{width:166px;border:1px solid var(--border);border-radius:8px;padding:8px;background:#fff;align-self:flex-start;}
+.mv-pbox{width:100%;aspect-ratio:3/4;border-radius:6px;background:var(--fill-2);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.mv-pimg{width:100%;background:#e7e9ec;border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:16px;}
+.mv-pimg.ph{height:100%;border:1px dashed var(--border-strong);background:transparent;font-size:12px;}
+.mv-pvals{margin-top:8px;font-size:11.5px;color:var(--text-2);line-height:1.6;display:flex;flex-direction:column;gap:2px;overflow-wrap:anywhere;}
+.mv-pv-row{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;}
+.mv-pv-time{color:var(--text-3);}
+.mv-pops{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);display:flex;flex-wrap:wrap;gap:4px 9px;font-size:12px;}
+.mv-pops .op-link{margin:0;}
+.mv-empty{color:var(--text-3);font-size:13px;padding:24px 0;}
+.st{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:11px;line-height:16px;}
+.st-done{background:#e9f9f0;color:var(--ok);}
+.st-pending{background:#fff7e8;color:var(--warn);}
+.st-todo{background:var(--fill-2);color:var(--text-3);}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="topbar-logo">N</div>
+      <span class="topbar-title">NetShort 管理系统</span>
+      <div class="topbar-divider"></div>
+      <span class="topbar-sub">管理后台</span>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-user"><div class="topbar-avatar">春</div><span class="topbar-name">春明</span></div>
+    </div>
+  </div>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <a class="sidebar-item" href="剧本库.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+      <span>剧本库</span>
+    </a>
+    <a class="sidebar-item" href="工单列表.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      <span>工单系统</span>
+    </a>
+    <a class="sidebar-item" href="短剧分端管理.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+      <span>短剧分端管理</span>
+    </a>
+    <a class="sidebar-item" href="本地化车间.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg>
+      <span>本地化车间</span>
+    </a>
+    <a class="sidebar-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M4 17l5-4 4 3 3-3 4 4"/></svg>
+      <span>海报制作车间</span>
+    </a>
+  </div>
+
+  <div class="content">
+    <!-- ========== 视图1：海报任务列表 ========== -->
+    <div class="view show" id="view-list">
+      <div class="card">
+        <div class="filter-box">
+          <div class="sf-grid">
+            <div class="search-item"><label>剧本名称</label><input type="text" class="ant-input" id="f-name" placeholder="请输入剧本名称"></div>
+            <div class="search-item"><label>本地化语言</label><select class="ant-input" id="f-lang"><option value="">全部</option><option>英语</option><option>繁体中文</option><option>韩语</option><option>西班牙语</option><option>日语</option><option>印尼语</option><option>泰语</option><option>葡萄牙语</option><option>简体中文</option><option>法语</option><option>德语</option><option>意大利语</option><option>阿拉伯语</option><option>马来西亚语</option><option>土耳其语</option><option>越南语</option><option>印地语</option></select></div>
+            <div class="search-item"><label>任务状态</label><select class="ant-input" id="f-status"><option value="">请选择任务状态</option><option>未开始</option><option>进行中</option><option>已完成</option></select></div>
+            <div class="search-item"><label>海报负责人</label><input type="text" class="ant-input" id="f-owner" placeholder="请选择海报负责人"></div>
+            <div class="search-item"><label>海报备注</label><input type="text" class="ant-input" id="f-remark" placeholder="请输入"></div>
+            <div class="search-item"><label>预计海报开始时间</label><input type="text" class="ant-input" id="f-planstart" placeholder="请选择日期"></div>
+            <div class="search-item"><label>预计海报完成时间</label><input type="text" class="ant-input" id="f-planend" placeholder="请选择日期"></div>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-primary btn-sm" id="btn-search">搜索</button>
+            <button class="btn btn-outline btn-sm" id="btn-reset">重置</button>
+          </div>
+        </div>
+        <div class="ops-row">
+          <button class="btn btn-primary btn-sm" id="btn-add">新增</button>
+          <button class="btn btn-outline btn-sm" id="btn-batch-add">批量新增</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table table-fixed">
+            <thead>
+              <tr>
+                <th style="width:100px;">海报任务ID</th>
+                <th style="width:90px;">剧本编号</th>
+                <th style="width:150px;">剧本名称</th>
+                <th style="width:90px;">本地化语言</th>
+                <th style="width:80px;">任务状态</th>
+                <th style="width:120px;">差异化场景</th>
+                <th style="width:50px;">......</th>
+                <th style="width:70px;">海报</th>
+                <th style="width:150px;" class="sticky-h">操作</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span>共 <b id="pg-total">0</b> 条</span>
+          <button class="page" disabled>‹</button>
+          <button class="page active">1</button>
+          <button class="page" disabled>›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 视图2：任务详情 ========== -->
+    <div class="view" id="view-detail">
+      <div class="crumb">
+        <span class="back" id="btn-detail-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>返回</span>
+        <span class="sep">/</span><span>海报制作车间</span><span class="sep">/</span><span>任务详情</span>
+      </div>
+      <div class="card">
+        <div class="sec-title"><span><span class="bar"></span>基础信息</span><span class="sec-ops" id="detail-base-ops"></span></div>
+        <div id="detail-base"></div>
+        <div class="sec-title"><span><span class="bar"></span>剧相关信息</span><span class="sec-ops" id="detail-drama-ops"></span></div>
+        <div id="detail-drama"></div>
+        <div class="sec-title"><span><span class="bar"></span>海报信息</span><span class="sec-ops"><span class="seg-toggle" id="poster-mode-toggle"><span class="seg-btn active" data-pmode="list">列表视图</span><span class="seg-btn" data-pmode="master">主从视图</span></span></span></div>
+        <div id="detail-poster"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 新增/编辑海报任务弹窗 -->
+<div class="modal-mask" id="poster-modal">
+  <div class="modal" style="width:760px;">
+    <div class="modal-head">
+      <div class="modal-title" id="pm-title">新增海报任务</div>
+      <span class="modal-close" id="pm-close"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-item"><label class="form-label"><span class="req">*</span>剧本名称</label><select class="ant-input" id="pm-name"><option value="">请选择剧本</option></select><div class="error">请选择剧本</div></div>
+        <div class="form-item"><label class="form-label"><span class="req">*</span>本地化语言</label><select class="ant-input" id="pm-lang"><option value="">请选择</option><option>英语</option><option>繁体中文</option><option>韩语</option><option>西班牙语</option><option>日语</option><option>印尼语</option><option>泰语</option><option>葡萄牙语</option><option>简体中文</option><option>法语</option><option>德语</option><option>意大利语</option><option>阿拉伯语</option><option>马来西亚语</option><option>土耳其语</option><option>越南语</option><option>印地语</option></select><div class="error">请选择本地化语言</div></div>
+      </div>
+      <div class="form-item">
+        <label class="form-label"><span class="req">*</span>是否加急</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="pm-urgent" value="是" checked>是</label>
+          <label class="radio-opt"><input type="radio" name="pm-urgent" value="否">否</label>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-item"><label class="form-label">设置负责人</label><select class="ant-input" id="pm-owner"><option value="">请选择</option><option>春明</option><option>李婉</option><option>王强</option><option>姑先</option><option>子房</option><option>枝子</option></select></div>
+        <div class="form-item"><label class="form-label">预计开始时间</label><input type="text" class="ant-input" id="pm-planstart" placeholder="请选择日期"></div>
+        <div class="form-item"><label class="form-label">预计完成时间</label><input type="text" class="ant-input" id="pm-planend" placeholder="请选择日期"></div>
+        <div class="form-item"><label class="form-label">海报备注</label><input type="text" class="ant-input" id="pm-remark" placeholder="请输入"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="pm-cancel">取消</button>
+      <button class="btn btn-primary" id="pm-submit">提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批量新增海报任务弹窗 -->
+<div class="modal-mask" id="ba-modal">
+  <div class="modal" style="width:760px;">
+    <div class="modal-head">
+      <div class="modal-title">批量新增海报任务</div>
+      <span class="modal-close" id="ba-close"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-item"><label class="form-label"><span class="req">*</span>剧本名称</label><select class="ant-input" id="ba-name"><option value="">请选择剧本</option></select><div class="error">请选择剧本</div></div>
+        <div class="form-item"><label class="form-label"><span class="req">*</span>本地化语言</label><div class="ms-wrap"><div class="ms-box" id="ba-lang"><div id="ba-lang-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div><span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="ms-panel" id="ba-lang-p"></div></div><div class="error">请选择本地化语言</div></div>
+      </div>
+      <div class="form-item">
+        <label class="form-label"><span class="req">*</span>是否加急</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="ba-urgent" value="是" checked>是</label>
+          <label class="radio-opt"><input type="radio" name="ba-urgent" value="否">否</label>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-item"><label class="form-label">设置负责人</label><select class="ant-input" id="ba-owner"><option value="">请选择</option><option>春明</option><option>李婉</option><option>王强</option><option>姑先</option><option>子房</option><option>枝子</option></select></div>
+        <div class="form-item"><label class="form-label">预计开始时间</label><input type="text" class="ant-input" id="ba-planstart" placeholder="请选择日期"></div>
+        <div class="form-item"><label class="form-label">预计完成时间</label><input type="text" class="ant-input" id="ba-planend" placeholder="请选择日期"></div>
+        <div class="form-item"><label class="form-label">海报备注</label><input type="text" class="ant-input" id="ba-remark" placeholder="请输入"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="ba-cancel">取消</button>
+      <button class="btn btn-primary" id="ba-submit">提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- 上传图片弹窗（新增上传/批量替换） -->
+<div class="modal-mask" id="upload-modal">
+  <div class="modal" style="width:760px;">
+    <div class="modal-head">
+      <div class="modal-title" id="up-title">批量替换</div>
+      <span class="modal-close" data-close="upload-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="up-tips">
+        <div>支持批量上传文件，最多支持同时上传 100 个图片</div>
+        <div>上传文件格式：.jpg/png/jpeg</div>
+        <div>图片文件统一命名要求：本地化剧名_宽比高，eg：The Billionaire's Double Surprise_3比4.png，表示：关联剧名为The Billionaire's Double Surprise，3:4尺寸的图片</div>
+        <div>关闭弹窗和页面不影响上传进度</div>
+      </div>
+      <div class="form-item"><button class="btn btn-primary btn-sm" id="up-add">上传图片</button></div>
+      <div class="table-wrap" style="border-radius:8px;">
+        <table class="loc-table" style="min-width:520px;">
+          <thead><tr><th>文件名</th><th style="width:120px;">大小</th><th style="width:110px;">上传状态</th><th style="width:80px;">操作</th></tr></thead>
+          <tbody id="up-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" data-close="upload-modal">取消</button>
+      <button class="btn btn-primary" id="up-confirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI本地化海报生成弹窗 -->
+<div class="modal-mask" id="batch-modal">
+  <div class="modal" style="width:1120px;max-height:calc(100vh - 64px);">
+    <div class="modal-head">
+      <div class="modal-title">AI本地化海报生成</div>
+      <span class="modal-close" data-close="batch-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <!-- 模块1：原始海报 -->
+      <div class="bz-module">
+        <div class="bz-module-title">原始海报</div>
+        <div class="bz-src" id="bz-src"></div>
+      </div>
+      <!-- 模块2：模型 -->
+      <div class="bz-module">
+        <div class="bz-module-title">模型</div>
+        <div class="form-item" style="margin-bottom:0;">
+          <select class="ant-input" id="bz-model" style="width:300px;"><option>Image2（Azure OpenAI）</option><option>Image1（Azure OpenAI）</option></select>
+        </div>
+      </div>
+      <!-- 模块3：生成要求 -->
+      <div class="bz-module">
+        <div class="bz-module-title">生成要求</div>
+        <div class="form-item">
+          <label class="form-label"><span class="req">*</span>生成数量</label>
+          <input type="text" class="ant-input" id="bz-count" placeholder="大于等于1的正整数，默认值为海报差异化需求端的数量" style="width:300px;">
+        </div>
+        <div class="bz-head"><div class="h">关联剧名选择</div><div class="h">剧封适用端</div><div class="h">尺寸要求</div></div>
+        <div id="bz-rows"></div>
+      </div>
+      <!-- 模块4：已有海报 -->
+      <div class="bz-module">
+        <div class="bz-module-title">已有海报</div>
+        <div class="table-wrap">
+          <table class="loc-table" style="min-width:780px;">
+            <thead><tr><th style="width:40px;"><input type="checkbox" id="bz-checkall" checked></th><th>关联剧名</th><th>剧封适用端</th><th>尺寸</th><th>图片</th><th>海报来源</th></tr></thead>
+            <tbody id="bz-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" data-close="batch-modal">取消</button>
+      <button class="btn btn-primary" id="bz-submit">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 替换二级菜单（本地上传 / AI重新生成） -->
+<div id="replace-menu"></div>
+
+<!-- 海报列表弹窗（关联海报任务-仅查看） -->
+<div class="modal-mask" id="rel-posters-modal">
+  <div class="modal" style="width:1240px;">
+    <div class="modal-head">
+      <div class="modal-title">海报列表</div>
+      <span class="modal-close" data-close="rel-posters-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body" style="padding-bottom:24px;">
+      <div class="table-wrap" style="overflow-x:auto;max-height:560px;">
+        <table class="loc-table" style="table-layout:fixed;min-width:1090px;">
+          <thead><tr>
+            <th style="width:36px;"><input type="checkbox" disabled></th>
+            <th style="width:200px;">关联剧名</th><th style="width:220px;">剧封适用端</th><th style="width:58px;">尺寸</th><th style="width:88px;">图片</th><th style="width:78px;">制作状态</th><th style="width:76px;">海报来源</th><th style="width:72px;">文件大小</th><th style="width:72px;">更新人</th><th style="width:92px;white-space:normal;">完成海报制作时间</th><th style="width:80px;">同步状态</th>
+          </tr></thead>
+          <tbody id="rel-posters-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 已有海报详情弹窗 -->
+<div class="modal-mask" id="poster-detail-modal">
+  <div class="modal" style="width:620px;">
+    <div class="modal-head">
+      <div class="modal-title">海报详情</div>
+      <span class="modal-close" data-close="poster-detail-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body"><div id="poster-detail-full"></div></div>
+    <div class="modal-foot"><button class="btn btn-outline" data-close="poster-detail-modal">关闭</button></div>
+  </div>
+</div>
+
+<!-- 编辑适用端弹窗 -->
+<div class="modal-mask" id="edit-cover-modal">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <div class="modal-title">编辑适用端</div>
+      <span class="modal-close" data-close="edit-cover-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-item" style="margin-bottom:0;">
+        <label class="form-label"><span class="req">*</span>剧封适用端</label>
+        <select class="ant-input" id="edit-cover-select"></select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" data-close="edit-cover-modal">取消</button>
+      <button class="btn btn-primary" id="edit-cover-submit">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 设置海报负责人弹窗 -->
+<div class="modal-mask" id="person-modal">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <div class="modal-title">设置海报负责人</div>
+      <span class="modal-close" data-close="person-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-item" style="margin-bottom:0;">
+        <label class="form-label">海报负责人</label>
+        <select class="ant-input" id="person-select">
+          <option value="">请选择（可输入搜索）</option>
+          <option>春明</option><option>李婉</option><option>王强</option><option>姑先</option><option>子房</option><option>枝子</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" data-close="person-modal">取消</button>
+      <button class="btn btn-primary" id="person-submit">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI无剧名海报生成弹窗 -->
+<div class="modal-mask" id="noname-modal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-head">
+      <div class="modal-title">AI海报生成（无剧名图片）</div>
+      <span class="modal-close" data-close="noname-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-item">
+        <label class="form-label">AI 生图依据</label>
+        <div style="text-align:left;">
+          <div class="poster-thumb" data-demo="编辑源海报" style="width:110px;height:148px;cursor:pointer;">🖼</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:6px;" data-demo="编辑源海报">编辑源海报（上传后将会覆盖剧本源海报）</div>
+        </div>
+      </div>
+      <div class="form-item">
+        <label class="form-label"><span class="req">*</span>模型</label>
+        <select class="ant-input" id="nn-model">
+          <option>Image2 （Azure OpenAI）</option>
+          <option>Image1 （自研模型）</option>
+        </select>
+      </div>
+      <div class="form-item" style="margin-bottom:0;">
+        <label class="form-label"><span class="req">*</span>尺寸</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="checkbox" name="nn-size" value="3:4" checked>3:4</label>
+          <label class="radio-opt"><input type="checkbox" name="nn-size" value="16:9">16:9</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" id="nn-submit">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 差异化场景详情弹窗 -->
+<div class="modal-mask" id="diff-detail-modal">
+  <div class="modal" style="width:640px;">
+    <div class="modal-head">
+      <div class="modal-title">差异化场景</div>
+      <span class="modal-close" data-close="diff-detail-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body"><div id="diff-detail-full"></div></div>
+    <div class="modal-foot"><button class="btn btn-outline" data-close="diff-detail-modal">关闭</button></div>
+  </div>
+</div>
+
+<div id="app-tip"></div>
+<div id="toast"></div>
+
+<script>
+/* ================= 数据（全局数据源，与 demo2 各页一致） ================= */
+const LANGUAGES = ['英语','繁体中文','韩语','西班牙语','日语','印尼语','泰语','葡萄牙语','简体中文','法语','德语','意大利语','阿拉伯语','马来西亚语','土耳其语','越南语','印地语'];
+const APPS = [
+  {id:'110', name:'ns_app',        pay:'IAP', group:'NS',            type:'app'},
+  {id:'111', name:'nt_app',        pay:'IAP', group:'NT',            type:'app'},
+  {id:'112', name:'fs_app',        pay:'IAP', group:'FS',            type:'app'},
+  {id:'120', name:'app_iaa马甲包', pay:'IAA', group:'app_iaa马甲包', type:'app', children:['ViviBinge','OmniDrama','EchoShort']},
+  {id:'123', name:'app_iap马甲包', pay:'IAP', group:'app_iap马甲包', type:'app', children:['OrcaShort','CharmReel','IvyDrama']},
+  {id:'130', name:'iap小程序',     pay:'IAP', group:'NS',            type:'小程序', children:['TTAvoShort','TTViviShort','TTWingShort','TTFishDrama','TTZeroDrama','TTUniShort','TTVoltShort']},
+  {id:'131', name:'iaa小程序',     pay:'IAA', group:'NS',            type:'小程序', children:['TTFizzDrama','TTJellyReel','TTBoomShort','TTRichDrama','TTSparkDrama']},
+  {id:'113', name:'ns_官网',       pay:'IAP', group:'NS',            type:'官网'},
+  {id:'140', name:'ns_h5',         pay:'IAP', group:'NS',            type:'h5',  children:['ReelNivo','DramaNivo','DramaZora','ReelMira','ReelVero']},
+];
+const ALL_APP_NAMES = APPS.map(a=>a.name);
+const APP_SET = ['ns_app','nt_app','fs_app','app_iaa马甲包','app_iap马甲包'];
+const NS_WEB = ['ns_官网','ns_h5'];
+const GROUP_OPTS = ['NS','FS','NT','app_iaa马甲包','app_iap马甲包'];
+const TYPE_OPTS = ['app','小程序','官网','h5'];
+const PAY_OPTS = ['IAA','IAP'];
+
+/* 差异化场景（服务端固化配置，页面不可配置） */
+const IAP_MINI = ['iap小程序'];
+const IAA_MINI = ['iaa小程序'];
+const NS_EXCLUSIVE = ['ns_app','ns_官网','ns_h5'];
+const APP_PLUS_NS_WEB = APP_SET.concat(NS_WEB);
+const scenes = [
+  {id:1, name:'主包/iap/iaa三套剧名剧封+ns独家标剧封', desc:'ns_app和官网加独家标，主包/iap/iaa小程序差异化', type:'name_cover', groups:[
+    {name:APP_PLUS_NS_WEB.slice(), covers:[NS_EXCLUSIVE.slice(), ['nt_app','fs_app','app_iaa马甲包','app_iap马甲包']]},
+    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
+    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+  ]},
+  {id:2, name:'主包/iap/iaa小程序三套剧名剧封', desc:'主包/iap/iaa小程序差异化', type:'name_cover', groups:[
+    {name:APP_PLUS_NS_WEB.slice(), covers:[APP_PLUS_NS_WEB.slice()]},
+    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
+    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+  ]},
+  {id:3, name:'全端通用剧名剧封+ns独家标', desc:'ns_app和官网加独家标，其他端共用剧名剧封', type:'name_cover', groups:[
+    {name:ALL_APP_NAMES.slice(), covers:[NS_EXCLUSIVE.slice(), ALL_APP_NAMES.filter(a=>NS_EXCLUSIVE.indexOf(a)<0)]},
+  ]},
+  {id:4, name:'存量剧_iap/iaa剧名剧封差异化', desc:'iap/iaa小程序单独做差异化剧名剧封', type:'name_cover', groups:[
+    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
+    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+  ]},
+  {id:5, name:'ns独家标剧封', desc:'为ns_app和官网新增独家标/做不同尺度剧封', type:'cover_only', covers:[
+    NS_EXCLUSIVE.slice(),
+  ]},
+];
+function sceneName(id){ const s = scenes.find(x=>x.id===id); return s ? s.name : ''; }
+
+/* ================= 海报任务数据 =================
+   差异化需求 diffs：单个任务可关联多个工单 → 多条需求，每条
+     {woId 关联工单ID, mode:'common'|'custom', sceneId?|groups?(剧封套), createTime, creator}
+   nameCovers：剧名-剧封套映射 [{name 剧名, nameApps 该剧名适用端, covers 该剧名下多个剧封套}] */
+let posterTasks = [
+  {id:'PT1', taskId:'880120', no:'N6788', name:'w测试0911', lang:'马来西亚语', urgent:'是', owner:'春明', status:'进行中', remark:'-',
+   diffs:[
+     {woId:'W20260928001', mode:'common', sceneId:1, createTime:'2026-09-28 16:28:36', creator:'春明'},
+     {woId:'W20260926015', mode:'custom', groups:[{name:['ns_官网','ns_h5']}], createTime:'2026-09-29 10:00:00', creator:'李婉'},
+   ],
+   nameCovers:[
+     {name:'Permainan Nyawa 0911', nameApps:APP_PLUS_NS_WEB, covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
+     {name:'Cerita Hidupku 0911', nameApps:IAP_MINI, covers:[IAP_MINI]},
+     {name:'Rebirth 0911', nameApps:IAA_MINI, covers:[IAA_MINI]},
+     {name:'Sang Penguasa Kembali', nameApps:['ns_官网','ns_h5'], covers:[['ns_官网','ns_h5']]},
+   ],
+   intro:'w测试0911简介',
+   localRemark:'剧名翻译需注意断行：/ 表示可换行，重点单词可加粗',
+   planStart:'2026-09-30 16:30:12', planEnd:'2026-10-08 18:00:00', creator:'春明', createTime:'2026-09-30 16:30:12', updater:'春明', updateTime:'2026-10-06 11:20:45',
+   posters:[
+     {id:'P1', file:'blablabla1', size:'3:4', name:'Permainan Nyawa 0911', cover:['ns_app','ns_官网'], prods:['ns_app'], makeStatus:'已完成', source:'人工', fileSize:'2.1MB', updater:'春明', finishTime:'2026-10-06 11:20:45', syncStatus:'已同步'},
+     {id:'P2', file:'blablabla2', size:'3:4', name:'Permainan Nyawa 0911', cover:['nt_app','fs_app'], prods:['nt_app','fs_app'], makeStatus:'制作中', source:'AI制作', fileSize:'1.8MB', updater:'春明', finishTime:'', syncStatus:'未同步'},
+     {id:'P3', file:'blablabla3', size:'3:4', name:'Cerita Hidupku 0911', cover:IAP_MINI, prods:['iap小程序'], makeStatus:'制作中', source:'AI制作', fileSize:'2.4MB', updater:'李婉', finishTime:'', syncStatus:'未同步'},
+     {id:'P4', file:'blablabla4', size:'3:4', name:'Rebirth 0911', cover:IAA_MINI, prods:['iaa小程序'], makeStatus:'已完成', source:'AI制作', fileSize:'2.2MB', updater:'春明', finishTime:'2026-10-06 11:20:45', syncStatus:'已同步'},
+     {id:'P5', file:'blablabla5', size:'16:9', name:'Permainan Nyawa 0911', cover:['ns_app','ns_官网'], prods:[], makeStatus:'已完成', source:'AI制作', fileSize:'3.4MB', updater:'春明', finishTime:'2026-10-05 09:12:30', syncStatus:'已同步'},
+     {id:'P6', file:'blablabla6', size:'1600:620', name:'Permainan Nyawa 0911', cover:['ns_app','ns_官网'], prods:[], makeStatus:'已完成', source:'AI制作', fileSize:'1.2MB', updater:'春明', finishTime:'2026-10-05 09:12:30', syncStatus:'已同步'},
+   ]},
+  {id:'PT2', taskId:'880121', no:'N6788', name:'w测试0911', lang:'马来西亚语', urgent:'否', owner:'李婉', status:'已完成', remark:'加急批次',
+   diffs:[{woId:'W20260927008', mode:'common', sceneId:1, createTime:'2026-09-27 09:30:00', creator:'春明'}],
+   nameCovers:[
+     {name:'Permainan Nyawa 0911', nameApps:APP_PLUS_NS_WEB, covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
+     {name:'Cerita Hidupku 0911', nameApps:IAP_MINI, covers:[IAP_MINI]},
+     {name:'Rebirth 0911', nameApps:IAA_MINI, covers:[IAA_MINI]},
+   ],
+   intro:'w测试0911简介',
+   localRemark:'续集同步，沿用上一批译名',
+   planStart:'2026-09-28 10:00:00', planEnd:'2026-10-05 18:00:00', creator:'春明', createTime:'2026-09-28 10:00:00', updater:'李婉', updateTime:'2026-10-05 17:30:20',
+   posters:[
+     {id:'P1', file:'blablabla1', size:'3:4', name:'Permainan Nyawa 0911', cover:['ns_app','ns_官网'], prods:['ns_app'], makeStatus:'已完成', source:'人工', fileSize:'2.0MB', updater:'李婉', finishTime:'2026-10-05 17:30:20', syncStatus:'已同步'},
+     {id:'P2', file:'blablabla2', size:'3:4', name:'Permainan Nyawa 0911', cover:['nt_app','fs_app'], prods:['nt_app','fs_app'], makeStatus:'已完成', source:'AI制作', fileSize:'2.0MB', updater:'李婉', finishTime:'2026-10-05 17:30:20', syncStatus:'已同步'},
+     {id:'P3', file:'blablabla3', size:'16:9', name:'', cover:[], prods:[], makeStatus:'已完成', source:'AI制作', fileSize:'3.0MB', updater:'李婉', finishTime:'2026-10-05 17:30:20', syncStatus:'已同步'},
+   ]},
+  {id:'PT3', taskId:'880122', no:'B0930', name:'嫡女她有备而来', lang:'英语', urgent:'否', owner:'李婉', status:'未开始', remark:'-',
+   diffs:[
+     {woId:'W20260927008', mode:'common', sceneId:2, createTime:'2026-09-27 09:30:00', creator:'春明'},
+     {woId:'W20260926015', mode:'custom', groups:[{name:['ns_官网','ns_h5']}], createTime:'2026-09-28 14:20:00', creator:'李婉'},
+   ],
+   nameCovers:[
+     {name:'The Legitimate Daughter Came Prepared', nameApps:APP_PLUS_NS_WEB, covers:[APP_PLUS_NS_WEB]},
+     {name:'La Hija Legitima', nameApps:IAP_MINI, covers:[IAP_MINI]},
+     {name:'Putri Sah', nameApps:IAA_MINI, covers:[IAA_MINI]},
+     {name:'Crown of the Reborn Girl', nameApps:['ns_官网','ns_h5'], covers:[['ns_官网','ns_h5']]},
+   ],
+   intro:'沈明珠上一世被庶妹夺了婚约、被继母推进枯井。重生在及笄前夜，她不再争一句宠爱。',
+   localRemark:'剧名中 "Legitimate" 需保留，可加粗',
+   planStart:'2026-09-30 15:40:00', planEnd:'-', creator:'春明', createTime:'2026-09-30 15:40:00', updater:'-', updateTime:'-',
+   posters:[
+     {id:'P1', file:'blablabla1', size:'3:4', name:'The Legitimate Daughter Came Prepared', cover:APP_PLUS_NS_WEB, prods:['ns_app'], makeStatus:'已完成', source:'人工', fileSize:'2.6MB', updater:'李婉', finishTime:'2026-10-04 16:40:12', syncStatus:'已同步'},
+     {id:'P2', file:'blablabla2', size:'3:4', name:'La Hija Legitima', cover:IAP_MINI, prods:['nt_app','fs_app'], makeStatus:'制作中', source:'AI制作', fileSize:'2.2MB', updater:'李婉', finishTime:'', syncStatus:'未同步'},
+     {id:'P3', file:'blablabla3', size:'16:9', name:'', cover:[], prods:[], makeStatus:'制作中', source:'AI制作', fileSize:'3.1MB', updater:'李婉', finishTime:'', syncStatus:'未同步'},
+   ]},
+  {id:'PT4', taskId:'880123', no:'N0001', name:'重生之都市仙尊', lang:'英语', urgent:'否', owner:'春明', status:'已完成', remark:'-',
+   diffs:[
+     {woId:'W20260925003', mode:'common', sceneId:4, createTime:'2026-09-25 10:00:00', creator:'春明'},
+     {woId:'W20260924012', mode:'custom', groups:[{name:['ns_app','ns_官网']}], createTime:'2026-09-26 11:00:00', creator:'王强'},
+   ],
+   nameCovers:[
+     {name:'Reborn City Immortal', nameApps:IAP_MINI, covers:[IAP_MINI]},
+     {name:'El Inmortal de la Ciudad', nameApps:IAA_MINI, covers:[IAA_MINI]},
+     {name:'The Immortal Reborn', nameApps:['ns_app','ns_官网'], covers:[['ns_app','ns_官网']]},
+   ],
+   intro:'重生都市，逆天改命。',
+   localRemark:'各场景组剧封均已完成制作，注意日文译名排版',
+   planStart:'2026-09-29 10:05:00', planEnd:'2026-10-10 18:00:00', creator:'春明', createTime:'2026-09-29 10:05:00', updater:'春明', updateTime:'2026-10-07 10:02:11',
+   posters:[
+     {id:'P1', file:'blablabla1', size:'3:4', name:'Reborn City Immortal', cover:IAP_MINI, prods:['iap小程序'], makeStatus:'已完成', source:'AI制作', fileSize:'1.9MB', updater:'春明', finishTime:'2026-10-06 18:22:40', syncStatus:'已同步'},
+     {id:'P2', file:'blablabla2', size:'3:4', name:'El Inmortal de la Ciudad', cover:IAA_MINI, prods:['iaa小程序'], makeStatus:'已完成', source:'AI制作', fileSize:'1.9MB', updater:'春明', finishTime:'2026-10-06 18:22:40', syncStatus:'已同步'},
+     {id:'P3', file:'blablabla3', size:'3:4', name:'The Immortal Reborn', cover:['ns_app','ns_官网'], prods:['ns_app'], makeStatus:'已完成', source:'人工', fileSize:'2.3MB', updater:'春明', finishTime:'2026-10-07 10:02:11', syncStatus:'已同步'},
+     {id:'P4', file:'blablabla4', size:'16:9', name:'', cover:[], prods:[], makeStatus:'已完成', source:'AI制作', fileSize:'3.0MB', updater:'春明', finishTime:'2026-10-06 18:22:40', syncStatus:'已同步'},
+   ]},
+  {id:'PT5', taskId:'880124', no:'N0001', name:'重生之都市仙尊', lang:'法语', urgent:'是', owner:'王强', status:'进行中', remark:'兜底批次',
+   diffs:[{woId:'W20260923001', mode:'custom', groups:[{name:ALL_APP_NAMES.slice()}], createTime:'2026-09-23 09:00:00', creator:'李婉'}],
+   nameCovers:[
+     {name:'Renaissance du Seigneur Immortel Urbain', nameApps:ALL_APP_NAMES, covers:[ALL_APP_NAMES]},
+   ],
+   intro:'重生都市，逆天改命。',
+   localRemark:'法语走全端通用，覆盖全部应用端',
+   planStart:'2026-10-06 09:00:00', planEnd:'2026-10-12 18:00:00', creator:'春明', createTime:'2026-10-06 09:00:00', updater:'王强', updateTime:'2026-10-08 09:30:00',
+   posters:[
+     {id:'P1', file:'blablabla1', size:'3:4', name:'Renaissance du Seigneur Immortel Urbain', cover:ALL_APP_NAMES, prods:[], makeStatus:'制作中', source:'AI制作', fileSize:'2.1MB', updater:'王强', finishTime:'', syncStatus:'未同步'},
+   ]},
+  {id:'PT6', taskId:'880125', no:'N0002', name:'闪婚老公是大佬', lang:'英语', urgent:'是', owner:'-', status:'未开始', remark:'-',
+   diffs:[
+     {woId:'W20260924001', mode:'common', sceneId:5, createTime:'2026-09-24 15:00:00', creator:'春明'},
+     {woId:'W20260923002', mode:'custom', groups:[{name:IAP_MINI.slice()}], createTime:'2026-09-25 10:30:00', creator:'李婉'},
+   ],
+   nameCovers:[
+     {name:'My Husband Is a Big Shot', nameApps:['ns_app','ns_官网'], covers:[['ns_app','ns_官网']]},
+     {name:'Kawin Kilat Sang Bos', nameApps:IAP_MINI, covers:[IAP_MINI]},
+   ],
+   intro:'闪婚老公竟是大佬。',
+   localRemark:'暂定译名，待本地化同学确认',
+   planStart:'2026-10-01 09:10:00', planEnd:'2026-10-15 18:00:00', creator:'李婉', createTime:'2026-10-01 09:10:00', updater:'-', updateTime:'-',
+   posters:[
+     {id:'P1', file:'blablabla1', size:'3:4', name:'My Husband Is a Big Shot', cover:['ns_app','ns_官网'], prods:[], makeStatus:'制作中', source:'AI制作', fileSize:'2.0MB', updater:'王强', finishTime:'', syncStatus:'未同步'},
+     {id:'P2', file:'blablabla2', size:'3:4', name:'Kawin Kilat Sang Bos', cover:IAP_MINI, prods:[], makeStatus:'制作中', source:'AI制作', fileSize:'1.7MB', updater:'李婉', finishTime:'', syncStatus:'未同步'},
+   ]},
+];
+
+/* ================= Toast ================= */
+let toastTimer = null;
+function toast(msg, type='success'){
+  const icons = {success:'✓', error:'✕', warning:'!'};
+  const el = document.getElementById('toast');
+  el.className = 'show ' + type;
+  el.innerHTML = '<span>' + icons[type] + '</span>' + msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.className = ''; }, 2600);
+}
+
+/* ================= 下拉多选 ================= */
+function initMs(boxId, contentId, panelId, options, onChange, cfg){
+  let selectAll=false, showAll=false, searchable=false;
+  if(typeof cfg === 'boolean'){ selectAll = cfg; }
+  else if(cfg){ selectAll=!!cfg.selectAll; showAll=!!cfg.showAll; searchable=!!cfg.searchable; }
+  const box = document.getElementById(boxId);
+  const content = document.getElementById(contentId);
+  const panel = document.getElementById(panelId);
+  const selected = new Set();
+  const disabled = new Set();
+  function buildPanel(){
+    let html = '';
+    if(searchable){
+      html += '<input class="ms-search" placeholder="输入匹配" autocomplete="off">';
+    }
+    if(selectAll){
+      html += '<div class="ms-opt ms-selall" data-v="__all__"><span class="opt-check">✓</span><span>全选</span></div><div class="ms-sep"></div>';
+    }
+    html += options.map(o => '<div class="ms-opt'+(disabled.has(o)?' disabled':'')+'" data-v="'+o+'"><span class="opt-check">✓</span><span>'+o+'</span></div>').join('');
+    panel.innerHTML = html;
+    if(searchable){
+      const si = panel.querySelector('.ms-search');
+      si.addEventListener('click', e => e.stopPropagation());
+      si.addEventListener('input', e => {
+        const kw = e.target.value.trim().toLowerCase();
+        panel.querySelectorAll('.ms-opt').forEach(o => {
+          if(o.getAttribute('data-v') === '__all__') return;
+          o.style.display = (!kw || o.textContent.toLowerCase().includes(kw)) ? '' : 'none';
+        });
+      });
+      si.addEventListener('blur', () => {
+        si.value = '';
+        panel.querySelectorAll('.ms-opt').forEach(o => { o.style.display = ''; });
+      });
+    }
+    renderPanel();
+  }
+  function renderBox(){
+    content.innerHTML = '';
+    if(selected.size === 0){
+      content.innerHTML = '<span class="ms-placeholder">请选择</span>';
+    }else{
+      const arr = [...selected];
+      if(showAll){
+        arr.forEach(v => { content.insertAdjacentHTML('beforeend','<span class="ms-tag" title="'+v+'"><span class="ms-t">'+v+'</span><span class="ms-x">×</span></span>'); });
+      }else{
+        arr.slice(0,2).forEach(v => { content.insertAdjacentHTML('beforeend','<span class="ms-tag" title="'+v+'"><span class="ms-t">'+v+'</span><span class="ms-x">×</span></span>'); });
+        if(arr.length > 2) content.insertAdjacentHTML('beforeend','<span class="ms-tag more">+'+(arr.length-2)+'</span>');
+      }
+      content.querySelectorAll('.ms-x').forEach(x => {
+        x.addEventListener('click', e => {
+          e.stopPropagation();
+          selected.delete(x.parentElement.getAttribute('title') || '');
+          renderBox(); renderPanel();
+          onChange && onChange([...selected]);
+        });
+      });
+    }
+  }
+  function renderPanel(){
+    panel.querySelectorAll('.ms-opt').forEach(o => {
+      const v = o.getAttribute('data-v');
+      if(v === '__all__'){
+        const nd = options.filter(x=>!disabled.has(x));
+        o.classList.toggle('checked', nd.length>0 && nd.every(x=>selected.has(x)));
+      }else{
+        o.classList.toggle('checked', selected.has(v));
+      }
+    });
+  }
+  box.addEventListener('click', e => {
+    if(e.target.closest('.ms-x')) return;
+    const isOpen = panel.classList.contains('show');
+    document.querySelectorAll('.ms-panel.show').forEach(p=>{ if(p!==panel) p.classList.remove('show'); });
+    document.querySelectorAll('.ms-box.open').forEach(b=>{ if(b!==box) b.classList.remove('open'); });
+    panel.classList.toggle('show', !isOpen);
+    box.classList.toggle('open', !isOpen);
+    if(!isOpen){
+      panel.classList.remove('flip-up');
+      panel.style.maxHeight = '';
+      requestAnimationFrame(() => {
+        const pr = panel.getBoundingClientRect();
+        if(pr.height === 0) return;
+        const mb = panel.closest('.modal-body');
+        const limBottom = mb ? mb.getBoundingClientRect().bottom : window.innerHeight - 8;
+        const limTop = mb ? mb.getBoundingClientRect().top : 8;
+        if(pr.bottom > limBottom){
+          panel.classList.add('flip-up');
+          const pr2 = panel.getBoundingClientRect();
+          if(pr2.top < limTop){
+            panel.classList.remove('flip-up');
+            const boxRect = box.getBoundingClientRect();
+            const avail = limBottom - boxRect.bottom - 8;
+            if(avail > 120){ panel.style.maxHeight = Math.floor(avail) + 'px'; }
+          }
+        }
+      });
+    }
+  });
+  panel.addEventListener('click', e => {
+    const opt = e.target.closest('.ms-opt');
+    if(!opt || opt.classList.contains('disabled')) return;
+    const v = opt.getAttribute('data-v');
+    if(v === '__all__'){
+      const nd = options.filter(x=>!disabled.has(x));
+      const allSel = nd.length>0 && nd.every(x=>selected.has(x));
+      if(allSel){ nd.forEach(x=>selected.delete(x)); } else { nd.forEach(x=>selected.add(x)); }
+    }else{
+      if(selected.has(v)) selected.delete(v); else selected.add(v);
+    }
+    renderBox(); renderPanel();
+    onChange && onChange([...selected]);
+  });
+  document.addEventListener('click', e => {
+    if(!box.contains(e.target) && !panel.contains(e.target)){ panel.classList.remove('show'); box.classList.remove('open'); }
+  });
+  buildPanel(); renderBox();
+  return {
+    get value(){ return [...selected]; },
+    setValue(arr){ selected.clear(); (arr||[]).forEach(a=>selected.add(a)); renderBox(); renderPanel(); },
+    clear(){ selected.clear(); renderBox(); renderPanel(); },
+    setDisabled(arr){ disabled.clear(); (arr||[]).forEach(a=>disabled.add(a)); buildPanel(); },
+  };
+}
+function msHtml(uid){
+  return '<div class="ms-wrap"><div class="ms-box" id="'+uid+'"><div id="'+uid+'-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>' +
+    '<span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>' +
+    '<div class="ms-panel" id="'+uid+'-p"></div></div>';
+}
+
+/* ================= 应用合并展示 ================= */
+/* ================= 应用端展示（集合型应用端 hover 展示全部明细） ================= */
+function appMeta(name){ return APPS.find(a => a.name === name) || null; }
+/* 集合型应用端（app_iaa马甲包/app_iap马甲包/iap小程序/iaa小程序/ns_h5）hover 明细文案 */
+function appTipText(name){
+  const m = appMeta(name);
+  if(!m || !m.children || !m.children.length) return '';
+  return m.name + '（共' + m.children.length + '个）：' + m.children.join('、');
+}
+function appChipHtml(name, chipClass){
+  const t = appTipText(name);
+  return '<span class="'+chipClass+(t?' app-merge':'')+'"'+(t?' data-tip="'+t+'"':'')+'>'+name+'</span>';
+}
+function appDisplayHtml(apps, chipClass){
+  if(!apps || !apps.length) return '<span style="color:#bfbfbf;font-size:12px;">—</span>';
+  const html = apps.map(a => appChipHtml(a, chipClass)).join('');
+  return html || '<span style="color:#bfbfbf;font-size:12px;">—</span>';
+}
+function chipsHtml(apps){ return appDisplayHtml(apps, 'tag tag-blue'); }
+function appsText(apps){
+  return (apps || []).join('、');
+}
+const APPS_TEXT_ALL = appsText(ALL_APP_NAMES);
+/* 应用合并展示 tooltip */
+(function(){
+  const tip = document.getElementById('app-tip');
+  document.addEventListener('mouseover', e => {
+    const t = e.target.closest('.app-merge');
+    if(t && t.getAttribute('data-tip')){
+      tip.textContent = t.getAttribute('data-tip');
+      tip.style.display = 'block';
+      moveTip(e);
+    }
+  });
+  document.addEventListener('mousemove', moveTip);
+  document.addEventListener('mouseout', e => {
+    if(e.target.closest && e.target.closest('.app-merge')) tip.style.display = 'none';
+  });
+  function moveTip(e){
+    if(tip.style.display !== 'block') return;
+    const pad = 14;
+    let x = e.clientX + pad, y = e.clientY + pad;
+    const r = tip.getBoundingClientRect();
+    if(x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+    if(y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  }
+})();
+
+/* ================= 视图切换 / 公共 ================= */
+function showView(v){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('show'));
+  document.getElementById('view-' + v).classList.add('show');
+  window.scrollTo(0, 0);
+}
+function foldTime(s){
+  if(!s || s === '-') return '-';
+  const m = s.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}(?::\d{2})?)$/);
+  if(m){
+    let hms = m[2];
+    if(/^\d{2}:\d{2}$/.test(hms)) hms += ':00';
+    return m[1] + '<br>' + hms;
+  }
+  return s;
+}
+function statusTag(s){
+  const cls = s==='已完成'?'tag-green':(s==='进行中'?'tag-blue':'tag-gray');
+  return '<span class="tag '+cls+'">'+s+'</span>';
+}
+function syncTag(s){
+  const cls = s==='已同步'?'tag-green':'tag-gray';
+  return '<span class="tag '+cls+'">'+s+'</span>';
+}
+
+/* ================= 剧封套派生 ================= */
+/* 任务剧封套应用端（按 nameCovers 汇总：每个剧名套下挂多个剧封套） */
+function coverGroups(t){
+  if(!t || !t.nameCovers) return [];
+  const out = [];
+  (t.nameCovers||[]).forEach(nc => nc.covers.forEach(c => out.push(c.slice())));
+  return out;
+}
+/* 剧封套数（去重：多个场景中应用端完全相同的只记一套） */
+function coverSetCount(t){
+  const seen = new Set();
+  coverGroups(t).forEach(g => { seen.add(JSON.stringify([...g].sort())); });
+  return seen.size;
+}
+/* 差异化场景单行：常用场景直接展示场景名（无查看），自定义场景+查看 */
+function diffSceneLine(d, di, id){
+  if(d.mode === 'common') return '<span>'+sceneName(d.sceneId)+'</span>';
+  return '<span>自定义场景</span><span class="op-link" data-act="diff-detail" data-id="'+id+'" data-di="'+di+'" style="margin:0;">查看</span>';
+}
+function diffSceneCellHtml(t){
+  const ds = t.diffs || [];
+  if(!ds.length) return '<span style="color:var(--text-3);">-</span>';
+  const numbered = ds.length > 1;
+  return '<div class="wrap-cell" style="text-align:left;">' +
+    '<div class="ds-count">剧封套数：'+coverSetCount(t)+'</div>' +
+    ds.map((d,i)=>'<div class="ds-line">'+(numbered?'<span class="ds-no">'+(i+1)+'.</span>':'')+diffSceneLine(d,i,t.id)+'</div>').join('') +
+    '</div>';
+}
+
+/* ================= 海报任务列表 ================= */
+const listFilter = {name:'', lang:'', status:'', owner:'', remark:''};
+function filteredPosters(){
+  return posterTasks.filter(t => {
+    if(listFilter.name && !t.name.toLowerCase().includes(listFilter.name.toLowerCase())) return false;
+    if(listFilter.lang && t.lang.indexOf(listFilter.lang) < 0) return false;
+    if(listFilter.status && t.status !== listFilter.status) return false;
+    if(listFilter.owner && !(t.owner||'').includes(listFilter.owner)) return false;
+    if(listFilter.remark && !(t.remark||'').includes(listFilter.remark)) return false;
+    return true;
+  });
+}
+function renderList(){
+  const list = filteredPosters();
+  const tbody = document.getElementById('table-body');
+  document.getElementById('pg-total').textContent = list.length;
+  if(!list.length){
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty"><div class="empty-icon">📭</div><div>暂无数据</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(t =>
+    '<tr>' +
+    '<td class="cell-title">'+t.taskId+'</td>' +
+    '<td>'+t.no+'</td>' +
+    '<td class="cell-title">'+t.name+'</td>' +
+    '<td>'+t.lang+'</td>' +
+    '<td>'+statusTag(t.status)+'</td>' +
+    '<td>'+(coverSetCount(t) || '<span style="color:var(--text-3);">-</span>')+'</td>' +
+    '<td class="cell-title" style="color:var(--text-3);">......</td>' +
+    '<td>'+(t.posters && t.posters.length ? '<div class="poster-thumb" style="margin:0 auto;">🖼</div>' : '<span style="color:var(--text-3);">-</span>')+'</td>' +
+    '<td class="sticky-col"><div class="ops-wrap"><span class="op-link" data-act="detail" data-id="'+t.id+'">查看详情</span><span class="op-link" data-act="person" data-id="'+t.id+'">设置海报负责人</span></div></td>' +
+    '</tr>'
+  ).join('');
+}
+
+/* ================= 任务详情 ================= */
+let currentTask = null;
+let sizeFilter = '';
+function openDetail(taskId){
+  currentTask = posterTasks.find(x=>x.id===taskId);
+  sizeFilter = '';
+  mvSel = 0;
+  renderDetail(currentTask);
+  showView('detail');
+}
+/* ===== 海报详情视图：列表视图（原交互）/ 主从视图（新增） ===== */
+let posterMode = 'list';
+let mvSel = 0;
+/* 某剧名 + 某剧封套下的所有海报数据组 */
+function mvCoverPosters(t, name, cover){
+  return (t.posters || []).filter(p => p.name === name && sameArr(p.cover || [], cover || []));
+}
+/* 该剧封套是否已有完成的海报（有则可算「已产出」） */
+function mvCoverDone(t, name, cover){
+  return mvCoverPosters(t, name, cover).some(p => !p.empty && p.makeStatus === '已完成');
+}
+function mvStCls(s){ return s === '已完成' ? 'st-done' : (s === '制作中' ? 'st-pending' : 'st-todo'); }
+/* 单个海报数据组卡片：3:4 占位框 + 框内按实际比例居中的图（无图用占位符）+ 值 + 操作 */
+function mvPosterCard(t, name, cover, p){
+  const emp = !p || p.empty;
+  const asp = emp ? '3/4' : (p.size === '16:9' ? '16/9' : (p.size === '1600:620' ? '1600/620' : '3/4'));
+  const img = emp
+    ? '<div class="mv-pimg ph">无图片</div>'
+    : '<div class="mv-pimg" style="aspect-ratio:'+asp+';">🖼</div>';
+  /* 值：尺寸 / 制作状态 / 海报来源 / 文件大小 / 更新人 / 完成海报制作时间（只展示值，不展示字段名） */
+  const vals = emp ? '<div class="mv-pv-row" style="color:var(--text-3);">暂无数据</div>'
+    : '<div class="mv-pv-row"><span>'+p.size+'</span>' +
+        '<span class="st '+mvStCls(p.makeStatus)+'">'+p.makeStatus+'</span>' +
+        '<span>'+(p.source || '-')+'</span></div>' +
+      '<div class="mv-pv-row"><span>'+(p.fileSize || '-')+'</span><span>'+(p.updater || '-')+'</span></div>' +
+      '<div class="mv-pv-row mv-pv-time">'+(p.finishTime || '-')+'</div>';
+  let ops;
+  if(emp){
+    ops = '<span class="op-link" data-act="upload" data-title="上传">上传</span>' +
+      '<span class="op-link" data-act="aigen" data-tid="'+t.id+'" data-name="'+encodeURIComponent(name||'')+'" data-cover="'+encodeURIComponent(JSON.stringify(cover||[]))+'">AI生成</span>' +
+      (p ? '<span class="op-link danger" data-act="delposter" data-tid="'+t.id+'" data-pid="'+p.id+'">删除</span>' : '');
+  }else{
+    ops = (p.size === '3:4' ? '<span class="op-link" data-demo="同步海报">同步</span>' : '') +
+      '<span class="op-link" data-act="replace" data-tid="'+t.id+'" data-pid="'+p.id+'">替换</span>' +
+      '<span class="op-link" data-act="edit-cover" data-tid="'+t.id+'" data-pid="'+p.id+'">编辑适用端</span>' +
+      '<span class="op-link" data-demo="下载">下载</span>' +
+      '<span class="op-link danger" data-act="delposter" data-tid="'+t.id+'" data-pid="'+p.id+'">删除</span>';
+  }
+  return '<div class="mv-pcard">' +
+    '<div class="mv-pbox">'+img+'</div>' +
+    '<div class="mv-pvals">'+vals+'</div>' +
+    '<div class="mv-pops">'+ops+'</div>' +
+  '</div>';
+}
+function masterViewHtml(t){
+  const ncs = (t.nameCovers || []);
+  if(mvSel >= ncs.length) mvSel = 0;
+  const cur = ncs[mvSel] || {name:'-', nameApps:[], covers:[]};
+  const setOf = nc => Math.max(1, (nc.covers || []).length);
+  const setTotal = ncs.reduce((a,nc)=>a + setOf(nc), 0);
+  const setDone = ncs.reduce((a,nc)=>a + (nc.covers||[]).filter(c => mvCoverDone(t, nc.name, c)).length, 0);
+  /* 一、已有海报：图 3:4 + 剧名在图下方，点击图片打开详情预览（同列表视图） */
+  const hist = (t.posters || []).filter(p => p.size === '3:4' && p.name && !p.empty);
+  const hcards = hist.length ? hist.map(p =>
+    '<div class="mv-hcard">' +
+      '<div class="mv-himg" data-act="poster-detail" data-id="'+t.id+'" data-pid="'+p.id+'">🖼</div>' +
+      '<div class="mv-hname">'+p.name+'</div>' +
+      '<div class="mv-hstatus">'+p.makeStatus+'</div>' +
+    '</div>').join('') : '<div style="color:var(--text-3);font-size:13px;">暂无</div>';
+  /* 二、备注信息：本地化信息备注 + 剧本备注，分块纯展示 */
+  const noteBlock = (lab, val) =>
+    '<div class="mv-note-block"><div class="mv-note-lab">'+lab+'</div>' +
+      ((val && val !== '-') ? '<div class="mv-note-val">'+val+'</div>' : '<div class="mv-note-val muted">暂无</div>') +
+    '</div>';
+  const notes = noteBlock('本地化信息备注', t.localRemark) + noteBlock('剧本备注', t.intro);
+  /* 三、左：剧名 + 剧名适用端 */
+  const items = ncs.length ? ncs.map((nc, i) => {
+    const need = setOf(nc);
+    const done = Math.min((nc.covers||[]).filter(c => mvCoverDone(t, nc.name, c)).length, need);
+    const gap = need - done;
+    return '<div class="mv-item'+(i===mvSel?' active':'')+'" data-act="mv-sel" data-idx="'+i+'">' +
+      '<div class="mv-item-top"><span class="mv-item-name">'+nc.name+'</span>' +
+      '<span class="mv-badge '+(gap>0?'gap':'ok')+'">'+(gap>0?'缺'+gap:'已完成')+'</span></div>' +
+      '<div class="mv-item-apps">'+appDisplayHtml(nc.nameApps || [], 'tag tag-gray')+'</div>' +
+      '<div class="mv-item-sub">剧封套 '+done+'/'+need+' 套</div>' +
+    '</div>';
+  }).join('') : '<div style="color:var(--text-3);font-size:13px;">暂无剧名</div>';
+  /* 四、右：一个剧封套一个模块（剧封适用端 → 海报数据组卡片） */
+  const SIZES = ['3:4','16:9','1600:620'];
+  const coverSecs = (cur.covers || []).length ? cur.covers.map((c, ci) => {
+    const ps = mvCoverPosters(t, cur.name, c);
+    const real = ps.filter(p => !p.empty);
+    const empties = ps.filter(p => p.empty);
+    let ordered = SIZES.map(sz => real.find(p => p.size === sz)).filter(Boolean);
+    ordered = ordered.concat(empties);
+    const cards = ordered.length
+      ? ordered.map(p => mvPosterCard(t, cur.name, c, p)).join('')
+      : mvPosterCard(t, cur.name, c, null);
+    const addLink = '<span class="op-link" data-act="add-poster" data-tid="'+t.id+'" data-name="'+encodeURIComponent(cur.name)+'" data-cover="'+encodeURIComponent(JSON.stringify(c))+'">+ 新增海报</span>';
+    return '<div class="mv-cover">' +
+      '<div class="mv-cover-head"><span class="mv-cover-title">剧封套 '+(ci+1)+'</span><span class="mv-meta">'+addLink+'</span></div>' +
+      '<div class="mv-cover-apps"><span class="mv-cover-title">剧封适用端</span>'+appDisplayHtml(c, 'tag tag-blue')+'</div>' +
+      '<div class="mv-pgrid">'+cards+'</div>' +
+    '</div>';
+  }).join('') : '<div class="mv-empty">该剧名暂无剧封套</div>';
+  return '<div class="mv-sec">' +
+      '<div class="mv-sec-head"><span class="mv-sec-title"><span class="bar"></span>已有海报</span><span class="mv-note">点击图片查看详情预览</span></div>' +
+      '<div class="mv-hcards">'+hcards+'</div>' +
+    '</div>' +
+    '<div class="mv-sec">' +
+      '<div class="mv-sec-head"><span class="mv-sec-title"><span class="bar"></span>备注信息</span></div>' +
+      '<div class="mv-notes">'+notes+'</div>' +
+    '</div>' +
+    '<div class="mv-sec">' +
+      '<div class="mv-sec-head">' +
+        '<span class="mv-sec-title"><span class="bar"></span>海报制作</span>' +
+        '<span class="mv-meta">共 '+ncs.length+' 个剧名 · 剧封套 '+setDone+'/'+setTotal+' 套已产出</span>' +
+        '<div class="mv-ops">' +
+          '<button class="btn btn-primary btn-sm" data-act="upload" data-title="批量上传">批量上传</button>' +
+          '<button class="btn btn-primary btn-sm" data-act="batch" data-id="'+t.id+'">批量AI生成</button>' +
+          '<button class="btn btn-primary btn-sm" data-demo="完成海报制作">完成海报制作</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="mv-body">' +
+        '<div class="mv-list">'+items+'</div>' +
+        '<div class="mv-detail">'+coverSecs+'</div>' +
+      '</div>' +
+    '</div>';
+}
+function renderDetail(t){
+  // 基础信息
+  document.getElementById('detail-base-ops').innerHTML =
+    '<span class="op-link" data-act="edit" data-id="'+t.id+'">编辑</span><span class="op-link" data-act="person" data-id="'+t.id+'">设置海报负责人</span>';
+  document.getElementById('detail-base').innerHTML =
+    '<table class="info-table"><tr>' +
+    '<td class="lab">剧本名称</td><td>'+t.name+'</td>' +
+    '<td class="lab">本地化语言</td><td>'+t.lang+'</td>' +
+    '<td class="lab">是否加急</td><td>'+t.urgent+'</td></tr><tr>' +
+    '<td class="lab">任务状态</td><td>'+statusTag(t.status)+'</td>' +
+    '<td class="lab">海报负责人</td><td>'+(t.owner||'-')+'</td>' +
+    '<td class="lab">海报备注</td><td>'+(t.remark||'-')+'</td></tr><tr>' +
+    '<td class="lab">预计海报开始时间</td><td>'+t.planStart+'</td>' +
+    '<td class="lab">预计海报完成时间</td><td>'+(t.planEnd||'-')+'</td>' +
+    '<td class="lab">创建时间</td><td>'+t.createTime+'</td></tr></table>';
+  // 剧相关信息（无剧名海报，独立模块）
+  renderDramaInfo(t);
+  // 海报信息（含当前任务/历史任务 tab + 海报清单）
+  renderPosterSection(t);
+}
+/* 剧相关信息模块（无剧名海报） */
+function renderDramaInfo(t){
+  const noNamePosters = (t.posters||[]).filter(p => !p.name);
+  document.getElementById('detail-drama-ops').innerHTML =
+    '<button class="btn btn-primary btn-sm" data-act="nn-download" data-id="'+t.id+'"'+(noNamePosters.length?'':' disabled')+'>海报批量下载</button>' +
+    '<button class="btn btn-primary btn-sm" data-act="noname-gen" data-id="'+t.id+'">AI 无剧名海报生成</button>';
+  document.getElementById('detail-drama').innerHTML =
+    '<div class="table-wrap"><table class="loc-table" style="table-layout:fixed;min-width:640px;"><thead><tr>' +
+    '<th style="width:36px;"><input type="checkbox" class="nn-checkall"></th>' +
+    '<th style="width:110px;">尺寸</th><th>海报（无剧名）</th><th style="width:110px;">制作状态</th><th style="width:100px;">操作</th>' +
+    '</tr></thead><tbody>' +
+    (noNamePosters.length ? noNamePosters.map(p =>
+      '<tr>' +
+      '<td><input type="checkbox" class="nn-check"></td>' +
+      '<td>'+p.size+'</td>' +
+      '<td><div class="poster-thumb" style="margin:0 auto;">🖼</div></td>' +
+      '<td>'+p.makeStatus+'</td>' +
+      '<td><div class="op-col"><span class="op-link" data-demo="下载">下载</span><span class="op-link danger" data-act="delposter" data-tid="'+t.id+'" data-pid="'+p.id+'">删除</span></div></td>' +
+      '</tr>'
+    ).join('') : '<tr><td colspan="5"><div class="empty" style="padding:18px;">暂无数据</div></td></tr>') +
+    '</tbody></table></div>';
+  const nnCheckall = document.querySelector('.nn-checkall');
+  if(nnCheckall) nnCheckall.addEventListener('change', e => {
+    document.querySelectorAll('.nn-check').forEach(c => { c.checked = e.target.checked; });
+  });
+}
+/* 差异化需求详情列表（按创建时间逆序，同本地化任务详情） */
+function diffReqListHtml(t){
+  const ds = (t.diffs||[]).map((d,i)=>({d:d, i:i})).sort((a,b)=>(b.d.createTime||'').localeCompare(a.d.createTime||''));
+  const rows = ds.map(x =>
+    '<tr>' +
+    '<td class="wrap-cell" style="text-align:center;"><div class="ds-line" style="justify-content:center;">'+diffSceneLine(x.d, x.i, t.id)+'</div></td>' +
+    '<td>'+x.d.createTime+'</td>' +
+    '<td>'+x.d.creator+'</td>' +
+    '<td>'+x.d.woId+'</td>' +
+    '</tr>').join('');
+  return '<div class="table-wrap" style="margin-bottom:14px;"><table class="loc-table"><thead><tr>' +
+    '<th style="width:320px;min-width:320px;">差异化场景</th><th>创建时间</th><th style="width:90px;">创建人</th><th style="width:140px;">关联工单ID</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+/* 本地化信息备注 + 剧本备注（每个任务一组，两列展示在关联工单列表下方） */
+function remarkHtml(t){
+  return '<div class="table-wrap" style="margin-bottom:14px;"><table class="loc-table" style="table-layout:fixed;"><colgroup><col style="width:50%;"><col style="width:50%;"></colgroup>' +
+    '<thead><tr><th>本地化信息备注</th><th>剧本备注</th></tr></thead><tbody>' +
+    '<tr><td class="wrap-cell" style="text-align:left;">'+(t.localRemark||'-')+'</td><td class="wrap-cell" style="text-align:left;">'+(t.intro||'-')+'</td></tr>' +
+    '</tbody></table></div>';
+}
+/* 已有海报：平铺展示所有 3:4 尺寸海报，点击查看详情 */
+function existingPostersHtml(t){
+  const ps = (t.posters||[]).filter(p => p.size === '3:4' && p.name && !p.empty);
+  if(!ps.length) return '<div style="color:var(--text-3);font-size:13px;">暂无</div>';
+  return '<div class="poster-icon-grid">' + ps.map(p =>
+    '<div class="poster-icon" data-act="poster-detail" data-id="'+t.id+'" data-pid="'+p.id+'">🖼</div>'
+  ).join('') + '</div>';
+}
+/* 已有海报详情弹窗：关联剧名 + 适用端 + 完整大图 */
+function openPosterDetail(t, pid){
+  const p = (t.posters||[]).find(x=>x.id===pid);
+  if(!p) return;
+  document.getElementById('poster-detail-full').innerHTML =
+    '<div class="poster-detail-hero">' +
+      '<div class="big-thumb">🖼</div>' +
+      '<div class="pd-meta">' +
+        '<div>关联剧名：<b>'+p.name+'</b></div>' +
+        '<div style="margin-top:4px;">适用端：</div>' +
+        '<div class="chips-row" style="margin-top:4px;">'+appDisplayHtml(p.cover||[],'tag tag-blue')+'</div>' +
+        '<div style="margin-top:10px;">尺寸：3:4　制作状态：'+p.makeStatus+'</div>' +
+      '</div>' +
+    '</div>';
+  document.getElementById('poster-detail-modal').classList.add('show');
+}
+/* 关联海报任务列表（同一剧本-语言的海报任务，历史任务 tab；已删更新人/更新时间列） */
+function relTableHtml(t){
+  const rels = posterTasks.filter(x=>x.name===t.name && x.lang===t.lang);
+  const rows = rels.map(x =>
+    '<tr>' +
+    '<td class="cell-title">'+x.taskId+'</td>' +
+    '<td>'+(x.remark||'-')+'</td>' +
+    '<td>'+statusTag(x.status)+'</td>' +
+    '<td class="wrap-cell">'+diffSceneCellHtml(x)+'</td>' +
+    '<td><span class="op-link" data-act="rel-posters" data-id="'+x.id+'" style="margin:0;">'+((x.posters||[]).length)+'</span></td>' +
+    '<td class="wrap-cell">'+foldTime(x.createTime)+'</td>' +
+    '<td>'+(x.owner||'-')+'</td>' +
+    '</tr>'
+  ).join('');
+  return '<div class="table-wrap" style="overflow-x:auto;margin-bottom:14px;"><table class="loc-table" style="min-width:960px;"><thead><tr>' +
+    '<th>海报任务ID</th><th>海报备注</th><th>任务状态</th><th style="width:320px;min-width:320px;">差异化场景</th><th style="width:70px;">海报</th><th>创建时间</th><th>海报负责人</th>' +
+    '</tr></thead><tbody>' + (rows || '<tr><td colspan="7"><div class="empty" style="padding:20px;">暂无</div></td></tr>') + '</tbody></table></div>';
+}
+/* 关联剧名单元格：剧名 + 复制 + 该剧名适用端（居中换行） */
+function nameCellHtml(nc, tid){
+  return '<div style="font-weight:600;line-height:1.5;text-align:center;overflow-wrap:anywhere;">'+nc.name+'</div>' +
+    '<div style="margin-top:2px;text-align:center;"><span class="op-link" data-copy="'+nc.name+'" style="margin:0;">复制</span></div>' +
+    '<div class="chips-row" style="margin-top:6px;justify-content:center;">'+appDisplayHtml(nc.nameApps,'tag tag-gray')+'</div>';
+}
+function sameArr(a, b){
+  if(a.length !== b.length) return false;
+  const sa = [...a].sort(), sb = [...b].sort();
+  return sa.every((x,i)=>x===sb[i]);
+}
+/* 海报属性单元格（尺寸/图片/…/操作）；poster 为空/empty=空数据行：尺寸/图片空、操作列「上传+AI生成(+删除)」；viewOnly=弹窗仅查看（无操作列） */
+function posterCells(poster, tid, name, cover, viewOnly){
+  const isEmpty = !poster || poster.empty;
+  const coverJson = encodeURIComponent(JSON.stringify(cover||[]));
+  const nameEnc = encodeURIComponent(name||'');
+  if(isEmpty){
+    const isNewEmpty = !!poster; /* 用户新增的空数据条目（非 null） */
+    if(viewOnly){
+      return '<td></td><td></td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>';
+    }
+    let ops = '<span class="op-link" data-act="upload" data-title="上传">上传</span>' +
+      '<span class="op-link" data-act="aigen" data-tid="'+tid+'" data-name="'+nameEnc+'" data-cover="'+coverJson+'">AI生成</span>';
+    if(isNewEmpty) ops += '<span class="op-link danger" data-act="delposter" data-tid="'+tid+'" data-pid="'+poster.id+'">删除</span>';
+    return '<td></td><td></td>' +
+      '<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>' +
+      '<td class="sticky-col"><div class="op-col">'+ops+'</div></td>';
+  }
+  const is34 = poster.size === '3:4';
+  const ops = viewOnly ? '' :
+    '<td class="sticky-col"><div class="op-col">'+
+      (is34 ? '<span class="op-link" data-demo="同步海报">同步海报</span>' : '')+
+      '<span class="op-link" data-act="replace" data-tid="'+tid+'" data-pid="'+poster.id+'">替换</span>'+
+      '<span class="op-link" data-act="edit-cover" data-tid="'+tid+'" data-pid="'+poster.id+'">编辑适用端</span>'+
+      '<span class="op-link" data-demo="下载">下载</span>'+
+      '<span class="op-link danger" data-act="delposter" data-tid="'+tid+'" data-pid="'+poster.id+'">删除</span>'+
+    '</div></td>';
+  return '<td>'+poster.size+'</td>' +
+    '<td><div class="poster-thumb" style="margin:0 auto;">🖼</div></td>' +
+    '<td>'+poster.makeStatus+'</td>' +
+    '<td>'+poster.source+'</td>' +
+    '<td>'+(poster.fileSize||'-')+'</td>' +
+    '<td>'+(poster.updater||'-')+'</td>' +
+    '<td class="wrap-cell">'+foldTime(poster.finishTime)+'</td>' +
+    '<td>'+syncTag(poster.syncStatus)+'</td>' +
+    ops;
+}
+/* 海报清单行（尺寸分行：每个「剧名-适用端」组合按已生产尺寸分行，剧名/适用端跨行合并；适用端有数据时底部出【新增海报】按钮；无海报时空行；viewOnly 忽略尺寸筛选、复选框禁用、无新增按钮） */
+function posterRows(t, viewOnly){
+  const sf = viewOnly ? '' : sizeFilter;
+  const SIZES = ['3:4','16:9','1600:620'];
+  const rows = [];
+  const checkCell = viewOnly ? '<td><input type="checkbox" class="rp-check" disabled></td>' : '<td><input type="checkbox" class="p-check"></td>';
+  const addBtn = (name, cover) => {
+    if(viewOnly) return '';
+    return '<div style="margin-top:8px;text-align:center;"><span class="op-link" data-act="add-poster" data-tid="'+t.id+'" data-name="'+encodeURIComponent(name||'')+'" data-cover="'+encodeURIComponent(JSON.stringify(cover||[]))+'">新增海报</span></div>';
+  };
+  const itemsOf = (name, cover) => {
+    const ps = (t.posters||[]).filter(p => p.name===name && sameArr(p.cover, cover));
+    const real = ps.filter(p => !p.empty);
+    const empties = ps.filter(p => p.empty);
+    let sorted = SIZES.map(s => real.find(p => p.size===s)).filter(Boolean);
+    if(sf) sorted = sorted.filter(p => p.size===sf);
+    const items = sorted.map(p => ({poster:p}));
+    if(!sf) empties.forEach(e => items.push({poster:e}));
+    if(!items.length) items.push({poster:null});
+    return items;
+  };
+  (t.nameCovers||[]).forEach(nc => {
+    const coverRows = nc.covers.map(c => ({
+      cover:c,
+      hasData:(t.posters||[]).some(p => p.name===nc.name && sameArr(p.cover, c) && !p.empty),
+      items: itemsOf(nc.name, c),
+    }));
+    const total = coverRows.reduce((a, cr) => a + cr.items.length, 0);
+    if(!total) return;
+    coverRows.forEach((cr, ci) => {
+      cr.items.forEach((it, pi) => {
+        const nameCell = (ci===0 && pi===0) ? '<td rowspan="'+total+'" class="name-cell">'+nameCellHtml(nc, t.id)+'</td>' : '';
+        const coverCell = (pi===0) ? '<td rowspan="'+cr.items.length+'" class="wrap-cell" style="text-align:center;vertical-align:middle;">' +
+          '<div class="chips-row" style="justify-content:center;">'+appDisplayHtml(cr.cover,'tag tag-blue')+'</div>' +
+          (cr.hasData ? addBtn(nc.name, cr.cover) : '') +
+          '</td>' : '';
+        rows.push('<tr>'+checkCell+nameCell+coverCell+posterCells(it.poster, t.id, nc.name, cr.cover, viewOnly)+'</tr>');
+      });
+    });
+  });
+  return rows.join('') || '<tr><td colspan="12"><div class="empty" style="padding:20px;">暂无数据</div></td></tr>';
+}
+function renderPosterSection(t){
+  let html = '';
+  // tab 切换：主要信息 / 关联信息
+  html += '<div class="loc-tabs">' +
+    '<span class="tab-item active" data-loctab="main">主要信息</span>' +
+    '<span class="tab-item" data-loctab="rel">关联信息</span>' +
+    '</div>';
+  // tab1 主要信息 = 已有海报 + 本地化信息备注&剧本备注 + 海报列表
+  if(posterMode === 'master'){
+    html += '<div class="loc-tab-panel" data-panel="main">' + masterViewHtml(t) + '</div>';
+  }else{
+  html += '<div class="loc-tab-panel" data-panel="main">' +
+    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>已有海报</span></div>' +
+    existingPostersHtml(t) +
+    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>备注信息</span></div>' +
+    remarkHtml(t) +
+    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>海报列表</span></div>' +
+    '<div class="ops-row">' +
+    '<button class="btn btn-primary btn-sm" data-act="upload" data-title="批量上传">批量上传</button>' +
+    '<button class="btn btn-primary btn-sm" data-act="batch" data-id="'+t.id+'">批量AI生成</button>' +
+    '<button class="btn btn-primary btn-sm" data-demo="下载">下载</button>' +
+    '<div class="more-wrap"><button class="btn btn-outline btn-sm">更多工具<svg viewBox="0 0 20 20" fill="none" width="12" height="12"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<div class="more-menu">' +
+        '<div class="more-item" data-act="upload" data-title="批量替换">批量替换</div>' +
+        '<div class="more-item" data-demo="AI海报标识擦除">AI海报标识擦除</div>' +
+      '</div></div>' +
+    '<select class="ant-input" id="poster-size-filter" style="width:110px;">' +
+      '<option value="">全部尺寸</option><option value="3:4" '+(sizeFilter==='3:4'?'selected':'')+'>3:4</option><option value="16:9" '+(sizeFilter==='16:9'?'selected':'')+'>16:9</option><option value="1600:620" '+(sizeFilter==='1600:620'?'selected':'')+'>1600:620</option>' +
+    '</select>' +
+    '<button class="btn btn-outline btn-sm" id="poster-refresh">刷新</button>' +
+    '<span class="spacer"></span>' +
+    '<button class="btn btn-primary btn-sm" data-demo="完成海报制作">完成海报制作</button>' +
+    '</div>' +
+    '<div class="table-wrap"><table class="loc-table" style="table-layout:fixed;min-width:1180px;"><thead><tr>' +
+    '<th style="width:36px;"><input type="checkbox" id="p-checkall"></th>' +
+    '<th style="width:200px;">关联剧名</th><th style="width:220px;">剧封适用端</th><th style="width:58px;">尺寸</th><th style="width:88px;">图片</th><th style="width:78px;">制作状态</th><th style="width:76px;">海报来源</th><th style="width:72px;">文件大小</th><th style="width:72px;">更新人</th><th style="width:92px;white-space:normal;">完成海报制作时间</th><th style="width:76px;">同步状态</th><th style="width:90px;" class="sticky-h">操作</th>' +
+    '</tr></thead><tbody>' + posterRows(t) + '</tbody></table></div>' +
+    '</div>';
+  }
+  // tab2 关联信息 = 关联工单 + 历史任务
+  html += '<div class="loc-tab-panel" data-panel="rel" style="display:none;">' +
+    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>关联工单</span></div>' +
+    diffReqListHtml(t) +
+    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>历史任务</span></div>' +
+    relTableHtml(t) +
+    '</div>';
+  document.getElementById('detail-poster').innerHTML = html;
+  // tab 切换事件
+  document.querySelectorAll('#detail-poster .tab-item').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabName = tab.getAttribute('data-loctab');
+      document.querySelectorAll('#detail-poster .tab-item').forEach(x => x.classList.toggle('active', x === tab));
+      document.querySelectorAll('#detail-poster .loc-tab-panel').forEach(p => {
+        p.style.display = (p.getAttribute('data-panel') === tabName) ? '' : 'none';
+      });
+    });
+  });
+  const sizeSel = document.getElementById('poster-size-filter');
+  if(sizeSel) sizeSel.addEventListener('change', e => {
+    sizeFilter = e.target.value;
+    renderPosterSection(currentTask);
+  });
+  const refreshBtn = document.getElementById('poster-refresh');
+  if(refreshBtn) refreshBtn.addEventListener('click', ()=>{ renderPosterSection(currentTask); toast('已刷新'); });
+  const checkall = document.getElementById('p-checkall');
+  if(checkall) checkall.addEventListener('change', e => {
+    document.querySelectorAll('.p-check').forEach(c => { c.checked = e.target.checked; });
+  });
+}
+
+/* ================= 差异化场景详情弹窗 ================= */
+function openDiffSceneDetail(t, di){
+  const d = (t.diffs||[])[di] || (t.diffs||[])[0];
+  let html = '<div style="margin-bottom:12px;font-size:14px;"><b>'+t.name+'</b></div>';
+  if(!d){
+    html += '<span style="color:var(--text-3);">无差异化需求</span>';
+  }else if(d.mode === 'common'){
+    const sc = scenes.find(s => s.id === d.sceneId);
+    html += '<div style="font-size:13px;color:var(--text-2);margin-bottom:6px;">' + sceneName(d.sceneId) + '</div>';
+    if(sc && sc.desc) html += '<div style="font-size:12px;color:var(--text-3);">' + sc.desc + '</div>';
+  }else{
+    html += (d.groups || []).map((grp, n) =>
+      '<div class="vw-grp">' +
+        '<div class="vw-grp-title">剧封套 '+(n+1)+'</div>' +
+        '<div class="vw-row"><span class="vw-label">剧封</span><div class="vw-chips">'+chipsHtml(grp.name)+'</div></div>' +
+      '</div>'
+    ).join('');
+  }
+  document.getElementById('diff-detail-full').innerHTML = html;
+  document.getElementById('diff-detail-modal').classList.add('show');
+}
+/* AI 无剧名海报生成弹窗 */
+let nnTargetId = null;
+function openNonNameModal(tid){
+  nnTargetId = tid;
+  document.querySelectorAll('[name="nn-size"]').forEach(c => { c.checked = c.value === '3:4'; });
+  document.getElementById('nn-model').selectedIndex = 0;
+  document.getElementById('noname-modal').classList.add('show');
+}
+document.getElementById('nn-submit').addEventListener('click', () => {
+  const sizes = [...document.querySelectorAll('[name="nn-size"]:checked')].map(c => c.value);
+  if(!sizes.length){ toast('请选择尺寸','warning'); return; }
+  const t = posterTasks.find(x=>x.id===nnTargetId);
+  if(t){
+    sizes.forEach(s => {
+      t.posters.push({id:'NN'+(++posterSeq), file:'blablabla_nn', size:s, name:'', cover:[], prods:[], makeStatus:'制作中', source:'AI制作', fileSize:'', updater:'-', finishTime:'', syncStatus:'未同步'});
+    });
+    renderPosterSection(t);
+  }
+  document.getElementById('noname-modal').classList.remove('show');
+  toast('AI 无剧名海报生成任务已提交（'+sizes.join('、')+'）');
+});
+
+/* ================= 新增/编辑海报任务弹窗（剧封差异化已移除） ================= */
+const pm = {editing:null};
+function openPosterModal(t){
+  pm.editing = t || null;
+  document.getElementById('pm-title').textContent = t ? '编辑海报任务' : '新增海报任务';
+  const nameSel = document.getElementById('pm-name');
+  nameSel.innerHTML = '<option value="">请选择剧本</option>' + DRAMA_OPTIONS.map(d=>'<option>'+d+'</option>').join('');
+  nameSel.value = t ? t.name : '';
+  document.getElementById('pm-lang').value = t ? t.lang : '';
+  document.querySelectorAll('[name="pm-urgent"]').forEach(r => { r.checked = r.value === (t ? t.urgent : '是'); r.disabled = !!t; });
+  document.getElementById('pm-owner').value = (t && t.owner !== '-') ? t.owner : '';
+  document.getElementById('pm-planstart').value = t ? (t.planStart||'').slice(0,10) : '';
+  document.getElementById('pm-planend').value = t ? (t.planEnd && t.planEnd !== '-' ? t.planEnd.slice(0,10) : '') : '';
+  document.getElementById('pm-remark').value = (t && t.remark !== '-') ? t.remark : '';
+  ['pm-name','pm-lang'].forEach(id => { document.getElementById(id).disabled = !!t; });
+  document.getElementById('pm-name').closest('.form-item').classList.remove('has-error');
+  document.getElementById('pm-lang').closest('.form-item').classList.remove('has-error');
+  document.getElementById('poster-modal').classList.add('show');
+}
+function closePosterModal(){
+  document.getElementById('poster-modal').classList.remove('show');
+  pm.editing = null;
+}
+function submitPosterModal(){
+  const name = document.getElementById('pm-name').value;
+  const lang = document.getElementById('pm-lang').value;
+  const urgent = document.querySelector('[name="pm-urgent"]:checked').value;
+  if(!name){ document.getElementById('pm-name').closest('.form-item').classList.add('has-error'); toast('请选择剧本','error'); return; }
+  document.getElementById('pm-name').closest('.form-item').classList.remove('has-error');
+  if(!lang){ document.getElementById('pm-lang').closest('.form-item').classList.add('has-error'); toast('请选择本地化语言','error'); return; }
+  document.getElementById('pm-lang').closest('.form-item').classList.remove('has-error');
+  const owner = document.getElementById('pm-owner').value;
+  const planstart = document.getElementById('pm-planstart').value;
+  const planend = document.getElementById('pm-planend').value;
+  const remark = document.getElementById('pm-remark').value || '-';
+  if(pm.editing){
+    pm.editing.owner = owner || '-';
+    if(planstart) pm.editing.planStart = planstart + ' 00:00:00';
+    if(planend) pm.editing.planEnd = planend + ' 00:00:00';
+    pm.editing.remark = remark;
+    toast('海报任务已保存');
+  }else{
+    posterTasks.unshift({
+      id:'PT' + (posterTasks.length + 1) + '-' + Date.now().toString().slice(-4),
+      taskId:String(880126 + posterTasks.length), no:'-', name, lang, urgent, owner: owner||'-',
+      status:'未开始', remark, diffs: [], nameCovers: [], intro:'-',
+      localRemark:'-', planStart: planstart ? planstart+' 00:00:00' : '-', planEnd: planend ? planend+' 00:00:00' : '-',
+      creator:'春明', createTime:'2026-10-10 12:00:00', updater:'-', updateTime:'-', posters:[],
+    });
+    toast('海报任务已创建');
+  }
+  closePosterModal();
+  renderList();
+}
+
+/* ================= 批量新增海报任务弹窗 ================= */
+let baLangMs = null;
+function openBatchAddModal(){
+  document.getElementById('ba-name').innerHTML = '<option value="">请选择剧本</option>' + DRAMA_OPTIONS.map(d=>'<option>'+d+'</option>').join('');
+  document.getElementById('ba-name').value = '';
+  document.getElementById('ba-name').closest('.form-item').classList.remove('has-error');
+  document.getElementById('ba-lang').closest('.form-item').classList.remove('has-error');
+  document.querySelectorAll('[name="ba-urgent"]').forEach(r => { r.checked = r.value === '是'; });
+  document.getElementById('ba-owner').value = '';
+  document.getElementById('ba-planstart').value = '';
+  document.getElementById('ba-planend').value = '';
+  document.getElementById('ba-remark').value = '';
+  if(!baLangMs){
+    baLangMs = initMs('ba-lang', 'ba-lang-c', 'ba-lang-p', LANGUAGES, ()=>{}, {selectAll:true, showAll:true});
+  }else{
+    baLangMs.clear();
+  }
+  document.getElementById('ba-modal').classList.add('show');
+}
+function closeBatchAddModal(){
+  document.getElementById('ba-modal').classList.remove('show');
+}
+function submitBatchAddModal(){
+  const name = document.getElementById('ba-name').value;
+  const lang = baLangMs ? baLangMs.value : [];
+  const urgent = document.querySelector('[name="ba-urgent"]:checked').value;
+  if(!name){ document.getElementById('ba-name').closest('.form-item').classList.add('has-error'); toast('请选择剧本','error'); return; }
+  document.getElementById('ba-name').closest('.form-item').classList.remove('has-error');
+  if(!lang.length){ document.getElementById('ba-lang').closest('.form-item').classList.add('has-error'); toast('请选择本地化语言','error'); return; }
+  document.getElementById('ba-lang').closest('.form-item').classList.remove('has-error');
+  const owner = document.getElementById('ba-owner').value;
+  const planstart = document.getElementById('ba-planstart').value;
+  const planend = document.getElementById('ba-planend').value;
+  const remark = document.getElementById('ba-remark').value || '-';
+  // 按多选语言拆分为多条任务
+  lang.forEach(l => {
+    posterTasks.unshift({
+      id:'PT' + (posterTasks.length + 1) + '-' + Date.now().toString().slice(-4) + '-' + l.length,
+      taskId:String(880126 + posterTasks.length), no:'-', name, lang:l, urgent, owner: owner||'-',
+      status:'未开始', remark, diffs: [], nameCovers: [], intro:'-',
+      localRemark:'-', planStart: planstart ? planstart+' 00:00:00' : '-', planEnd: planend ? planend+' 00:00:00' : '-',
+      creator:'春明', createTime:'2026-10-10 12:00:00', updater:'-', updateTime:'-', posters:[],
+    });
+  });
+  toast('已批量创建 ' + lang.length + ' 条海报任务');
+  closeBatchAddModal();
+  renderList();
+}
+
+/* ================= 批量替换（AI生成）弹窗 ================= */
+let bzTask = null;
+/* preset：{name, cover, size, elem} 可选，用于替换/AI生成预填（生成数量=1） */
+function openBatchModal(t, preset){
+  bzTask = t;
+  document.getElementById('bz-src').innerHTML =
+    '<label class="bz-src-item"><input type="checkbox" checked><div class="poster-thumb">🖼</div><span>剧本首个语种海报</span></label>' +
+    '<label class="bz-src-item"><input type="checkbox" checked><div class="poster-thumb">🖼</div><span>编辑源海报</span></label>';
+  document.getElementById('bz-tbody').innerHTML = bzListRows(t);
+  let count, rowPreset;
+  if(preset){
+    count = 1;
+    rowPreset = preset;
+  }else{
+    count = Math.max(1, coverGroups(t).length);
+    rowPreset = null;
+  }
+  document.getElementById('bz-count').value = count;
+  renderBzRows(t, count, rowPreset);
+  document.getElementById('batch-modal').classList.add('show');
+}
+/* AI生图依据列表：对标海报信息模块列表（去制作状态/文件大小/更新人/完成时间/同步状态列） */
+function bzNameCellHtml(nc){
+  return '<div style="font-weight:600;line-height:1.5;text-align:center;overflow-wrap:anywhere;">'+nc.name+'</div>' +
+    '<div class="chips-row" style="margin-top:6px;justify-content:center;">'+appDisplayHtml(nc.nameApps,'tag tag-gray')+'</div>';
+}
+function bzListRows(t){
+  const SIZES = ['3:4','16:9','1600:620'];
+  const rows = [];
+  const itemsOf = (name, cover) => {
+    const ps = (t.posters||[]).filter(p => p.name===name && sameArr(p.cover, cover));
+    return SIZES.map(s => ps.find(p => p.size===s)).filter(Boolean);
+  };
+  (t.nameCovers||[]).forEach(nc => {
+    nc.covers.forEach(c => {
+      const items = itemsOf(nc.name, c);
+      if(!items.length) return;
+      items.forEach((p, pi) => {
+        const nameCell = pi===0 ? '<td rowspan="'+items.length+'" class="name-cell">'+bzNameCellHtml(nc)+'</td>' : '';
+        const coverCell = pi===0 ? '<td rowspan="'+items.length+'" class="wrap-cell" style="text-align:center;"><div class="chips-row" style="justify-content:center;">'+appDisplayHtml(c,'tag tag-blue')+'</div></td>' : '';
+        rows.push('<tr><td><input type="checkbox" class="bz-check" checked></td>'+nameCell+coverCell+
+          '<td>'+p.size+'</td>' +
+          '<td><div class="poster-thumb" style="margin:0 auto;">🖼</div></td>' +
+          '<td>'+p.source+'</td>' +
+          '</tr>');
+      });
+    });
+  });
+  return rows.join('') || '<tr><td colspan="6"><div class="empty" style="padding:16px;">暂无海报</div></td></tr>';
+}
+function renderBzRows(t, count, preset){
+  const names = (t.nameCovers||[]).map(nc => nc.name);
+  const nameOpts = names.length ? names : ['blablabla1','blablabla2','blablabla3'];
+  const rows = Math.max(1, count||1);
+  const sizeOpts = ['3:4','16:9','1600:620'];
+  const coverOptsOf = name => {
+    const nc = (t.nameCovers||[]).find(x => x.name === name);
+    return nc ? nc.covers.map(appsText) : [];
+  };
+  // 每行初始选择（含 preset 预填）
+  const rowInit = Array.from({length: rows}, (_,i) => {
+    if(preset && i===0){
+      return {
+        name: preset.name || nameOpts[0] || 'blablabla1',
+        cover: preset.cover && preset.cover.length ? appsText(preset.cover) : '',
+        size: [preset.size || '3:4'],
+      };
+    }
+    const n = nameOpts[i % nameOpts.length];
+    return { name:n, cover:'', size:['3:4'] };
+  });
+  document.getElementById('bz-rows').innerHTML = rowInit.map((ri, i) => {
+    const covers = coverOptsOf(ri.name);
+    return '<div class="bz-row">' +
+      '<select class="ant-input bz-name">' + nameOpts.map(n=>'<option value="'+n+'"'+(n===ri.name?' selected':'')+'>'+n+'</option>').join('') + '</select>' +
+      '<select class="ant-input bz-cover">' + (covers.length ? covers.map(s=>'<option'+(s===ri.cover?' selected':'')+'>'+s+'</option>').join('') : '<option value="">请选择</option>') + '</select>' +
+      msHtml('bz-size-'+i) +
+      '<div class="bz-prompt"><div class="bz-sub-lab">附加提示词</div>' +
+        '<textarea class="ant-input" placeholder="请输入附加提示词"></textarea></div>' +
+      '</div>';
+  }).join('');
+  // ms 实例
+  const sizeMs = [];
+  Array.from({length: rows}).forEach((_,i) => {
+    sizeMs[i] = initMs('bz-size-'+i, 'bz-size-'+i+'-c', 'bz-size-'+i+'-p', sizeOpts, ()=>{}, {showAll:true});
+    sizeMs[i].setValue(rowInit[i].size);
+  });
+  // 关联剧名联动剧封适用端（只能选该剧名下的适用端套）
+  document.querySelectorAll('.bz-name').forEach(sel => {
+    sel.addEventListener('change', () => {
+      const covers = coverOptsOf(sel.value);
+      const coverSel = sel.closest('.bz-row').querySelector('.bz-cover');
+      coverSel.innerHTML = covers.length ? covers.map(s=>'<option>'+s+'</option>').join('') : '<option value="">请选择</option>';
+    });
+  });
+}
+function submitBatchModal(){
+  toast('AI本地化海报生成任务已提交');
+  document.getElementById('batch-modal').classList.remove('show');
+}
+
+/* ================= 上传图片弹窗 ================= */
+let upFiles = [];
+function openUploadModal(title){
+  upFiles = [];
+  document.getElementById('up-title').textContent = title || '上传图片';
+  renderUpFiles();
+  document.getElementById('upload-modal').classList.add('show');
+}
+function renderUpFiles(){
+  const tbody = document.getElementById('up-tbody');
+  if(!upFiles.length){
+    tbody.innerHTML = '<tr><td colspan="4"><div class="empty" style="padding:40px;">暂无数据 快去上传吧</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = upFiles.map((f,i) =>
+    '<tr><td class="cell-title" style="text-align:left;">'+f.name+'</td><td>'+f.size+'</td>' +
+    '<td>'+(f.status==='已完成'?'<span class="tag tag-green">已完成</span>':'<span class="tag tag-blue">上传中</span>')+'</td>' +
+    '<td><span class="op-link danger" data-updel="'+i+'" style="margin:0;">删除</span></td></tr>'
+  ).join('');
+}
+document.getElementById('up-add').addEventListener('click', () => {
+  if(upFiles.length >= 100){ toast('最多支持同时上传 100 个图片','warning'); return; }
+  const idx = upFiles.length;
+  upFiles.push({name:'blablabla'+(idx+1)+'_3比4.png', size:'1.2MB', status:'上传中'});
+  renderUpFiles();
+  setTimeout(() => {
+    if(upFiles[idx]){ upFiles[idx].status = '已完成'; renderUpFiles(); }
+  }, 800);
+});
+document.getElementById('up-confirm').addEventListener('click', () => {
+  document.getElementById('upload-modal').classList.remove('show');
+  toast('上传完成');
+});
+document.body.addEventListener('click', e => {
+  const del = e.target.closest('[data-updel]');
+  if(del){
+    upFiles.splice(parseInt(del.getAttribute('data-updel'),10), 1);
+    renderUpFiles();
+  }
+});
+
+/* ================= 海报列表弹窗（关联海报任务-仅查看） ================= */
+function openRelPostersModal(t){
+  document.getElementById('rel-posters-tbody').innerHTML = posterRows(t, true);
+  document.getElementById('rel-posters-modal').classList.add('show');
+}
+
+/* ================= 编辑适用端 ================= */
+let posterSeq = 1000;
+function buildCoverOpts(t){
+  const opts = [];
+  const seen = new Set();
+  (t.nameCovers||[]).forEach(nc => {
+    nc.covers.forEach(c => {
+      const txt = appsText(c);
+      if(!seen.has(txt)){ seen.add(txt); opts.push({text:txt, name:nc.name, cover:c.slice()}); }
+    });
+  });
+  return opts;
+}
+let editCoverCtx = null;
+function openEditCoverModal(tid, pid){
+  const t = posterTasks.find(x=>x.id===tid);
+  const poster = t && t.posters.find(p=>p.id===pid);
+  if(!t || !poster) return;
+  editCoverCtx = {tid, pid, opts: buildCoverOpts(t)};
+  const cur = appsText(poster.cover);
+  document.getElementById('edit-cover-select').innerHTML =
+    editCoverCtx.opts.map(o=>'<option value="'+o.text+'"'+(o.text===cur?' selected':'')+'>'+o.text+'</option>').join('');
+  document.getElementById('edit-cover-modal').classList.add('show');
+}
+document.getElementById('edit-cover-submit').addEventListener('click', ()=>{
+  if(!editCoverCtx) return;
+  const t = posterTasks.find(x=>x.id===editCoverCtx.tid);
+  const poster = t && t.posters.find(p=>p.id===editCoverCtx.pid);
+  if(!t || !poster) return;
+  const val = document.getElementById('edit-cover-select').value;
+  const tgt = editCoverCtx.opts.find(o=>o.text===val);
+  if(tgt){ poster.name = tgt.name; poster.cover = tgt.cover.slice(); }
+  document.getElementById('edit-cover-modal').classList.remove('show');
+  renderPosterSection(t);
+  toast('适用端已更新');
+});
+
+/* ================= 替换二级菜单 ================= */
+let replaceCtx = null; // {tid, pid}
+function showReplaceMenu(e, tid, pid){
+  replaceCtx = {tid, pid};
+  const menu = document.getElementById('replace-menu');
+  menu.innerHTML = '<div class="more-item" data-rep="upload">本地上传</div><div class="more-item" data-rep="ai">AI重新生成</div>';
+  menu.style.display = 'block';
+  const anchor = e.target.closest('.op-link');
+  const r = anchor ? anchor.getBoundingClientRect() : {left:e.clientX, top:e.clientY, bottom:e.clientY};
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  let left = Math.min(r.left, window.innerWidth - mw - 8);
+  let top = r.bottom + 4;
+  if(top + mh > window.innerHeight - 8) top = r.top - mh - 4;
+  menu.style.left = left + 'px';
+  menu.style.top = top + 'px';
+}
+
+/* ================= 事件委托：列表/详情操作 ================= */
+document.body.addEventListener('click', e => {
+  const copy = e.target.closest('[data-copy]');
+  if(copy){
+    const txt = copy.getAttribute('data-copy');
+    if(navigator.clipboard) navigator.clipboard.writeText(txt);
+    toast('已复制：'+txt);
+    return;
+  }
+  const demo = e.target.closest('[data-demo]');
+  if(demo){ toast(demo.getAttribute('data-demo') + '（demo）'); return; }
+  // 替换二级菜单项
+  const rep = e.target.closest('[data-rep]');
+  if(rep){
+    document.getElementById('replace-menu').style.display = 'none';
+    const ctx = replaceCtx;
+    if(!ctx) return;
+    const repType = rep.getAttribute('data-rep');
+    if(repType === 'upload'){
+      openUploadModal('批量替换');
+    }else if(repType === 'ai'){
+      const task2 = posterTasks.find(x=>x.id===ctx.tid);
+      const poster = task2 && task2.posters.find(p=>p.id===ctx.pid);
+      if(poster){
+        openBatchModal(task2, {name: poster.name||'', cover: poster.cover||[], size: poster.size});
+      }
+    }
+    return;
+  }
+  const t = e.target.closest('[data-act]');
+  if(!t){
+    document.getElementById('replace-menu').style.display = 'none';
+    return;
+  }
+  const act = t.getAttribute('data-act');
+  const id = t.getAttribute('data-id');
+  const task = posterTasks.find(x=>x.id===id);
+  if(act === 'detail'){ openDetail(id); }
+  else if(act === 'person'){ openPerson(id); }
+  else if(act === 'edit'){ openPosterModal(task); }
+  else if(act === 'batch'){ openBatchModal(task); }
+  else if(act === 'upload'){ openUploadModal(t.getAttribute('data-title') || '上传图片'); }
+  else if(act === 'replace'){ showReplaceMenu(e, t.getAttribute('data-tid'), t.getAttribute('data-pid')); }
+  else if(act === 'rel-posters'){ openRelPostersModal(task); }
+  else if(act === 'edit-cover'){ openEditCoverModal(t.getAttribute('data-tid'), t.getAttribute('data-pid')); }
+  else if(act === 'add-poster'){
+    const tid = t.getAttribute('data-tid');
+    const name = decodeURIComponent(t.getAttribute('data-name')||'');
+    const cover = JSON.parse(decodeURIComponent(t.getAttribute('data-cover')||'[]'));
+    const task2 = posterTasks.find(x=>x.id===tid);
+    if(task2){
+      task2.posters.push({id:'EP'+(++posterSeq), name, cover, empty:true});
+      renderPosterSection(task2);
+      toast('已新增一行空数据');
+    }
+  }
+  else if(act === 'aigen'){
+    const name = decodeURIComponent(t.getAttribute('data-name')||'');
+    const cover = JSON.parse(decodeURIComponent(t.getAttribute('data-cover')||'[]'));
+    const tid = t.getAttribute('data-tid');
+    const task2 = posterTasks.find(x=>x.id===tid);
+    if(task2) openBatchModal(task2, {name, cover, size:'3:4'});
+  }
+  else if(act === 'diff-detail'){ openDiffSceneDetail(task, parseInt(t.getAttribute('data-di'))||0); }
+  else if(act === 'poster-detail'){ openPosterDetail(task, t.getAttribute('data-pid')); }
+  else if(act === 'mv-sel'){
+    mvSel = parseInt(t.getAttribute('data-idx'), 10) || 0;
+    renderPosterSection(currentTask);
+  }
+  else if(act === 'mv-add'){ toast('新增海报（demo）'); }
+  else if(act === 'noname-gen'){ openNonNameModal(id); }
+  else if(act === 'nn-download'){ toast('海报批量下载（demo）'); }
+  else if(act === 'delposter'){
+    const tid = t.getAttribute('data-tid');
+    const pid = t.getAttribute('data-pid');
+    const task2 = posterTasks.find(x=>x.id===tid);
+    if(task2){
+      task2.posters = task2.posters.filter(p=>p.id!==pid);
+      renderPosterSection(task2);
+      toast('海报已删除');
+    }
+  }
+});
+
+/* ================= 海报详情视图切换 ================= */
+document.querySelectorAll('#poster-mode-toggle .seg-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    const m = b.getAttribute('data-pmode');
+    if(posterMode === m) return;
+    posterMode = m;
+    document.querySelectorAll('#poster-mode-toggle .seg-btn').forEach(x => x.classList.toggle('active', x === b));
+    if(currentTask) renderPosterSection(currentTask);
+    toast(m === 'master' ? '已切换到主从视图' : '已切换到列表视图');
+  });
+});
+
+/* ================= 设置海报负责人 ================= */
+let personTargetId = null;
+function openPerson(taskId){
+  personTargetId = taskId;
+  const t = posterTasks.find(x=>x.id===taskId);
+  document.getElementById('person-select').value = (t && t.owner && t.owner !== '-') ? t.owner : '';
+  document.getElementById('person-modal').classList.add('show');
+}
+document.getElementById('person-submit').addEventListener('click', () => {
+  const v = document.getElementById('person-select').value;
+  if(!v){ toast('请选择海报负责人','warning'); return; }
+  const t = posterTasks.find(x=>x.id===personTargetId);
+  if(t){
+    t.owner = v;
+    renderList();
+    if(currentTask && currentTask.id===t.id) renderDetail(currentTask);
+  }
+  document.getElementById('person-modal').classList.remove('show');
+  toast('海报负责人已设置为：'+v);
+});
+
+/* ================= 筛选 ================= */
+document.getElementById('btn-search').addEventListener('click', ()=>{
+  listFilter.name = document.getElementById('f-name').value;
+  listFilter.lang = document.getElementById('f-lang').value;
+  listFilter.status = document.getElementById('f-status').value;
+  listFilter.owner = document.getElementById('f-owner').value;
+  listFilter.remark = document.getElementById('f-remark').value;
+  renderList();
+  toast('查询完成');
+});
+document.getElementById('btn-reset').addEventListener('click', ()=>{
+  ['f-name','f-lang','f-status','f-owner','f-remark','f-planstart','f-planend'].forEach(id => { document.getElementById(id).value = ''; });
+  listFilter.name=''; listFilter.lang=''; listFilter.status=''; listFilter.owner=''; listFilter.remark='';
+  renderList();
+  toast('已重置');
+});
+
+/* ================= 弹窗开关 ================= */
+document.getElementById('btn-add').addEventListener('click', ()=>openPosterModal(null));
+document.getElementById('btn-batch-add').addEventListener('click', openBatchAddModal);
+document.getElementById('ba-close').addEventListener('click', closeBatchAddModal);
+document.getElementById('ba-cancel').addEventListener('click', closeBatchAddModal);
+document.getElementById('ba-modal').addEventListener('click', e => { if(e.target === document.getElementById('ba-modal')) closeBatchAddModal(); });
+document.getElementById('ba-submit').addEventListener('click', submitBatchAddModal);
+document.getElementById('btn-detail-back').addEventListener('click', ()=>showView('list'));
+document.getElementById('pm-close').addEventListener('click', closePosterModal);
+document.getElementById('pm-cancel').addEventListener('click', closePosterModal);
+document.getElementById('poster-modal').addEventListener('click', e => { if(e.target === document.getElementById('poster-modal')) closePosterModal(); });
+document.getElementById('pm-submit').addEventListener('click', submitPosterModal);
+document.getElementById('bz-checkall').addEventListener('change', e => {
+  document.querySelectorAll('.bz-check').forEach(c => { c.checked = e.target.checked; });
+});
+document.getElementById('bz-count').addEventListener('input', e => {
+  const v = parseInt(e.target.value, 10);
+  if(v >= 1){ renderBzRows(bzTask, v); }
+});
+document.getElementById('bz-submit').addEventListener('click', submitBatchModal);
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', ()=>document.getElementById(b.getAttribute('data-close')).classList.remove('show')));
+document.getElementById('diff-detail-modal').addEventListener('click', e => { if(e.target === document.getElementById('diff-detail-modal')) document.getElementById('diff-detail-modal').classList.remove('show'); });
+document.getElementById('rel-posters-modal').addEventListener('click', e => { if(e.target === document.getElementById('rel-posters-modal')) document.getElementById('rel-posters-modal').classList.remove('show'); });
+document.getElementById('poster-detail-modal').addEventListener('click', e => { if(e.target === document.getElementById('poster-detail-modal')) document.getElementById('poster-detail-modal').classList.remove('show'); });
+document.getElementById('edit-cover-modal').addEventListener('click', e => { if(e.target === document.getElementById('edit-cover-modal')) document.getElementById('edit-cover-modal').classList.remove('show'); });
+document.getElementById('noname-modal').addEventListener('click', e => { if(e.target === document.getElementById('noname-modal')) document.getElementById('noname-modal').classList.remove('show'); });
+
+/* ================= 初始化 ================= */
+renderList();
+
+/* 跨页直达任务详情：海报制作车间.html?view=detail */
+(function(){
+  const q = new URLSearchParams(location.search);
+  if(q.get('view') === 'detail' && posterTasks.length){ openDetail(posterTasks[0].id); }
+})();
+</script>
+</body>
+</html>

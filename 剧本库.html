@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>剧本库 · NetShort 管理系统</title>
+<style>
+/* ============================================================
+   NetShort 管理系统 · 公共样式（基线：版权开放平台 demo）
+   ============================================================ */
+:root{
+  --brand:#ff2e63;--brand-dark:#e0244f;--brand-light:#fff0f4;--brand-weak:rgba(255,46,99,.06);
+  --brand-grad:linear-gradient(135deg,#ff5c8a 0%,#ff2e63 100%);
+  --bg:#f7f8fa;--fill-1:#f7f8fa;--fill-2:#eef0f3;--card:#fff;
+  --border:#eef0f3;--border-2:#e2e5ea;--border-strong:#e2e5ea;
+  --text:#1f2329;--text-2:#51565d;--text-3:#8a9199;
+  --ok:#16b364;--warn:#f0a020;--danger:#e5484d;--info:#3b82f6;
+  --radius-card:12px;--radius-btn:8px;--radius-input:8px;
+  --shadow-card:0 2px 12px rgba(20,24,30,.06);--shadow-pop:0 8px 30px rgba(20,24,30,.14);
+  --sidebar-w:220px;--topbar-h:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);background:var(--bg);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}ul,ol{list-style:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+input,select,textarea{font-family:inherit;font-size:14px;}
+/* 顶栏 */
+.topbar{position:sticky;top:0;z-index:100;background:#fff;height:var(--topbar-h);border-bottom:1px solid var(--border);}
+.topbar-inner{max-width:1440px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-logo{width:30px;height:30px;border-radius:8px;background:var(--brand-grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;}
+.topbar-title{font-size:15px;font-weight:600;}
+.topbar-divider{width:1px;height:16px;background:var(--border-strong);}
+.topbar-sub{font-size:13px;color:var(--text-3);}
+.topbar-right{display:flex;align-items:center;gap:20px;}
+.topbar-icon{width:20px;height:20px;color:var(--text-2);position:relative;display:flex;align-items:center;cursor:pointer;}
+.topbar-icon .dot{position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:var(--brand);border:1.5px solid #fff;}
+.topbar-user{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.topbar-avatar{width:28px;height:28px;border-radius:50%;background:var(--brand-grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;}
+.topbar-name{font-size:14px;}
+/* 布局 */
+.layout{display:flex;min-height:calc(100vh - var(--topbar-h));max-width:1440px;margin:0 auto;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;padding:20px 12px;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 14px;margin-bottom:4px;border-radius:8px;color:var(--text-2);font-size:14px;cursor:pointer;transition:background .15s,color .15s;}
+.sidebar-item:hover{background:var(--fill-2);color:var(--text);}
+.sidebar-item.active{background:var(--brand-weak);color:var(--brand);font-weight:600;}
+.sidebar-item svg{width:18px;height:18px;flex-shrink:0;}
+.content{flex:1;min-width:0;padding:24px 32px 48px;}
+/* 页面 */
+.card{background:var(--card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:24px;margin-bottom:20px;}
+/* 按钮 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:var(--radius-btn);font-size:14px;font-weight:500;line-height:1.4;transition:all .15s;white-space:nowrap;}
+.btn-primary{background:var(--brand);color:#fff;}
+.btn-primary:hover{background:var(--brand-dark);}
+.btn-outline{border:1px solid var(--border-strong);color:var(--text-2);background:#fff;}
+.btn-outline:hover{border-color:var(--brand);color:var(--brand);}
+.btn-sm{padding:6px 14px;font-size:13px;}
+.op-link{font-size:13px;color:var(--brand);cursor:pointer;margin-right:12px;}
+.op-link:hover{text-decoration:underline;}
+/* 表单 */
+.form-item{margin-bottom:16px;}
+.form-label{display:block;font-size:13px;color:var(--text-2);margin-bottom:7px;}
+.form-label .req{color:var(--danger);margin-right:2px;}
+.ant-input{height:32px;padding:4px 11px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;color:var(--text);outline:none;background:#fff;transition:all .2s;width:100%;}
+.ant-input:hover{border-color:var(--brand);}
+.ant-input:focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(255,46,99,.1);}
+.ant-input::placeholder{color:#bfbfbf;}
+textarea.ant-input{height:auto;padding:8px 11px;resize:vertical;min-height:80px;line-height:1.6;}
+.form-item.has-error .ant-input{border-color:var(--danger);}
+.form-item .error{font-size:12px;color:var(--danger);margin-top:5px;display:none;}
+.form-item.has-error .error{display:block;}
+input[type=checkbox],input[type=radio]{accent-color:var(--brand);cursor:pointer;}
+.radio-group{display:flex;gap:24px;flex-wrap:wrap;}
+.radio-opt{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;color:var(--text);}
+select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allowed;}
+/* 状态 tab */
+.stabs{display:flex;gap:22px;margin-bottom:14px;border-bottom:1px solid var(--border);}
+.stab{padding:9px 2px;font-size:14px;color:var(--text-2);cursor:pointer;border-bottom:2px solid transparent;position:relative;}
+.stab.active{color:var(--brand);font-weight:600;border-bottom-color:var(--brand);}
+/* 筛选区 */
+.filter-box{background:#fafbfc;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
+.prio-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.prio-row .plabel{font-size:13px;color:var(--text-2);}
+.cb-group{display:flex;gap:16px;flex-wrap:wrap;}
+.cb-group label{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text);cursor:pointer;}
+.sf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 16px;}
+.search-item{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.search-item label{font-size:12px;color:var(--text-3);}
+.filter-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:14px;}
+.mini-ico{width:28px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;background:#fff;border:1px solid var(--border);}
+.mini-ico:hover{color:var(--brand);border-color:var(--brand);}
+/* 操作行 */
+.ops-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ops-row__right{display:flex;gap:4px;}
+.tool-ico{width:28px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;}
+.tool-ico:hover{background:#f5f5f5;color:var(--brand);}
+/* 表格（多列横向滚动） */
+.table-wrap{overflow-x:auto;border-radius:6px;border:1px solid var(--border-2);}
+.table{width:100%;border-collapse:separate;border-spacing:0;}
+.table th,.table td{text-align:center;padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+.table th{color:var(--text-3);font-weight:500;background:#fafbfc;white-space:nowrap;position:sticky;top:0;z-index:2;}
+.table tbody tr:hover td{background:#fafbfc;}
+.table td{background:#fff;white-space:nowrap;}
+.table .cell-title{font-weight:500;}
+.empty{text-align:center;padding:48px 20px;color:var(--text-3);}
+.empty .empty-icon{font-size:40px;margin-bottom:12px;opacity:.5;}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:12px;line-height:1.5;}
+.tag-green{background:#e8f7ee;color:#16b364;}
+.tag-gray{background:#f0f1f3;color:#6b7280;}
+.tag-pink{background:var(--brand-light);color:var(--brand);}
+.tag-blue{background:#e8f1ff;color:#2f6bdc;}
+.tag-orange{background:#fff7e6;color:#fa8c16;}
+.copy-ico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;color:var(--text-3);cursor:pointer;vertical-align:middle;margin-left:4px;}
+.copy-ico:hover{color:var(--brand);background:var(--brand-light);}
+/* 分页 */
+.pagination{display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:16px 0 0;font-size:13px;color:var(--text-2);}
+.pagination .page{min-width:30px;height:30px;padding:0 8px;border:1px solid var(--border-strong);border-radius:6px;background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--text-2);font-size:13px;}
+.pagination .page.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+.pagination .page:disabled{opacity:.4;cursor:not-allowed;}
+/* 下拉多选 */
+.ms-wrap{position:relative;}
+.ms-box{min-height:32px;width:100%;padding:2px 28px 2px 6px;border:1px solid #d9d9d9;border-radius:6px;background:#fff;cursor:pointer;display:flex;align-items:center;flex-wrap:wrap;gap:3px;transition:all .2s;position:relative;}
+.ms-box:hover{border-color:var(--brand);}
+.ms-box.open{border-color:var(--brand);box-shadow:0 0 0 2px rgba(255,46,99,.1);}
+.ms-placeholder{color:#bfbfbf;font-size:14px;padding:0 5px;}
+.ms-tag{display:inline-flex;align-items:center;height:22px;padding:0 6px;background:#fafafa;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;color:var(--text-2);margin:1px 0;max-width:170px;}
+.ms-tag .ms-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ms-tag .ms-x{margin-left:4px;color:#999;cursor:pointer;font-size:12px;line-height:1;}
+.ms-tag .ms-x:hover{color:var(--brand);}
+.ms-arrow{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:#bfbfbf;pointer-events:none;transition:transform .2s;display:flex;}
+.ms-box.open .ms-arrow{transform:translateY(-50%) rotate(180deg);}
+.ms-panel{position:absolute;top:calc(100% + 4px);left:0;z-index:80;width:100%;min-width:160px;background:#fff;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,.12);padding:4px;display:none;max-height:260px;overflow-y:auto;}
+.ms-panel.show{display:block;}
+.ms-panel.flip-up{top:auto;bottom:calc(100% + 4px);}
+.ms-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:4px;font-size:13px;cursor:pointer;color:var(--text-2);transition:background .15s;}
+.ms-opt:hover{background:#f5f5f5;}
+.ms-opt.disabled{color:#c8cdd4;cursor:not-allowed;}
+.ms-opt .opt-check{width:16px;text-align:center;color:var(--brand);font-weight:700;visibility:hidden;}
+.ms-opt.checked .opt-check{visibility:visible;}
+.ms-opt.checked{color:var(--brand);font-weight:600;}
+.ms-opt.ms-selall{color:var(--brand);font-weight:500;}
+.ms-sep{height:1px;background:var(--border);margin:4px 0;}
+/* 弹窗 */
+.modal-mask{position:fixed;inset:0;z-index:200;background:rgba(20,24,30,.45);display:none;align-items:flex-start;justify-content:center;padding:32px 24px;overflow-y:auto;}
+.modal-mask.show{display:flex;}
+.modal{background:#fff;border-radius:14px;width:820px;max-width:96vw;display:flex;flex-direction:column;box-shadow:var(--shadow-pop);animation:pop .18s ease;margin:0 auto;}
+.modal-xl{width:1080px;}
+.modal-xxl{width:1240px;}
+@keyframes pop{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-head{padding:22px 24px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.modal-title{font-size:16px;font-weight:600;}
+.modal-close{width:22px;height:22px;color:var(--text-3);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:0 24px;overflow-y:auto;flex:1;}
+.modal-foot{padding:16px 24px 22px;flex-shrink:0;display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+/* toast */
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:400;background:#fff;padding:10px 20px;border-radius:8px;box-shadow:var(--shadow-pop);font-size:13px;display:none;align-items:center;gap:8px;max-width:80vw;}
+#toast.show{display:flex;animation:pop .2s ease;}
+#toast.success{color:var(--ok);}#toast.error{color:var(--danger);}#toast.warning{color:var(--warn);}
+/* ============ 创建工单弹窗 ============ */
+.cw-type-row{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.cw-type-row .form-label{margin:0;flex-shrink:0;}
+.cw-type-row select{width:360px;}
+.cw-cols{display:flex;gap:40px;align-items:flex-start;}
+.cw-col-left{width:250px;flex-shrink:0;}
+.cw-col-right{flex:1;min-width:0;}
+/* 语言组（顶部语言行 + 场景模式 + 场景详情） */
+.lg-block{border:1px solid var(--border-strong);border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.lg-top{display:flex;align-items:center;gap:12px;background:#f7f8fa;padding:10px 16px;border-bottom:1px solid var(--border);}
+.lg-title{font-weight:600;font-size:13px;flex-shrink:0;}
+.lg-title .idx{color:var(--text-3);font-weight:400;}
+.lang-pick{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);}
+.lang-pick .ms-box{width:260px;}
+.lg-top .spacer{flex:1;}
+.lg-body{padding:14px;}
+.btn-del-lang{flex-shrink:0;font-size:12px;}
+.mode-row{display:flex;align-items:center;gap:20px;padding-bottom:10px;margin-bottom:12px;border-bottom:1px dashed var(--border);}
+.mode-row .mr-label{font-size:13px;color:var(--text-2);flex-shrink:0;}
+.lg-scene-item{margin-bottom:0;width:420px;max-width:100%;}
+.remark-row{display:flex;gap:12px;margin-top:14px;}
+.remark-row .form-label{margin:0;padding-top:5px;flex-shrink:0;width:86px;}
+.remark-row textarea{flex:1;}
+/* ---------- 场景详情编辑器（组结构，同差异化场景管理） ---------- */
+.grp-card{border:1px solid var(--border-strong);border-radius:10px;padding:12px 14px;margin-bottom:12px;background:#fff;}
+.grp-card.invalid{border-color:var(--danger);box-shadow:0 0 0 2px rgba(229,72,77,.06);}
+.grp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.grp-title{font-size:13px;font-weight:600;color:var(--text);}
+.grp-del{font-size:12px;color:var(--danger);cursor:pointer;}
+.grp-del:hover{text-decoration:underline;}
+.grp-body{display:flex;}
+.grp-col.name-col{width:320px;flex-shrink:0;padding-right:18px;border-right:1px solid var(--border);}
+.grp-col.cover-col{flex:1;min-width:0;padding-left:18px;}
+.grp-top-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.grp-tip{font-size:12px;color:var(--text-3);}
+#app-tip{position:fixed;z-index:500;background:#1f2329;color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.8;max-width:380px;pointer-events:none;display:none;box-shadow:0 8px 30px rgba(0,0,0,.25);}
+.cfg-btn.disabled{border-color:#d9d9d9;color:#c0c6cc;background:#fafafa;cursor:not-allowed;}
+.cfg-btn.disabled:hover{background:#fafafa;}
+.cfg-chip.app-merge,.tag.app-merge{background:#e8f1ff;color:#2f6bdc;cursor:default;}
+.cover-idx{flex-shrink:0;min-width:22px;height:22px;border-radius:4px;background:var(--fill-2);color:var(--text-2);font-size:12px;display:inline-flex;align-items:center;justify-content:center;margin-top:3px;}
+.lg-count-tip{font-size:12px;color:var(--text-3);white-space:nowrap;flex-shrink:0;}
+.pick-disabled td{color:#c0c6cc;}
+.pick-disabled input{cursor:not-allowed;}
+.grp-label{font-size:12px;color:var(--text-3);margin-bottom:6px;}
+.cfg-box{border:1px solid #d9d9d9;border-radius:6px;background:#fff;padding:4px 8px;min-height:36px;display:flex;align-items:flex-start;gap:8px;transition:border .2s;}
+.cfg-box:hover{border-color:var(--brand);}
+.cfg-box.invalid{border-color:var(--danger);box-shadow:0 0 0 2px rgba(229,72,77,.08);}
+.cfg-chips{flex:1;display:flex;flex-wrap:wrap;gap:4px;padding:2px 0;min-width:0;}
+.cfg-ph{color:#bfbfbf;font-size:13px;padding:2px 0;}
+.cfg-chip{display:inline-flex;align-items:center;height:22px;padding:0 7px;background:var(--brand-light);color:var(--brand);border-radius:4px;font-size:12px;max-width:100%;}
+.cfg-btn{flex-shrink:0;margin:2px 0;border:1px solid var(--brand);color:var(--brand);border-radius:5px;padding:3px 10px;font-size:12px;cursor:pointer;line-height:1.4;background:#fff;white-space:nowrap;}
+.cfg-btn:hover{background:var(--brand-light);}
+.cover-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.cover-main{flex:1;min-width:0;}
+.cfg-del{flex-shrink:0;margin-top:3px;border:1px solid var(--danger);color:var(--danger);border-radius:5px;padding:4px 12px;font-size:12px;cursor:pointer;background:#fff;line-height:1.4;}
+.cfg-del:hover{background:#fdeaea;}
+.cfg-err{font-size:12px;color:var(--danger);margin-top:4px;display:none;line-height:1.5;}
+.cfg-err.show{display:block;}
+.grp-err{font-size:12px;color:var(--danger);margin-top:8px;display:none;line-height:1.5;}
+.grp-err.show{display:block;}
+.btn-dashed{width:100%;border:1px dashed #d9d9d9;border-radius:8px;padding:8px 0;font-size:13px;color:var(--text-2);background:#fff;transition:all .15s;margin-top:2px;cursor:pointer;}
+.btn-dashed:hover{border-color:var(--brand);color:var(--brand);}
+/* ---------- 选择应用子页面 ---------- */
+.pick-selected-box{border:1px solid var(--border-strong);border-radius:8px;background:#fff;padding:10px 12px;margin-bottom:12px;}
+.pick-selected-box .ps-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-3);margin-bottom:8px;}
+.pick-selected-box .ps-head .ps-title{font-weight:500;color:var(--text-2);}
+.pick-selected-box .ps-head b{color:var(--brand);font-weight:600;}
+.pick-selected-box .ps-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.ps-chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;background:var(--brand-light);color:var(--brand);border-radius:5px;font-size:12px;}
+.ps-empty{color:#bfbfbf;font-size:13px;padding:2px 0;}
+.pick-filter-box{background:#fafbfc;border:1px solid var(--border);border-radius:8px;padding:12px 14px 6px;margin-bottom:12px;}
+.pick-filter{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
+.pick-filter .search-item{flex-direction:column;}
+.pick-table-wrap{border:1px solid var(--border);border-radius:8px;overflow-y:auto;max-height:300px;}
+.pick-table-wrap .table th{position:sticky;top:0;z-index:2;}
+#picker-modal{z-index:320;}
+/* 批量导入 */
+.upload-box{border:1.5px dashed #d9d9d9;border-radius:10px;padding:22px;text-align:center;color:var(--text-3);font-size:13px;cursor:pointer;transition:all .15s;margin-bottom:14px;}
+.upload-box:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-weak);}
+.upload-box.has-file{border-style:solid;border-color:var(--ok);color:var(--ok);background:#f0faf5;}
+.tpl-note{font-size:13px;color:var(--text-2);margin-bottom:10px;}
+.tpl-note a{color:var(--brand);cursor:pointer;}
+.tpl-help th{background:#fbfbfd;color:var(--text-3);font-size:11px;text-align:left;line-height:1.5;font-weight:400;white-space:normal;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--border);}
+.batch-table{table-layout:fixed;width:100%;}
+.batch-table td{white-space:normal;}
+/* 新建剧本全屏 */
+.drawer-mask{position:fixed;inset:0;z-index:300;background:rgba(20,24,30,.45);display:none;}
+.drawer-mask.show{display:block;}
+.drawer{position:fixed;top:0;left:0;width:100%;height:100vh;background:#fff;z-index:301;display:flex;flex-direction:column;animation:pop .18s ease;}
+.drawer-head{display:flex;align-items:center;justify-content:center;padding:18px 32px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.drawer-head .head-inner{max-width:1280px;width:100%;display:flex;align-items:center;justify-content:space-between;}
+.drawer-title{font-size:16px;font-weight:600;}
+.drawer-close{width:24px;height:24px;color:var(--text-3);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.drawer-close:hover{color:var(--text);background:#f5f5f5;}
+.drawer-body{flex:1;overflow-y:auto;padding:24px 32px;}
+.drawer-body .body-inner{max-width:1280px;margin:0 auto;}
+.drawer-foot{display:flex;justify-content:center;padding:16px 32px;border-top:1px solid var(--border);flex-shrink:0;}
+.drawer-foot .foot-inner{max-width:1280px;width:100%;display:flex;justify-content:flex-end;gap:10px;}
+/* 折叠模块 */
+.module{border:1px solid var(--border-strong);border-radius:10px;margin-bottom:14px;overflow:visible;}
+.module-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;background:#fafbfc;border-radius:10px;}
+.module-head:hover{background:var(--fill-2);}
+.module-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.module-title .bar{width:3px;height:16px;background:var(--brand);border-radius:2px;}
+.module-toggle{font-size:13px;color:var(--text-3);display:flex;align-items:center;gap:4px;}
+.module-toggle .arrow{display:inline-block;transition:transform .2s;}
+.module.collapsed .module-toggle .arrow{transform:rotate(180deg);}
+.module-locked .module-head{cursor:default;}
+.module-locked .module-head:hover{background:transparent;}
+.module-locked .module-toggle{cursor:default;opacity:.6;}
+/* ---------- 批量差异化弹窗间距 ---------- */
+#batch-modal .radio-group{gap:22px;}
+#batch-modal .pick-filter{gap:16px 22px;}
+#batch-modal .pick-filter .search-item{gap:8px;}
+#batch-modal .pick-table-wrap{margin-top:14px;}
+#batch-modal .mode-row{padding-bottom:12px;margin-bottom:14px;}
+#batch-modal .remark-row{margin-top:18px;gap:14px;}
+/* ---------- 差异化需求模块化（模块标题/字段层级/子模块） ---------- */
+.diff-module{border:1px solid var(--border-strong);border-radius:10px;padding:18px 20px;margin-bottom:18px;background:#fff;}
+.diff-module-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.4;}
+.diff-field-label{display:block;font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:8px;}
+.diff-field-label .req{color:var(--danger);margin-right:2px;}
+.diff-submod{background:var(--fill-1);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.diff-detail-head{display:flex;align-items:center;margin-bottom:10px;}
+.diff-detail-head .diff-field-label{margin-bottom:0;margin-right:14px;}
+.module-body{padding:18px;display:none;}
+.module:not(.collapsed) .module-body{display:block;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
+.form-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 20px;}
+.form-label .cnt{float:right;color:var(--text-3);font-weight:400;font-size:12px;}
+/* 差异化需求 */
+.diff-check{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);margin-bottom:14px;}
+.diff-check input{width:16px;height:16px;}
+.diff-body{display:none;}
+.diff-body.show{display:block;}
+
+/* 可搜索下拉单选 / 复用场景 / 兜底剧名剧封 */
+.lg-reuse-item{width:460px;max-width:100%;}
+.fb-item{width:460px;max-width:100%;}
+.ss-wrap{position:relative;}
+.ss-panel{position:fixed;z-index:1400;left:0;top:0;width:220px;background:#fff;border:1px solid #e5e6eb;border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.1);max-height:340px;overflow:auto;padding:4px 0;display:none;}
+.ss-panel.show{display:block;}
+.ss-opt{padding:7px 12px;font-size:13px;color:var(--text);cursor:pointer;}
+.ss-opt:hover{background:var(--fill-2);}
+.ss-empty{padding:10px 12px;font-size:12px;color:var(--text-3);text-align:center;}
+.ss-sub{float:right;margin-left:10px;color:var(--text-3);font-size:12px;font-style:normal;}
+/* ---------- 场景模式 / 选择场景 ---------- */
+.mode-row .radio-group{display:flex;align-items:center;gap:20px;}
+.lg-scene-pick{display:flex;align-items:center;gap:10px;}
+.lg-scene-pick select{flex:1;min-width:0;}
+.lg-scene-pick .btn[disabled]{opacity:.5;cursor:not-allowed;}
+.lg-scene-item.has-error select{border-color:var(--danger);}
+/* ---------- 应用下拉单选（选择应用） ---------- */
+.cfg-box.cfg-single{align-items:center;padding:4px 8px;}
+.cfg-box.cfg-single .ss-wrap{flex:1;min-width:0;}
+.cfg-box.cfg-single .ss-input{width:100%;height:28px;border:none;box-shadow:none;padding:0;background:transparent;font-size:13px;}
+.cfg-box.cfg-single .ss-input:focus{border:none;box-shadow:none;outline:none;}
+/* ---------- 场景详情 / 复用场景 弹窗 ---------- */
+#scene-detail-modal,#reuse-scene-modal{z-index:1500;}
+.sd-name{font-size:14px;font-weight:600;margin-bottom:4px;}
+.sd-meta{font-size:12px;color:var(--text-3);margin-bottom:12px;}
+.sd-grp{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--fill-1);}
+.sd-grp-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;}
+.sd-row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;}
+.sd-row:last-child{margin-bottom:0;}
+.sd-label{flex-shrink:0;width:56px;font-size:12px;color:var(--text-3);line-height:22px;}
+.sd-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.sd-chip{display:inline-flex;align-items:center;height:22px;padding:0 7px;background:var(--brand-light);color:var(--brand);border-radius:4px;font-size:12px;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="topbar-logo">N</div>
+      <span class="topbar-title">NetShort 管理系统</span>
+      <div class="topbar-divider"></div>
+      <span class="topbar-sub">管理后台</span>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></div>
+      <div class="topbar-user"><div class="topbar-avatar">春</div><span class="topbar-name">春明</span></div>
+    </div>
+  </div>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <a class="sidebar-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+      <span>剧本库</span>
+    </a>
+    <a class="sidebar-item" href="工单列表.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      <span>工单系统</span>
+    </a>
+    <a class="sidebar-item" href="短剧分端管理.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+      <span>短剧分端管理</span>
+    </a>
+    <a class="sidebar-item" href="本地化车间.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg>
+      <span>本地化车间</span>
+    </a>
+    <a class="sidebar-item" href="海报制作车间.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M4 17l5-4 4 3 3-3 4 4"/></svg>
+      <span>海报制作车间</span>
+    </a>
+  </div>
+
+  <div class="content">
+    <div class="card">
+      <!-- 状态 tab -->
+      <div class="stabs" id="stabs">
+        <span class="stab active" data-status="">全部剧目</span>
+        <span class="stab" data-status="进行中">进行中</span>
+        <span class="stab" data-status="已上线">已上线</span>
+        <span class="stab" data-status="预排期">预排期</span>
+        <span class="stab" data-status="已废弃">已废弃</span>
+      </div>
+
+      <!-- 筛选区 -->
+      <div class="filter-box">
+        <div class="prio-row">
+          <span class="plabel">优先级</span>
+          <div class="cb-group" id="f-priority">
+            <label><input type="checkbox" value="P0+" checked>P0+</label>
+            <label><input type="checkbox" value="P0" checked>P0</label>
+            <label><input type="checkbox" value="P1" checked>P1</label>
+            <label><input type="checkbox" value="P2" checked>P2</label>
+            <label><input type="checkbox" value="其他" checked>其他</label>
+          </div>
+        </div>
+        <div class="sf-grid">
+          <div class="search-item"><label>剧本</label><input type="text" class="ant-input" id="f-drama" placeholder="输入剧本名称/编号"></div>
+          <div class="search-item"><label>内容形式</label><select class="ant-input" id="f-form"><option value="">请选择内容形式</option><option value="短剧">短剧</option></select></div>
+          <div class="search-item"><label>剧本系列</label><select class="ant-input" id="f-series"><option value="">请选择剧本系列</option><option value="L">L</option><option value="B">B</option><option value="N">N</option><option value="P">P</option></select></div>
+          <div class="search-item"><label>创建人</label><select class="ant-input" id="f-creator"><option value="">请选择用户</option><option value="春明">春明</option><option value="姑先">姑先</option><option value="子房">子房</option><option value="枝子">枝子</option></select></div>
+        </div>
+        <div class="sf-grid" id="sf-expanded" style="display:none;margin-top:12px;"></div>
+        <div class="filter-actions">
+          <span class="mini-ico" title="搜索项设置"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+          <button class="btn btn-outline btn-sm" id="btn-expand">展开</button>
+          <button class="btn btn-primary btn-sm" id="btn-search"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>查询</button>
+          <button class="btn btn-outline btn-sm" id="btn-reset"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>重置</button>
+        </div>
+      </div>
+
+      <!-- 操作行 -->
+      <div class="ops-row">
+        <div style="display:flex;gap:12px;">
+          <button class="btn btn-primary btn-sm" id="btn-create">+ 新建剧本</button>
+          <button class="btn btn-outline btn-sm" id="btn-batch-stock">批量差异化</button>
+        </div>
+        <div class="ops-row__right">
+          <span class="tool-ico" title="刷新"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg></span>
+          <span class="tool-ico" title="密度"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>
+          <span class="tool-ico" title="列设置"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span>
+          <span class="tool-ico" title="全屏"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></span>
+        </div>
+      </div>
+
+      <!-- 表格 -->
+      <div class="table-wrap">
+        <table class="table">
+          <thead id="table-head"></thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span>共 <b id="pg-total">0</b> 条</span>
+        <button class="page" disabled>‹</button>
+        <button class="page active">1</button>
+        <button class="page" disabled>›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 批量差异化弹窗 -->
+<div class="modal-mask" id="batch-modal">
+  <div class="modal modal-xxl">
+    <div class="modal-head">
+      <div class="modal-title">批量差异化</div>
+      <span class="modal-close" data-close="batch-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <!-- 模块1：差异化短剧 -->
+      <div class="diff-module">
+        <div class="diff-module-title">差异化短剧</div>
+        <div class="form-item" id="fi-bd-ids" style="margin-bottom:0;">
+          <label class="diff-field-label"><span class="req">*</span>短剧ID</label>
+          <textarea class="ant-input" id="bd-ids" rows="4" maxlength="2000" placeholder="支持多个短剧ID，用,隔开"></textarea>
+          <div class="error">请输入短剧ID</div>
+        </div>
+      </div>
+      <!-- 模块2：差异化需求 -->
+      <div class="diff-module">
+        <div class="diff-module-title">差异化需求</div>
+        <div class="form-item" id="fi-bd-difftype" style="margin-bottom:16px;">
+          <label class="diff-field-label"><span class="req">*</span>场景类型</label>
+          <div class="radio-group">
+            <label class="radio-opt"><input type="radio" name="bd-diff-type" value="剧名剧封差异化" checked>剧名剧封差异化</label>
+            <label class="radio-opt"><input type="radio" name="bd-diff-type" value="仅剧封差异化">仅剧封差异化（独家标/尺度分场景）</label>
+          </div>
+        </div>
+        <div class="form-item" style="margin-bottom:0;">
+          <div class="diff-submod" id="bd-diff-cfg"></div>
+          <div class="remark-row" style="margin-top:14px;">
+            <label class="form-label">差异化备注</label>
+            <textarea class="ant-input" id="bd-remark" maxlength="300" placeholder="请输入，最多 300 字符"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" data-close="batch-modal">取消</button>
+      <button class="btn btn-primary" id="bd-submit">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 选择应用子页面 -->
+<div class="modal-mask" id="picker-modal">
+  <div class="modal modal-xl">
+    <div class="modal-head">
+      <div class="modal-title">选择应用</div>
+      <span class="modal-close" data-close="picker-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-item" style="margin-bottom:10px;">
+        <label class="form-label"><span class="req">*</span>包含应用</label>
+        <div class="pick-selected-box">
+          <div class="ps-head"><span class="ps-title">已选应用端</span><span>已选 <b id="p-count">0</b> 个</span></div>
+          <div class="ps-tags" id="p-tags"></div>
+        </div>
+        <div class="pick-filter-box">
+          <div class="pick-filter">
+            <div class="search-item">
+              <label>应用名称</label>
+              <input type="text" class="ant-input" id="p-name" placeholder="请输入" style="width:130px">
+            </div>
+            <div class="search-item">
+              <label>应用分组</label>
+              <div class="ms-wrap">
+                <div class="ms-box" id="p-group-box" style="width:110px;">
+                  <div id="p-group-content" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>
+                  <span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </div>
+                <div class="ms-panel" id="p-group-panel" style="width:140px;"></div>
+              </div>
+            </div>
+            <div class="search-item">
+              <label>端口类型</label>
+              <div class="ms-wrap">
+                <div class="ms-box" id="p-type-box" style="width:110px;">
+                  <div id="p-type-content" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>
+                  <span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </div>
+                <div class="ms-panel" id="p-type-panel" style="width:140px;"></div>
+              </div>
+            </div>
+            <div class="search-item">
+              <label>付费模式</label>
+              <div class="ms-wrap">
+                <div class="ms-box" id="p-pay-box" style="width:100px;">
+                  <div id="p-pay-content" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>
+                  <span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </div>
+                <div class="ms-panel" id="p-pay-panel" style="width:130px;"></div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="p-search">搜索</button>
+            <button class="btn btn-outline btn-sm" id="p-reset">重置</button>
+          </div>
+        </div>
+        <div class="ps-toolbar" style="margin-bottom:10px;">
+          <button class="btn btn-outline btn-sm" id="p-select-all">跨页全选</button>
+        </div>
+        <div class="pick-table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width:40px;"><input type="checkbox" id="p-checkall"></th>
+                <th>应用名称</th>
+                <th>付费模式</th>
+                <th>应用分组</th>
+                <th>端口类型</th>
+              </tr>
+            </thead>
+            <tbody id="p-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" data-close="picker-modal">取消</button>
+      <button class="btn btn-primary" id="p-ok">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 场景详情 -->
+<div class="modal-mask" id="scene-detail-modal">
+  <div class="modal" style="width:640px;">
+    <div class="modal-head">
+      <div class="modal-title">场景详情</div>
+      <span class="modal-close" data-close="scene-detail-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body" id="sd-body"></div>
+    <div class="modal-foot"><button class="btn btn-outline" data-close="scene-detail-modal">关闭</button></div>
+  </div>
+</div>
+
+<!-- 复用场景 -->
+<div class="modal-mask" id="reuse-scene-modal">
+  <div class="modal" style="width:520px;">
+    <div class="modal-head">
+      <div class="modal-title">选择场景</div>
+      <span class="modal-close" data-close="reuse-scene-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-item" style="margin-bottom:0;">
+        <label class="form-label"><span class="req">*</span>选择场景</label>
+        <select class="ant-input" id="rs-select"></select>
+        <div style="font-size:12px;color:var(--text-3);margin-top:8px;">复用后按场景填入剧名套/剧封套，可继续修改</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" data-close="reuse-scene-modal">取消</button>
+      <button class="btn btn-primary" id="rs-ok">确定</button>
+    </div>
+  </div>
+</div>
+
+<div id="app-tip"></div>
+<div id="toast"></div>
+
+<!-- 新建剧本抽屉 -->
+<div class="drawer-mask" id="nb-drawer">
+  <div class="drawer">
+    <div class="drawer-head">
+      <div class="head-inner">
+        <span class="drawer-title" id="nb-title">新建剧本</span>
+        <span class="drawer-close" id="nb-close"><svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <div class="body-inner">
+      <!-- 剧本信息（锁定收起） -->
+      <div class="module collapsed module-locked">
+        <div class="module-head">
+          <span class="module-title"><span class="bar"></span>剧本信息</span>
+          <span class="module-toggle">展开 <span class="arrow">▾</span></span>
+        </div>
+      </div>
+
+      <!-- 基础信息（锁定收起） -->
+      <div class="module collapsed module-locked">
+        <div class="module-head">
+          <span class="module-title"><span class="bar"></span>基础信息</span>
+          <span class="module-toggle">展开 <span class="arrow">▾</span></span>
+        </div>
+      </div>
+
+      <!-- 属性配置（锁定收起） -->
+      <div class="module collapsed module-locked">
+        <div class="module-head">
+          <span class="module-title"><span class="bar"></span>属性配置</span>
+          <span class="module-toggle">展开 <span class="arrow">▾</span></span>
+        </div>
+      </div>
+
+      <!-- 运营信息（含差异化需求） -->
+      <div class="module">
+        <div class="module-head">
+          <span class="module-title"><span class="bar"></span>运营信息</span>
+          <span class="module-toggle">收起 <span class="arrow">▴</span></span>
+        </div>
+        <div class="module-body">
+          <div class="form-grid3">
+            <div class="form-item"><label class="form-label">人工评级</label><select class="ant-input"><option value="">请选择</option></select></div>
+            <div class="form-item"><label class="form-label">主包体</label><select class="ant-input"><option value="">请选择</option></select></div>
+            <div class="form-item"><label class="form-label">上线产品</label><select class="ant-input"><option value="">请选择</option></select></div>
+            <div class="form-item"><label class="form-label">负责团队</label><select class="ant-input"><option value="">请选择</option></select></div>
+            <div class="form-item"><label class="form-label">默认付费集数</label><input type="text" class="ant-input" placeholder="请输入"></div>
+          </div>
+          <div class="form-item"><label class="form-label">社媒可发布描述 <span class="cnt">0 / 150</span></label><textarea class="ant-input" maxlength="150" placeholder="请输入"></textarea></div>
+          <!-- 差异化需求 -->
+          <div class="diff-check"><label class="radio-opt"><input type="checkbox" id="cb-need-diff">需要剧名剧封差异化</label></div>
+          <div class="diff-body" id="diff-body">
+            <div class="form-item" style="margin-bottom:14px;">
+              <label class="diff-field-label"><span class="req">*</span>场景类型</label>
+              <div class="radio-group">
+                <label class="radio-opt"><input type="radio" name="nb-diff-type" value="剧名剧封差异化" checked>剧名剧封差异化</label>
+                <label class="radio-opt"><input type="radio" name="nb-diff-type" value="仅剧封差异化">仅剧封差异化（独家标/尺度分场景）</label>
+              </div>
+            </div>
+            <div class="diff-detail-head"><label class="diff-field-label"><span class="req">*</span>差异化详情</label><button class="btn btn-primary btn-sm" id="btn-add-lang-nb">新增语言组</button></div>
+            <div id="nb-lang-groups"></div>
+            <div class="remark-row" style="margin-top:14px;">
+              <label class="form-label">差异化备注</label>
+              <textarea class="ant-input" id="nb-remark" maxlength="300" placeholder="请输入，最多 300 字符"></textarea>
+            </div>
+          </div>
+          <div class="form-item" style="margin-bottom:0;"></div>
+        </div>
+      </div>
+
+      <!-- 关联与超点（锁定收起） -->
+      <div class="module collapsed module-locked">
+        <div class="module-head">
+          <span class="module-title"><span class="bar"></span>关联与超点</span>
+          <span class="module-toggle">展开 <span class="arrow">▾</span></span>
+        </div>
+      </div>
+
+      <!-- N系列配置（锁定收起） -->
+      <div class="module collapsed module-locked">
+        <div class="module-head">
+          <span class="module-title"><span class="bar"></span>N系列配置</span>
+          <span class="module-toggle">展开 <span class="arrow">▾</span></span>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <div class="foot-inner">
+        <button class="btn btn-outline" id="nb-cancel">取 消</button>
+        <button class="btn btn-primary" id="nb-confirm">确 认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= 数据（全局数据源） ================= */
+const LANGUAGES = ['英语','繁体中文','韩语','西班牙语','日语','印尼语','泰语','葡萄牙语','简体中文','法语','德语','意大利语','阿拉伯语','马来西亚语','土耳其语','越南语','印地语'];
+const TYPE_TEXT = {name_cover:'剧名剧封差异化', cover_only:'仅剧封差异化'};
+const APPS = [
+  {id:'110', name:'ns_app',        pay:'IAP', group:'NS',            type:'app'},
+  {id:'111', name:'nt_app',        pay:'IAP', group:'NT',            type:'app'},
+  {id:'112', name:'fs_app',        pay:'IAP', group:'FS',            type:'app'},
+  {id:'120', name:'app_iaa马甲包', pay:'IAA', group:'app_iaa马甲包', type:'app', children:['ViviBinge','OmniDrama','EchoShort']},
+  {id:'123', name:'app_iap马甲包', pay:'IAP', group:'app_iap马甲包', type:'app', children:['OrcaShort','CharmReel','IvyDrama']},
+  {id:'130', name:'iap小程序',     pay:'IAP', group:'NS',            type:'小程序', children:['TTAvoShort','TTViviShort','TTWingShort','TTFishDrama','TTZeroDrama','TTUniShort','TTVoltShort']},
+  {id:'131', name:'iaa小程序',     pay:'IAA', group:'NS',            type:'小程序', children:['TTFizzDrama','TTJellyReel','TTBoomShort','TTRichDrama','TTSparkDrama']},
+  {id:'113', name:'ns_官网',       pay:'IAP', group:'NS',            type:'官网'},
+  {id:'140', name:'ns_h5',         pay:'IAP', group:'NS',            type:'h5',  children:['ReelNivo','DramaNivo','DramaZora','ReelMira','ReelVero']},
+];
+const ALL_APP_NAMES = APPS.map(a=>a.name);
+/* 兜底剧名剧封：枚举不合并的应用端（集合型应用展开为独立应用名） */
+const LEAF_APPS = APPS.reduce((acc, a) => {
+  if(a.children && a.children.length){ a.children.forEach(c => acc.push({name:c, parent:a.name})); }
+  else acc.push({name:a.name, parent:''});
+  return acc;
+}, []);
+const APP_SET = ['ns_app','nt_app','fs_app','app_iaa马甲包','app_iap马甲包'];
+const NS_WEB = ['ns_官网','ns_h5'];
+const GROUP_OPTS = ['NS','FS','NT','app_iaa马甲包','app_iap马甲包'];
+const TYPE_OPTS = ['app','小程序','官网','h5'];
+const PAY_OPTS = ['IAA','IAP'];
+
+/* 差异化场景（服务端固化配置，页面不可配置） */
+const IAP_MINI = ['iap小程序'];
+const IAA_MINI = ['iaa小程序'];
+const NS_EXCLUSIVE = ['ns_app','ns_官网','ns_h5'];
+const APP_PLUS_NS_WEB = APP_SET.concat(NS_WEB);
+const scenes = [
+  {id:1, name:'主包/iap/iaa三套剧名剧封+ns独家标剧封', desc:'ns_app和官网加独家标，主包/iap/iaa小程序差异化', type:'name_cover', groups:[
+    {name:APP_PLUS_NS_WEB.slice(), covers:[NS_EXCLUSIVE.slice(), ['nt_app','fs_app','app_iaa马甲包','app_iap马甲包']]},
+    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
+    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+  ]},
+  {id:2, name:'主包/iap/iaa小程序三套剧名剧封', desc:'主包/iap/iaa小程序差异化', type:'name_cover', groups:[
+    {name:APP_PLUS_NS_WEB.slice(), covers:[APP_PLUS_NS_WEB.slice()]},
+    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
+    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+  ]},
+  {id:3, name:'全端通用剧名剧封+ns独家标', desc:'ns_app和官网加独家标，其他端共用剧名剧封', type:'name_cover', groups:[
+    {name:ALL_APP_NAMES.slice(), covers:[NS_EXCLUSIVE.slice(), ALL_APP_NAMES.filter(a=>NS_EXCLUSIVE.indexOf(a)<0)]},
+  ]},
+  {id:4, name:'存量剧_iap/iaa剧名剧封差异化', desc:'iap/iaa小程序单独做差异化剧名剧封', type:'name_cover', groups:[
+    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
+    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+  ]},
+  {id:5, name:'ns独家标剧封', desc:'为ns_app和官网新增独家标/做不同尺度剧封', type:'cover_only', covers:[
+    NS_EXCLUSIVE.slice(),
+  ]},
+];
+function sceneName(id){ const s = scenes.find(x=>x.id===id); return s ? s.name : ''; }
+
+/* ================= 表格列（40 列，参照剧目管理页） ================= */
+const TABLE_COLS = [
+  {key:'name', title:'剧本名称', w:170},
+  {key:'kind', title:'剧本种类', w:110, tag:true},
+  {key:'series', title:'剧本系列', w:70},
+  {key:'status', title:'剧本状态', w:90, tag:true},
+  {key:'no', title:'剧本编号', w:130, copy:true},
+  {key:'motherNo', title:'母本编号', w:110},
+  {key:'motherName', title:'母本名称', w:140},
+  {key:'relType', title:'关联类型', w:90},
+  {key:'seriesNo', title:'系列号', w:80},
+  {key:'gengeng', title:'催更', w:80},
+  {key:'finish', title:'完结', w:80},
+  {key:'chaodian', title:'超点状态', w:90},
+  {key:'form', title:'内容形式', w:80},
+  {key:'marketType', title:'市场类型', w:90},
+  {key:'priority', title:'优先级', w:80, tag:true},
+  {key:'app', title:'上线应用', w:90},
+  {key:'mainRight', title:'主权益', w:90},
+  {key:'authChannel', title:'授权渠道', w:100},
+  {key:'rival', title:'友商', w:90},
+  {key:'langs', title:'上线语种', w:150},
+  {key:'hasDub', title:'是否有配音', w:90},
+  {key:'aiDubLangs', title:'AI配音语种', w:120},
+  {key:'manualDubLangs', title:'人工配音语种', w:120},
+  {key:'refineLangs', title:'精修语种', w:120},
+  {key:'notOnlineLangs', title:'未上线语种', w:120},
+  {key:'makingLangs', title:'制作中语种', w:120},
+  {key:'notAiLangs', title:'未AI配音语种', w:130},
+  {key:'notManualLangs', title:'未人工配音语种', w:130},
+  {key:'dramaForm', title:'剧本形式', w:110},
+  {key:'dramaType', title:'剧本类型', w:90},
+  {key:'step', title:'当前环节', w:90},
+  {key:'stepCost', title:'当前环节用时', w:110},
+  {key:'cost', title:'用时', w:90},
+  {key:'onlineTime', title:'上线时间', w:150},
+  {key:'planOnline', title:'预计上线时间', w:130},
+  {key:'creator', title:'创建人', w:80},
+  {key:'createTime', title:'创建时间', w:150},
+  {key:'op', title:'操作', w:80},
+];
+
+/* ================= 剧本数据（参照真实剧目） ================= */
+let dramas = [
+  {name:'预约剧0519-13-2', kind:'采买二轮剧', series:'L', status:'已上线', no:'L3333(2)', motherNo:'B3333', motherName:'预约剧0519-13', relType:'差异剧', seriesNo:'-', gengeng:'未配置', finish:'已完结', chaodian:'未配置', form:'短剧', marketType:'抢发', priority:'P1', app:'NS', mainRight:'社媒', authChannel:'IAA', rival:'IAP', langs:'社媒,IAA,IAP', hasDub:'是', aiDubLangs:'-', manualDubLangs:'-', refineLangs:'-', notOnlineLangs:'-', makingLangs:'-', notAiLangs:'-', notManualLangs:'-', dramaForm:'竖屏真人短剧', dramaType:'AI音译', step:'-', stepCost:'-', cost:'-', onlineTime:'2025/02/21 19:51', planOnline:'2026/07/24 17:49', creator:'-', createTime:'2025-02-21 16:24:07'},
+  {name:'我和婆婆手撕渣男全家', kind:'采买翻译剧', series:'B', status:'已上线', no:'B090', motherNo:'-', motherName:'-', relType:'-', seriesNo:'-', gengeng:'未配置', finish:'已完结', chaodian:'未配置', form:'短剧', marketType:'二轮剧', priority:'P0', app:'NS', mainRight:'IAP', authChannel:'IAP,社媒,IAA', rival:'科幻科技', langs:'英语,土耳其语', hasDub:'是', aiDubLangs:'-', manualDubLangs:'-', refineLangs:'-', notOnlineLangs:'-', makingLangs:'-', notAiLangs:'-', notManualLangs:'-', dramaForm:'竖屏真人短剧', dramaType:'翻译', step:'-', stepCost:'-', cost:'-', onlineTime:'2025/03/11 17:16', planOnline:'-', creator:'-', createTime:'2025-03-06 16:22:05'},
+  {name:'真心付出，判我有罪', kind:'采买翻译剧', series:'L', status:'已上线', no:'L1', motherNo:'-', motherName:'-', relType:'-', seriesNo:'-', gengeng:'未配置', finish:'已完结', chaodian:'未配置', form:'短剧', marketType:'二轮剧', priority:'-', app:'NS', mainRight:'IAA', authChannel:'社媒', rival:'-', langs:'英语,意大利语', hasDub:'否', aiDubLangs:'-', manualDubLangs:'-', refineLangs:'-', notOnlineLangs:'-', makingLangs:'-', notAiLangs:'-', notManualLangs:'-', dramaForm:'竖屏真人短剧', dramaType:'翻译', step:'-', stepCost:'-', cost:'-', onlineTime:'2026/07/03 08:00', planOnline:'2026/07/30 00:00', creator:'枝子', createTime:'2025-04-10 18:15:17'},
+  {name:'誰是被害者', kind:'自制本土剧', series:'N', status:'已上线', no:'NPLB20250918', motherNo:'N214344565', motherName:'Sistem Penakluk Terkuat', relType:'系列剧', seriesNo:'1', gengeng:'开启', finish:'已完结', chaodian:'不开启', form:'短剧', marketType:'无属性', priority:'-', app:'NS', mainRight:'社媒', authChannel:'社媒', rival:'-', langs:'英语,西班牙语', hasDub:'是', aiDubLangs:'-', manualDubLangs:'-', refineLangs:'-', notOnlineLangs:'-', makingLangs:'-', notAiLangs:'-', notManualLangs:'-', dramaForm:'竖屏真人短剧', dramaType:'本土', step:'-', stepCost:'-', cost:'-', onlineTime:'2025/04/19 15:03', planOnline:'2026/08/24 12:00', creator:'姑先', createTime:'2025-04-19 14:34:47'},
+  {name:'遮天', kind:'采买音译剧', series:'P', status:'已上线', no:'P232222', motherNo:'-', motherName:'-', relType:'-', seriesNo:'-', gengeng:'未配置', finish:'已完结', chaodian:'未配置', form:'短剧', marketType:'-', priority:'-', app:'NS', mainRight:'社媒', authChannel:'社媒', rival:'-', langs:'英语', hasDub:'是', aiDubLangs:'-', manualDubLangs:'-', refineLangs:'-', notOnlineLangs:'-', makingLangs:'-', notAiLangs:'-', notManualLangs:'-', dramaForm:'竖屏人工漫剧', dramaType:'人工音译', step:'-', stepCost:'-', cost:'-', onlineTime:'2025/09/15 18:07', planOnline:'-', creator:'姑先', createTime:'2025-09-12 15:14:43'},
+  {name:'风云再起，从掌公主归来开始', kind:'采买翻译剧', series:'B', status:'进行中', no:'B3456', motherNo:'-', motherName:'-', relType:'-', seriesNo:'-', gengeng:'未配置', finish:'已完结', chaodian:'未配置', form:'短剧', marketType:'约定首发', priority:'-', app:'社媒', mainRight:'IAP', authChannel:'IAP,社媒,TK小程序', rival:'123123', langs:'英语,法语', hasDub:'否', aiDubLangs:'-', manualDubLangs:'-', refineLangs:'-', notOnlineLangs:'-', makingLangs:'英语,法语', notAiLangs:'-', notManualLangs:'-', dramaForm:'竖屏真人短剧', dramaType:'翻译', step:'英语:海报', stepCost:'英语 46.87h', cost:'英语 93.76h', onlineTime:'-', planOnline:'-', creator:'-', createTime:'2026-05-13 12:14:18'},
+];
+
+/* ================= Toast ================= */
+let toastTimer = null;
+function toast(msg, type='success'){
+  const icons = {success:'✓', error:'✕', warning:'!'};
+  const el = document.getElementById('toast');
+  el.className = 'show ' + type;
+  el.innerHTML = '<span>' + icons[type] + '</span>' + msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.className = ''; }, 2600);
+}
+
+/* ================= 下拉多选（支持全选 + 自动翻转） ================= */
+function initMs(boxId, contentId, panelId, options, onChange, selectAll){
+  const box = document.getElementById(boxId);
+  const content = document.getElementById(contentId);
+  const panel = document.getElementById(panelId);
+  const selected = new Set();
+  const disabled = new Set();
+  function buildPanel(){
+    let html = '';
+    if(selectAll){
+      html += '<div class="ms-opt ms-selall" data-v="__all__"><span class="opt-check">✓</span><span>全选</span></div><div class="ms-sep"></div>';
+    }
+    html += options.map(o => '<div class="ms-opt'+(disabled.has(o)?' disabled':'')+'" data-v="'+o+'"><span class="opt-check">✓</span><span>'+o+'</span></div>').join('');
+    panel.innerHTML = html;
+    renderPanel();
+  }
+  function renderBox(){
+    content.innerHTML = '';
+    if(selected.size === 0){
+      content.innerHTML = '<span class="ms-placeholder">请选择</span>';
+    }else{
+      const arr = [...selected];
+      arr.slice(0,2).forEach(v => { content.insertAdjacentHTML('beforeend','<span class="ms-tag" title="'+v+'"><span class="ms-t">'+v+'</span><span class="ms-x">×</span></span>'); });
+      if(arr.length > 2) content.insertAdjacentHTML('beforeend','<span class="ms-tag more">+'+(arr.length-2)+'</span>');
+      content.querySelectorAll('.ms-x').forEach(x => {
+        x.addEventListener('click', e => {
+          e.stopPropagation();
+          selected.delete(x.parentElement.getAttribute('title') || '');
+          renderBox(); renderPanel();
+          onChange && onChange([...selected]);
+        });
+      });
+    }
+  }
+  function renderPanel(){
+    panel.querySelectorAll('.ms-opt').forEach(o => {
+      const v = o.getAttribute('data-v');
+      if(v === '__all__'){
+        const nd = options.filter(x=>!disabled.has(x));
+        o.classList.toggle('checked', nd.length>0 && nd.every(x=>selected.has(x)));
+      }else{
+        o.classList.toggle('checked', selected.has(v));
+      }
+    });
+  }
+  box.addEventListener('click', e => {
+    if(e.target.closest('.ms-x')) return;
+    const isOpen = panel.classList.contains('show');
+    document.querySelectorAll('.ms-panel.show').forEach(p=>{ if(p!==panel) p.classList.remove('show'); });
+    document.querySelectorAll('.ms-box.open').forEach(b=>{ if(b!==box) b.classList.remove('open'); });
+    panel.classList.toggle('show', !isOpen);
+    box.classList.toggle('open', !isOpen);
+    if(!isOpen){
+      panel.classList.remove('flip-up');
+      panel.style.maxHeight = '';
+      requestAnimationFrame(() => {
+        const pr = panel.getBoundingClientRect();
+        if(pr.height === 0) return;
+        const mb = panel.closest('.modal-body');
+        const limBottom = mb ? mb.getBoundingClientRect().bottom : window.innerHeight - 8;
+        const limTop = mb ? mb.getBoundingClientRect().top : 8;
+        if(pr.bottom > limBottom){
+          panel.classList.add('flip-up');
+          const pr2 = panel.getBoundingClientRect();
+          if(pr2.top < limTop){
+            panel.classList.remove('flip-up');
+            const boxRect = box.getBoundingClientRect();
+            const avail = limBottom - boxRect.bottom - 8;
+            if(avail > 120){ panel.style.maxHeight = Math.floor(avail) + 'px'; }
+          }
+        }
+      });
+    }
+  });
+  panel.addEventListener('click', e => {
+    const opt = e.target.closest('.ms-opt');
+    if(!opt || opt.classList.contains('disabled')) return;
+    const v = opt.getAttribute('data-v');
+    if(v === '__all__'){
+      const nd = options.filter(x=>!disabled.has(x));
+      const allSel = nd.length>0 && nd.every(x=>selected.has(x));
+      if(allSel){ nd.forEach(x=>selected.delete(x)); } else { nd.forEach(x=>selected.add(x)); }
+    }else{
+      if(selected.has(v)) selected.delete(v); else selected.add(v);
+    }
+    renderBox(); renderPanel();
+    onChange && onChange([...selected]);
+  });
+  document.addEventListener('click', e => {
+    if(!box.contains(e.target) && !panel.contains(e.target)){ panel.classList.remove('show'); box.classList.remove('open'); }
+  });
+  buildPanel(); renderBox();
+  return {
+    get value(){ return [...selected]; },
+    setValue(arr){ selected.clear(); (arr||[]).forEach(a=>selected.add(a)); renderBox(); renderPanel(); },
+    clear(){ selected.clear(); renderBox(); renderPanel(); },
+    setDisabled(arr){ disabled.clear(); (arr||[]).forEach(a=>disabled.add(a)); buildPanel(); },
+  };
+}
+
+/* ================= 展开筛选项 ================= */
+const SEARCH_FIELDS = [
+  {label:'上线应用', type:'select', ph:'请选择上线应用'},
+  {label:'上线语种', type:'select', ph:'请选择上线语种'},
+  {label:'是否有配音', type:'select', ph:'请选择'},
+  {label:'配音类型', type:'select', ph:'请选择配音类型'},
+  {label:'AI配音语种', type:'select', ph:'请选择AI配音语种'},
+  {label:'人工配音语种', type:'select', ph:'请选择人工配音语种'},
+  {label:'精修语种', type:'select', ph:'请选择精修语种'},
+  {label:'未上线语种', type:'select', ph:'请选择未上线语种'},
+  {label:'制作中语种', type:'select', ph:'请选择制作中语种'},
+  {label:'未AI配音语种', type:'select', ph:'请选择未AI配音语种'},
+  {label:'未人工配音语种', type:'select', ph:'请选择未人工配音语种'},
+  {label:'剧本状态', type:'select', ph:'请选择剧本状态'},
+  {label:'市场类型', type:'select', ph:'请选择市场类型'},
+  {label:'剧本类型', type:'select', ph:'请选择剧本类型'},
+  {label:'主权益', type:'select', ph:'请选择主权益'},
+  {label:'授权渠道', type:'select', ph:'请选择授权渠道'},
+  {label:'友商', type:'input', ph:'请输入'},
+  {label:'剧本种类', type:'select', ph:'请选择剧本种类'},
+  {label:'创建时间', type:'date'},
+  {label:'上线时间', type:'date'},
+  {label:'预计上线时间', type:'date'},
+];
+function sfHtml(f){
+  if(f.type === 'select') return '<div class="search-item"><label>'+f.label+'</label><select class="ant-input"><option value="">'+f.ph+'</option></select></div>';
+  if(f.type === 'date') return '<div class="search-item"><label>'+f.label+'</label><input class="ant-input" placeholder="开始日期 ~ 结束日期"></div>';
+  return '<div class="search-item"><label>'+f.label+'</label><input class="ant-input" placeholder="'+(f.ph||'请输入')+'"></div>';
+}
+document.getElementById('sf-expanded').innerHTML = SEARCH_FIELDS.map(sfHtml).join('');
+
+/* ================= 列表 ================= */
+const listFilter = {priority:['P0+','P0','P1','P2','其他'], drama:'', form:'', series:'', creator:'', status:''};
+function cellHtml(o, c){
+  const v = o[c.key];
+  if(c.key === 'name') return '<span class="cell-title">'+v+'</span>';
+  if(c.key === 'kind') return '<span class="tag tag-blue">'+v+'</span>';
+  if(c.key === 'status') return '<span class="tag '+(v==='已上线'?'tag-green':(v==='进行中'?'tag-orange':'tag-gray'))+'">'+v+'</span>';
+  if(c.key === 'priority') return v && v !== '-' ? '<span class="tag tag-pink">'+v+'</span>' : '<span style="color:var(--text-3);">-</span>';
+  if(c.key === 'no') return '<span class="cell-title">'+v+'</span><span class="copy-ico" title="复制编号" data-copy="'+v+'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>';
+  if(c.key === 'op') return '<span class="op-link" data-act="edit-drama" data-no="'+o.no+'" style="margin:0;">编辑</span>';
+  return (v === undefined || v === null || v === '') ? '<span style="color:var(--text-3);">-</span>' : v;
+}
+function filteredDramas(){
+  return dramas.filter(d => {
+    if(listFilter.status && d.status !== listFilter.status) return false;
+    if(listFilter.priority.length && !listFilter.priority.includes(d.priority) && d.priority !== '-') return false;
+    if(listFilter.drama && !d.name.toLowerCase().includes(listFilter.drama.toLowerCase()) && !d.no.toLowerCase().includes(listFilter.drama.toLowerCase())) return false;
+    if(listFilter.form && d.form !== listFilter.form) return false;
+    if(listFilter.series && d.series !== listFilter.series) return false;
+    if(listFilter.creator && d.creator !== listFilter.creator) return false;
+    return true;
+  });
+}
+function renderTable(){
+  const list = filteredDramas();
+  const thead = document.getElementById('table-head');
+  const tbody = document.getElementById('table-body');
+  document.getElementById('pg-total').textContent = list.length;
+  thead.innerHTML = '<tr>' + TABLE_COLS.map(c => '<th style="min-width:'+c.w+'px;'+(c.key==='op'?'position:sticky;right:0;top:0;z-index:3;':'')+'">'+c.title+'</th>').join('') + '</tr>';
+  if(list.length === 0){
+    tbody.innerHTML = '<tr><td colspan="'+TABLE_COLS.length+'"><div class="empty"><div class="empty-icon">📭</div><div>暂无数据</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(o =>
+    '<tr>' + TABLE_COLS.map(c => '<td'+(c.key==='op'?' style="position:sticky;right:0;background:#fff;z-index:1;"':'')+'>'+cellHtml(o,c)+'</td>').join('') + '</tr>'
+  ).join('');
+}
+document.getElementById('table-body').addEventListener('click', e => {
+  const cp = e.target.closest('[data-copy]');
+  if(cp){
+    const txt = cp.getAttribute('data-copy');
+    if(navigator.clipboard){ navigator.clipboard.writeText(txt); }
+    toast('已复制：'+txt);
+    return;
+  }
+  const ed = e.target.closest('[data-act="edit-drama"]');
+  if(ed){ openNb(ed.getAttribute('data-no')); }
+});
+
+/* ================= 语言组渲染（场景引用化） ================= */
+/* 选择应用改为下拉单选：一个应用一套剧名/剧封 */
+function singleSets(apps){ return apps.map(a => ({name:[a], covers:[[a]]})); }
+const CUSTOM_SETS = ['ns_app','nt_app','ns_官网','iap小程序','iaa小程序'];
+const nbCw = {
+  needDiff:false, remark:'', diffType:'剧名剧封差异化',
+  langGroups:[
+    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', ...sceneSeed(1)},
+    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', groups:singleSets(CUSTOM_SETS)},
+  ],
+  coverLangGroups:[
+    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', ...sceneSeed(5)},
+  ],
+};
+function groupsOf(ct){
+  if(ct === 'bd') return [bd.diff];
+  return (nbCw.diffType === '仅剧封差异化') ? nbCw.coverLangGroups : nbCw.langGroups;
+}
+function modeOf(ct){
+  if(ct === 'bd') return (bd.diffType === '仅剧封差异化') ? 'cover-only' : 'name-cover';
+  return (nbCw.diffType === '仅剧封差异化') ? 'cover-only' : 'name-cover';
+}
+function msHtml(uid){
+  return '<div class="ms-wrap"><div class="ms-box" id="'+uid+'"><div id="'+uid+'-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>' +
+    '<span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>' +
+    '<div class="ms-panel" id="'+uid+'-p"></div></div>';
+}
+/* ================= 应用合并展示（小程序按 iaa/iap 合并，hover 展示具体名称） ================= */
+/* ================= 应用端展示（集合型应用端 hover 展示全部明细） ================= */
+function appMeta(name){ return APPS.find(a => a.name === name) || null; }
+/* 集合型应用端（app_iaa马甲包/app_iap马甲包/iap小程序/iaa小程序/ns_h5）hover 明细文案 */
+function appTipText(name){
+  const m = appMeta(name);
+  if(!m || !m.children || !m.children.length) return '';
+  return m.name + '（共' + m.children.length + '个）：' + m.children.join('、');
+}
+function appChipHtml(name, chipClass){
+  const t = appTipText(name);
+  return '<span class="'+chipClass+(t?' app-merge':'')+'"'+(t?' data-tip="'+t+'"':'')+'>'+name+'</span>';
+}
+function appDisplayHtml(apps, chipClass){
+  if(!apps || !apps.length) return '<span style="color:#bfbfbf;font-size:12px;">—</span>';
+  const html = apps.map(a => appChipHtml(a, chipClass)).join('');
+  return html || '<span style="color:#bfbfbf;font-size:12px;">—</span>';
+}
+(function(){
+  const tip = document.getElementById('app-tip');
+  document.addEventListener('mouseover', e => {
+    const t = e.target.closest('.app-merge');
+    if(t && t.getAttribute('data-tip')){
+      tip.textContent = t.getAttribute('data-tip');
+      tip.style.display = 'block';
+      moveTip(e);
+    }
+  });
+  document.addEventListener('mousemove', moveTip);
+  document.addEventListener('mouseout', e => {
+    if(e.target.closest && e.target.closest('.app-merge')) tip.style.display = 'none';
+  });
+  function moveTip(e){
+    if(tip.style.display !== 'block') return;
+    const pad = 14;
+    let x = e.clientX + pad, y = e.clientY + pad;
+    const r = tip.getBoundingClientRect();
+    if(x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+    if(y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  }
+})();
+/* 选择应用：下拉单选（可输入筛选），值为应用名称，内部仍按数组存（最多 1 个） */
+function cfgBox(g, n, kind, ci, apps){
+  const val = (apps && apps.length) ? apps[0] : '';
+  return '<div class="cfg-box cfg-single" data-g="'+g+'" data-n="'+n+'" data-kind="'+kind+'" data-c="'+ci+'">' +
+    '<div class="ss-wrap">' +
+      '<input class="ant-input ss-input" data-role="cfg" data-g="'+g+'" data-n="'+n+'" data-kind="'+kind+'" data-c="'+ci+'" value="'+val+'" placeholder="请选择应用" autocomplete="off">' +
+      '<div class="ss-panel"></div>' +
+    '</div>' +
+  '</div>';
+}
+function customEditorHtml(ct, lg, g, mode){
+  let html = '';
+  if(mode === 'cover-only'){
+    const rows = lg.covers.map((cv, ci) =>
+      '<div class="cover-row">' +
+        '<div class="cover-main">' + cfgBox(g, 0, 'cover', ci, cv) + '<div class="cfg-err"></div></div>' +
+        '<span class="cfg-del" data-act="del-cover" data-g="'+g+'" data-n="0" data-c="'+ci+'">删除</span>' +
+      '</div>'
+    ).join('');
+    html += '<div class="grp-label">剧封套</div>' + rows +
+      '<button class="btn-dashed" data-act="add-cover" data-g="'+g+'" data-n="0">+ 新增剧封套</button>';
+    return html;
+  }
+  lg.groups.forEach((grp, n) => {
+    const numbered = grp.covers.length > 1;
+    const coverRows = grp.covers.map((cv, ci) =>
+      '<div class="cover-row">' +
+        (numbered ? '<span class="cover-idx">'+(ci+1)+'</span>' : '') +
+        '<div class="cover-main">' + cfgBox(g, n, 'cover', ci, cv) + '<div class="cfg-err"></div></div>' +
+        '<span class="cfg-del" data-act="del-cover" data-g="'+g+'" data-n="'+n+'" data-c="'+ci+'">删除</span>' +
+      '</div>'
+    ).join('');
+    html +=
+      '<div class="grp-card" data-g="'+g+'" data-n="'+n+'">' +
+        '<div class="grp-head">' +
+          '<span class="grp-title">剧名套 '+(n+1)+'</span>' +
+          '<span class="grp-del" data-act="del-group" data-g="'+g+'" data-n="'+n+'">删除套</span>' +
+        '</div>' +
+        '<div class="grp-body">' +
+          '<div class="grp-col name-col">' +
+            '<div class="grp-label">剧名</div>' +
+            cfgBox(g, n, 'name', -1, grp.name) +
+            '<div class="cfg-err"></div>' +
+          '</div>' +
+          '<div class="grp-col cover-col">' +
+            '<div class="grp-label">该剧名下的剧封套</div>' +
+            coverRows +
+            '<button class="btn-dashed" data-act="add-cover" data-g="'+g+'" data-n="'+n+'">+ 新增剧封套</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="grp-err"></div>' +
+      '</div>';
+  });
+  return html;
+}
+/* ================= 可搜索下拉单选（兜底剧名剧封） ================= */
+/* 兜底下拉面板：fixed 定位（相对视口），避免被抽屉/弹窗的滚动容器裁剪 */
+function placeSsPanel(input, panel){
+  const r = input.getBoundingClientRect();
+  const gap = 4, pad = 8, maxH = 300;
+  panel.style.width = r.width + 'px';
+  panel.style.left = r.left + 'px';
+  const below = window.innerHeight - r.bottom - gap - pad;
+  const above = r.top - gap - pad;
+  const sh = panel.scrollHeight || maxH;
+  const useBelow = (below >= Math.min(sh, 200)) || (below >= above);
+  const h = Math.max(120, Math.min(sh, maxH, useBelow ? below : above));
+  panel.style.maxHeight = h + 'px';
+  panel.style.top = (useBelow ? (r.bottom + gap) : Math.max(pad, r.top - gap - h)) + 'px';
+}
+function initFbSelects(ct){
+  if(!initFbSelects._scrollBound){
+    initFbSelects._scrollBound = true;
+    /* 容器滚动后坐标失效：聚焦中的面板跟随重定位，其余收起 */
+    document.addEventListener('scroll', () => {
+      document.querySelectorAll('.ss-panel.show').forEach(p => {
+        const inp = p.parentElement && p.parentElement.querySelector('input[data-role="fb"]');
+        if(inp && document.activeElement === inp) placeSsPanel(inp, p);
+        else p.classList.remove('show');
+      });
+    }, true);
+  }
+  const groups = groupsOf(ct);
+  groups.forEach((lg, g) => {
+    const input = document.querySelector('#'+ct+' input[data-role="fb"][data-g="'+g+'"]');
+    if(!input) return;
+    const panel = document.getElementById(ct+'-fb-panel-'+g);
+    if(!panel) return;
+    const render = kw => {
+      const kw2 = (kw || '').trim().toLowerCase();
+      const list = LEAF_APPS.filter(a => !kw2 || a.name.toLowerCase().indexOf(kw2) >= 0);
+      panel.innerHTML = list.length
+        ? list.map(a => '<div class="ss-opt" data-v="'+a.name+'">'+a.name+(a.parent?'<i class="ss-sub">'+a.parent+'</i>':'')+'</div>').join('')
+        : '<div class="ss-empty">无匹配应用端</div>';
+    };
+    input.addEventListener('focus', () => { input.value = ''; render(''); panel.classList.add('show'); placeSsPanel(input, panel); });
+    input.addEventListener('input', () => { panel.classList.add('show'); render(input.value); placeSsPanel(input, panel); });
+    input.addEventListener('blur', () => {
+      setTimeout(() => {
+        panel.classList.remove('show');
+        const lg2 = groups[g];
+        input.value = (lg2 && lg2.fb) ? lg2.fb : '';
+      }, 150);
+    });
+    panel.addEventListener('mousedown', e => {
+      const o = e.target.closest('.ss-opt');
+      if(!o) return;
+      groups[g].fb = o.getAttribute('data-v');
+      input.value = groups[g].fb;
+      const item = input.closest('.fb-item');
+      if(item) item.classList.remove('has-error');
+      input.blur();
+    });
+  });
+}
+
+/* 语言组数量提示：上述X个语种分别生成X套剧名，X套剧封 */
+function langCountTip(lg, mode){
+  const nl = lg.langs.length;
+  let ns = 0, cs = 0, coverOnly = (mode === 'cover-only');
+  if(coverOnly){ cs = (lg.covers || []).length; }
+  else { ns = (lg.groups || []).length; cs = (lg.groups || []).reduce((a, x) => a + x.covers.length, 0); }
+  if(coverOnly) return '上述' + nl + '个语种分别生成' + cs + '套剧封';
+  return '上述' + nl + '个语种分别生成' + ns + '套剧名，' + cs + '套剧封';
+}
+/* 常用场景 → 语言组配置种子（深拷贝，可在其基础上继续编辑） */
+function sceneSeed(id){
+  const sc = scenes.find(x => x.id === id);
+  if(!sc) return {groups:[{name:[], covers:[[]]}], covers:[[]]};
+  if(sc.type === 'cover_only') return {covers: sc.covers.map(c => c.slice())};
+  return {groups: sc.groups.map(gr => ({name: gr.name.slice(), covers: gr.covers.map(c => c.slice())}))};
+}
+/* ================= 场景模式：常用场景 / 自定义场景 ================= */
+/* 场景模式：显式设置优先，未设置时按是否已有场景引用推断（兼容历史数据） */
+function sceneModeOf(lg){ return lg.sceneMode || (lg.sceneId ? 'common' : 'custom'); }
+/* 场景枚举：按当前场景类型（剧名剧封差异化 / 仅剧封差异化）过滤，两类枚举值不同 */
+function sceneOptsOf(mode){ return scenes.filter(s => mode === 'cover-only' ? s.type === 'cover_only' : s.type === 'name_cover'); }
+/* 场景 → 单应用套：选择应用为下拉单选，一个应用一套 */
+function sceneSetsSingle(sc){
+  if(!sc) return {groups:[{name:[], covers:[[]]}], covers:[[]]};
+  if(sc.type === 'cover_only'){
+    const out = [];
+    sc.covers.forEach(cv => cv.forEach(a => out.push([a])));
+    return {covers: out.length ? out : [[]]};
+  }
+  const groups = [];
+  sc.groups.forEach(grp => {
+    grp.name.forEach(a => {
+      const k = Math.max(1, grp.covers.filter(cv => cv.indexOf(a) >= 0).length);
+      const covers = [];
+      for(let i=0; i<k; i++) covers.push([a]);
+      groups.push({name:[a], covers:covers});
+    });
+  });
+  return {groups: groups.length ? groups : [{name:[], covers:[[]]}]};
+}
+/* 复用场景：用场景展开后的剧名/剧封套覆盖当前配置（之后仍可继续编辑） */
+function applySceneSingle(ct, g, id){
+  const key = (ct === 'bd-diff-cfg') ? 'bd' : ct;
+  const lg = key === 'bd' ? bd.diff : groupsOf(key)[g];
+  if(!lg) return;
+  const seed = sceneSetsSingle(scenes.find(s => s.id === id));
+  lg.sceneId = id;
+  lg.sceneMode = 'custom';
+  if(modeOf(key) === 'cover-only') lg.covers = seed.covers;
+  else lg.groups = seed.groups;
+  if(key === 'bd') renderBdDiffCfg(); else renderLangGroups(key);
+  toast('已按场景「' + sceneName(id) + '」填入剧名剧封套，可继续编辑');
+}
+/* 场景详情弹窗内容（只读） */
+function sceneDetailHtml(sc){
+  if(!sc) return '';
+  let h = '<div class="sd-name">' + sc.name + '</div>';
+  h += '<div class="sd-meta">' + (TYPE_TEXT[sc.type] || '') + (sc.desc ? ' · ' + sc.desc : '') + '</div>';
+  if(sc.type === 'cover_only'){
+    h += sc.covers.map((cv, ci) =>
+      '<div class="sd-grp"><div class="sd-grp-title">剧封套 ' + (ci+1) + '</div>' +
+      '<div class="sd-row"><span class="sd-label">剧封</span><div class="sd-chips">' + cv.map(a => '<span class="sd-chip">'+a+'</span>').join('') + '</div></div></div>'
+    ).join('');
+  }else{
+    h += sc.groups.map((grp, n) =>
+      '<div class="sd-grp"><div class="sd-grp-title">剧名套 ' + (n+1) + '</div>' +
+      '<div class="sd-row"><span class="sd-label">剧名</span><div class="sd-chips">' + grp.name.map(a => '<span class="sd-chip">'+a+'</span>').join('') + '</div></div>' +
+      grp.covers.map((cv, ci) => '<div class="sd-row"><span class="sd-label">剧封套'+(ci+1)+'</span><div class="sd-chips">' + cv.map(a => '<span class="sd-chip">'+a+'</span>').join('') + '</div></div>').join('') +
+      '</div>'
+    ).join('');
+  }
+  return h;
+}
+function openSceneDetail(id){
+  const sc = scenes.find(s => s.id === id);
+  if(!sc){ toast('请先选择场景', 'warning'); return; }
+  document.getElementById('sd-body').innerHTML = sceneDetailHtml(sc);
+  document.getElementById('scene-detail-modal').classList.add('show');
+}
+/* 复用场景弹窗 */
+let rsCtx = null;
+function openReuseScene(ct, g){
+  rsCtx = {ct:ct, g:g};
+  const mode = (ct === 'bd-diff-cfg') ? modeOf('bd') : modeOf(ct);
+  const sel = document.getElementById('rs-select');
+  sel.innerHTML = '<option value="">请选择场景</option>' + sceneOptsOf(mode).map(s => '<option value="'+s.id+'">'+s.name+'</option>').join('');
+  document.getElementById('reuse-scene-modal').classList.add('show');
+}
+function submitReuseScene(){
+  const v = document.getElementById('rs-select').value;
+  if(!v){ toast('请选择场景', 'error'); return; }
+  document.getElementById('reuse-scene-modal').classList.remove('show');
+  if(rsCtx) applySceneSingle(rsCtx.ct, rsCtx.g, parseInt(v));
+}
+/* 绑定「选择应用」下拉单选 */
+function initCfgSelects(ct){
+  const c = document.getElementById(ct);
+  if(!c) return;
+  const key = (ct === 'bd-diff-cfg') ? 'bd' : ct;
+  c.querySelectorAll('input[data-role="cfg"]').forEach(input => {
+    if(input._cfgBound) return;
+    input._cfgBound = true;
+    const panel = input.parentElement.querySelector('.ss-panel');
+    input.dataset.cur = input.value || '';
+    const render = kw => {
+      const k = (kw || '').trim().toLowerCase();
+      const list = ALL_APP_NAMES.filter(a => !k || a.toLowerCase().indexOf(k) >= 0);
+      panel.innerHTML = list.length
+        ? list.map(a => '<div class="ss-opt" data-v="'+a+'">'+a+'</div>').join('')
+        : '<div class="ss-empty">无匹配应用</div>';
+    };
+    input.addEventListener('focus', () => { input.value = ''; render(''); panel.classList.add('show'); placeSsPanel(input, panel); });
+    input.addEventListener('input', () => { panel.classList.add('show'); render(input.value); placeSsPanel(input, panel); });
+    input.addEventListener('blur', () => {
+      setTimeout(() => { panel.classList.remove('show'); input.value = input.dataset.cur || ''; }, 120);
+    });
+    panel.addEventListener('mousedown', e => {
+      const o = e.target.closest('.ss-opt');
+      if(!o) return;
+      e.preventDefault();
+      pickCfgValue(key, ct, input, o.getAttribute('data-v'));
+      panel.classList.remove('show');
+    });
+  });
+}
+/* 写入单个应用；剧名套选择后自动补齐空的剧封套 */
+function pickCfgValue(key, ct, input, v){
+  const g = parseInt(input.dataset.g), n = parseInt(input.dataset.n);
+  const kind = input.dataset.kind, ci = parseInt(input.dataset.c);
+  const lg = (key === 'bd' ? bd.diff : groupsOf(key)[g]);
+  let oldName = '';
+  if(kind === 'name' && modeOf(key) === 'name-cover' && lg.groups && lg.groups[n]) oldName = (lg.groups[n].name[0] || '');
+  setCfgArr(key, g, n, kind, ci, v ? [v] : []);
+  /* 剧名变更：空的剧封套、以及原本跟随旧剧名的剧封套一并跟随 */
+  if(kind === 'name' && modeOf(key) === 'name-cover' && lg.groups && lg.groups[n]){
+    const grp = lg.groups[n];
+    grp.covers.forEach((cv, i) => {
+      if(!cv.length || (oldName && cv[0] === oldName)) grp.covers[i] = v ? [v] : [];
+    });
+  }
+  if(key === 'bd') renderBdDiffCfg(); else renderLangGroups(key);
+}
+/* 语言组渲染：顶部语言行 + 场景模式（常用场景=选场景看详情 / 自定义场景=套编辑器，可复用场景） */
+function renderLangGroups(ct){
+  const groups = groupsOf(ct);
+  const mode = modeOf(ct);
+  const scOpts = sceneOptsOf(mode);
+  let html = '';
+  groups.forEach((lg, g) => {
+    const sm = sceneModeOf(lg);
+    html += '<div class="lg-block" data-g="'+g+'">';
+    html += '<div class="lg-top">' +
+      '<span class="lg-title">语言组 <span class="idx">'+(g+1)+'</span></span>' +
+      '<div class="lang-pick">语言 ' + msHtml(ct+'-lang-'+g) + '</div>' +
+      '<div class="lg-count-tip" data-g="'+g+'">'+langCountTip(lg, mode)+'</div>' +
+      '<div class="spacer"></div>' +
+      '<button class="link danger btn-del-lang" data-act="del-lang" data-g="'+g+'" '+(groups.length<=1?'disabled':'')+'>删除语言组</button>' +
+      '</div>';
+    html += '<div class="lg-body">';
+    if(mode === 'cover-only' && !lg.covers) lg.covers = [[]];
+    if(mode === 'name-cover' && !lg.groups) lg.groups = [{name:[], covers:[[]]}];
+    /* 场景模式 */
+    html += '<div class="mode-row">' +
+      '<span class="mr-label"><span class="req">*</span>场景模式</span>' +
+      '<div class="radio-group">' +
+        '<label class="radio-opt"><input type="radio" name="'+ct+'-sm-'+g+'" data-role="scene-mode" data-g="'+g+'" value="common" '+(sm==='common'?'checked':'')+'>常用场景</label>' +
+        '<label class="radio-opt"><input type="radio" name="'+ct+'-sm-'+g+'" data-role="scene-mode" data-g="'+g+'" value="custom" '+(sm==='custom'?'checked':'')+'>自定义场景</label>' +
+      '</div>' +
+    '</div>';
+    if(sm === 'common'){
+      html += '<div class="form-item lg-scene-item" data-g="'+g+'">' +
+        '<label class="form-label"><span class="req">*</span>选择场景</label>' +
+        '<div class="lg-scene-pick">' +
+          '<select class="ant-input" data-role="scene-pick" data-g="'+g+'">' +
+            '<option value="">请选择场景</option>' +
+            scOpts.map(s => '<option value="'+s.id+'" '+(lg.sceneId===s.id?'selected':'')+'>'+s.name+'</option>').join('') +
+          '</select>' +
+          '<button class="btn btn-outline btn-sm" data-act="scene-detail" data-g="'+g+'" '+(lg.sceneId?'':'disabled')+'>详情</button>' +
+        '</div>' +
+      '</div>';
+    }else{
+      html += '<div class="grp-top-row">' +
+        '<button class="btn btn-outline btn-sm" data-act="reuse-scene" data-g="'+g+'">复用场景</button>' +
+        (mode === 'name-cover'
+          ? '<button class="btn btn-primary btn-sm" data-act="add-group" data-g="'+g+'">+ 新增剧名套</button>' +
+            '<span class="grp-tip">每个剧名套代表一套独立剧名；每套剧名可对应多套使用该剧名的剧封</span>'
+          : '<span class="grp-tip">每个剧封套代表一套独立剧封，选择对应应用端</span>') +
+      '</div>';
+      html += customEditorHtml(ct, lg, g, mode);
+    }
+    if(mode === 'name-cover'){
+      html += '<div class="form-item fb-item" data-g="'+g+'">' +
+        '<label class="form-label"><span class="req">*</span>兜底剧名剧封</label>' +
+        '<div class="ss-wrap">' +
+          '<input class="ant-input ss-input" data-role="fb" data-g="'+g+'" value="'+(lg.fb || '')+'" placeholder="请选择应用端" autocomplete="off">' +
+          '<div class="ss-panel" id="'+ct+'-fb-panel-'+g+'"></div>' +
+        '</div>' +
+        '<div class="error">请选择兜底剧名剧封</div>' +
+      '</div>';
+    }
+    html += '</div></div>';
+  });
+  const c = document.getElementById(ct);
+  c.innerHTML = html;
+  groups.forEach((lg, g) => {
+    const used = new Set();
+    groups.forEach((x,i)=>{ if(i!==g) x.langs.forEach(l=>used.add(l)); });
+    const lk = ct+'-lang-'+g;
+    const li = initMs(lk, lk+'-c', lk+'-p', LANGUAGES, arr=>{
+      lg.langs = arr;
+      const tipEl = document.querySelector('#'+ct+' .lg-count-tip[data-g="'+g+'"]');
+      if(tipEl) tipEl.textContent = langCountTip(lg, modeOf(ct));
+    }, true);
+    li.setValue(lg.langs);
+    li.setDisabled([...used]);
+  });
+  initCfgSelects(ct);
+  initFbSelects(ct);
+}
+
+/* ================= 选择应用子页面 ================= */
+let pickerCtx = null; /* {ct, g, n, kind, c} */
+let pickerSel = [];
+let pickerAllowed = null; /* 剧封套选择时的可选应用范围（剧名已选应用） */
+let pGroupMs, pTypeMs, pPayMs;
+const pFilter = {name:'', groups:[], types:[], pays:[]};
+function getCfgArr(ct, g, n, kind, ci){
+  const lg = ct === 'bd' ? bd.diff : groupsOf(ct)[g];
+  if(modeOf(ct) === 'cover-only') return lg.covers[ci];
+  const grp = lg.groups[n];
+  return kind === 'name' ? grp.name : grp.covers[ci];
+}
+function setCfgArr(ct, g, n, kind, ci, arr){
+  const lg = ct === 'bd' ? bd.diff : groupsOf(ct)[g];
+  if(modeOf(ct) === 'cover-only'){ lg.covers[ci] = arr; return; }
+  const grp = lg.groups[n];
+  if(kind === 'name') grp.name = arr; else grp.covers[ci] = arr;
+}
+function renderPickerTags(){
+  const el = document.getElementById('p-tags');
+  document.getElementById('p-count').textContent = pickerSel.length;
+  if(!pickerSel.length){ el.innerHTML = '<span class="ps-empty">请选择应用端</span>'; return; }
+  el.innerHTML = pickerSel.map(a => '<span class="ps-chip">'+a+'</span>').join('');
+}
+function pFiltered(){
+  return APPS.filter(a => {
+    if(pFilter.name && !a.name.toLowerCase().includes(pFilter.name.trim().toLowerCase())) return false;
+    if(pFilter.groups.length && !pFilter.groups.includes(a.group)) return false;
+    if(pFilter.types.length && !pFilter.types.includes(a.type)) return false;
+    if(pFilter.pays.length && !pFilter.pays.includes(a.pay)) return false;
+    return true;
+  });
+}
+function renderPickerTable(){
+  const list = pFiltered();
+  const tbody = document.getElementById('p-tbody');
+  if(!list.length){
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><div class="empty-icon">📭</div><div>暂无数据</div></div></td></tr>';
+  }else{
+    tbody.innerHTML = list.map(a => {
+      const dis = pickerAllowed && !pickerAllowed.includes(a.name);
+      return '<tr class="'+(dis?'pick-disabled':'')+'">' +
+      '<td><input type="checkbox" data-id="'+a.id+'" '+(pickerSel.includes(a.name)?'checked':'')+(dis?' disabled':'')+'></td>' +
+      '<td>'+a.name+'</td><td>'+a.pay+'</td><td>'+a.group+'</td><td>'+a.type+'</td>' +
+      '</tr>';
+    }).join('');
+  }
+  const boxes = [...tbody.querySelectorAll('input[type=checkbox]:not([disabled])')];
+  document.getElementById('p-checkall').checked = boxes.length > 0 && boxes.every(b=>b.checked);
+  updateSelAllBtn();
+}
+/* 当前搜索结果中可选择的全部应用 */
+function pSelectable(){
+  return pFiltered().filter(a => !pickerAllowed || pickerAllowed.includes(a.name));
+}
+function updateSelAllBtn(){
+  const list = pSelectable();
+  const all = list.length > 0 && list.every(a => pickerSel.includes(a.name));
+  document.getElementById('p-select-all').textContent = all ? '取消跨页全选' : '跨页全选';
+}
+function openPicker(ct, g, n, kind, ci){
+  pickerCtx = {ct:ct, g:g, n:n, kind:kind, c:ci};
+  pickerAllowed = null;
+  /* 剧封套：可选范围仅限同组剧名已选应用 */
+  if(modeOf(ct) === 'name-cover' && kind === 'cover'){
+    const grp = groupsOf(ct)[g].groups[n];
+    if(grp) pickerAllowed = grp.name.slice();
+  }
+  pickerSel = getCfgArr(ct, g, n, kind, ci).slice();
+  document.getElementById('p-name').value = '';
+  pGroupMs.clear(); pTypeMs.clear(); pPayMs.clear();
+  pFilter.name=''; pFilter.groups=[]; pFilter.types=[]; pFilter.pays=[];
+  renderPickerTags();
+  renderPickerTable();
+  document.getElementById('picker-modal').classList.add('show');
+}
+
+/* ================= 校验 ================= */
+function markCfgErr(ct, g, n, kind, ci, msg){
+  const box = document.querySelector('#'+ct+' .cfg-box[data-g="'+g+'"][data-n="'+n+'"][data-kind="'+kind+'"][data-c="'+ci+'"]');
+  if(!box) return;
+  box.classList.add('invalid');
+  const err = box.parentElement.querySelector('.cfg-err');
+  if(err){ err.textContent = msg; err.classList.add('show'); }
+}
+function markGrpErr(ct, g, n, msg){
+  const card = document.querySelector('#'+ct+' .grp-card[data-g="'+g+'"][data-n="'+n+'"]');
+  if(!card) return;
+  card.classList.add('invalid');
+  const err = card.querySelector('.grp-err');
+  if(err){ err.textContent = msg; err.classList.add('show'); }
+}
+function markSceneErr(ct, g){
+  const item = document.querySelector('#'+ct+' .lg-scene-item[data-g="'+g+'"]');
+  if(item) item.classList.add('has-error');
+}
+function markFbErr(ct, g, msg){
+  const item = document.querySelector('#'+ct+' .fb-item[data-g="'+g+'"]');
+  if(!item) return;
+  item.classList.add('has-error');
+  const err = item.querySelector('.error');
+  if(err && msg) err.textContent = msg;
+}
+function dupMark(list){
+  const seen = new Map();
+  const out = [];
+  list.forEach(cfg => {
+    let x = Infinity, dup = false;
+    cfg.apps.forEach(a => {
+      if(seen.has(a)){ dup = true; x = Math.min(x, seen.get(a)); }
+      else seen.set(a, cfg.idx);
+    });
+    if(dup) out.push({cfg:cfg, x:x});
+  });
+  return out;
+}
+function validateLangGroups(ct){
+  renderLangGroups(ct); /* 重建以清除上一次标红 */
+  const groups = groupsOf(ct);
+  const mode = modeOf(ct);
+  let ok = true;
+  const seen = new Set();
+  groups.forEach(lg => lg.langs.forEach(l => {
+    if(seen.has(l)){ toast('语言组之间存在重复语言：'+l+'，请检查', 'error'); ok = false; }
+    seen.add(l);
+  }));
+  if(!ok) return false;
+  for(let g=0; g<groups.length; g++){
+    const lg = groups[g];
+    if(!lg.langs.length){ toast('语言组'+(g+1)+'：请选择语言', 'error'); return false; }
+    if(mode === 'name-cover' && !lg.fb){
+      markFbErr(ct, g, '请选择兜底剧名剧封'); ok = false;
+    }
+    /* 常用场景：只需选择场景，套数由场景决定 */
+    if(sceneModeOf(lg) === 'common'){
+      if(!lg.sceneId){ markSceneErr(ct, g); toast('语言组'+(g+1)+'：请选择场景', 'error'); return false; }
+      continue;
+    }
+    if(mode === 'cover-only'){
+      if(!lg.covers.length){ toast('语言组'+(g+1)+'：请至少添加一个剧封套', 'error'); ok = false; continue; }
+      lg.covers.forEach((cv, ci) => {
+        if(!cv.length){ markCfgErr(ct, g, 0, 'cover', ci, '请选择应用'); ok = false; }
+      });
+    }else{
+      if(!lg.groups.length){ toast('语言组'+(g+1)+'：请至少添加一个剧名套', 'error'); ok = false; continue; }
+      lg.groups.forEach((grp, n) => {
+        if(!grp.name.length){ markCfgErr(ct, g, n, 'name', -1, '请选择应用'); ok = false; }
+        if(!grp.covers.length){ markGrpErr(ct, g, n, '请至少添加一个剧封套'); ok = false; }
+        grp.covers.forEach((cv, ci) => {
+          if(!cv.length){ markCfgErr(ct, g, n, 'cover', ci, '请选择应用'); ok = false; }
+        });
+      });
+      dupMark(lg.groups.map((grp, n) => ({n:n, idx:n+1, apps:grp.name})))
+        .forEach(b => { markCfgErr(ct, g, b.cfg.n, 'name', -1, '与第'+b.x+'套包含应用有重复'); ok = false; });
+      lg.groups.forEach((grp, n) => {
+        const ns = [...new Set(grp.name)];
+        const cs = [...new Set([].concat.apply([], grp.covers))];
+        if(ns.length !== cs.length || !ns.every(a => cs.includes(a))){
+          markGrpErr(ct, g, n, '剧名-剧封套包含应用不相等'); ok = false;
+        }
+      });
+    }
+  }
+  if(!ok){ toast('校验未通过，请检查标红项', 'error'); return false; }
+  return true;
+}
+
+/* 语言组容器事件：场景模式 / 选择场景 / 场景详情 / 复用场景 / 编辑器增删 */
+['nb-lang-groups'].forEach(ct => {
+  const c = document.getElementById(ct);
+  c.addEventListener('change', e => {
+    const lgBlock = e.target.closest('.lg-block');
+    if(!lgBlock) return;
+    const g = parseInt(lgBlock.getAttribute('data-g'));
+    const groups = groupsOf(ct);
+    const lg = groups[g];
+    const md = modeOf(ct);
+    if(e.target.matches('input[data-role="scene-mode"]')){
+      lg.sceneMode = e.target.value;
+      if(lg.sceneMode === 'common'){
+        if(lg.sceneId){
+          const seed = sceneSeed(lg.sceneId);
+          if(md === 'cover-only') lg.covers = seed.covers || [[]];
+          else lg.groups = seed.groups || [{name:[], covers:[[]]}];
+        }
+      }else if(lg.sceneId){
+        const seed = sceneSetsSingle(scenes.find(s => s.id === lg.sceneId));
+        if(md === 'cover-only') lg.covers = seed.covers;
+        else lg.groups = seed.groups;
+      }
+      renderLangGroups(ct);
+    }else if(e.target.matches('select[data-role="scene-pick"]')){
+      const id = e.target.value ? parseInt(e.target.value) : null;
+      lg.sceneId = id;
+      if(id){
+        const seed = sceneSeed(id);
+        if(md === 'cover-only') lg.covers = seed.covers || [[]];
+        else lg.groups = seed.groups || [{name:[], covers:[[]]}];
+      }
+      renderLangGroups(ct);
+      if(id) toast('已选择场景「' + sceneName(id) + '」');
+    }
+  });
+  c.addEventListener('click', e => {
+    const t = e.target.closest('[data-act]');
+    if(!t || t.hasAttribute('disabled')) return;
+    const act = t.getAttribute('data-act');
+    const g = parseInt(t.getAttribute('data-g'));
+    const n = parseInt(t.getAttribute('data-n'));
+    const ci = parseInt(t.getAttribute('data-c'));
+    const groups = groupsOf(ct);
+    const lg = groups[g];
+    if(act === 'reuse-scene'){ openReuseScene(ct, g); return; }
+    if(act === 'scene-detail'){ openSceneDetail(lg.sceneId); return; }
+    if(act === 'del-lang'){
+      if(groups.length <= 1){ toast('至少保留一个语言组','warning'); return; }
+      groups.splice(g, 1);
+    }else if(act === 'add-group'){
+      lg.groups.push({name:[], covers:[[]]});
+    }else if(act === 'del-group'){
+      lg.groups.splice(n, 1);
+    }else if(act === 'add-cover'){
+      if(modeOf(ct) === 'cover-only') lg.covers.push([]);
+      else {
+        const grp = lg.groups[n];
+        grp.covers.push(grp.name.length ? [grp.name[0]] : []);
+      }
+    }else if(act === 'del-cover'){
+      if(modeOf(ct) === 'cover-only') lg.covers.splice(ci, 1);
+      else lg.groups[n].covers.splice(ci, 1);
+    }else return;
+    renderLangGroups(ct);
+  });
+});
+
+/* 场景详情 / 复用场景 弹窗关闭 */
+document.querySelectorAll('[data-close="scene-detail-modal"],[data-close="reuse-scene-modal"]').forEach(b => {
+  b.addEventListener('click', () => b.closest('.modal-mask').classList.remove('show'));
+});
+['scene-detail-modal','reuse-scene-modal'].forEach(id => {
+  const m = document.getElementById(id);
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('show'); });
+});
+document.getElementById('rs-ok').addEventListener('click', submitReuseScene);
+
+/* ================= 批量差异化（选择短剧；短剧具体到语言，差异化固定单组剧名/剧封套配置） ================= */
+function bdDefaultDiff(){
+  return {sceneId:null, sceneMode:'custom',
+    groups:[
+      {name:['ns_app'], covers:[['ns_app']]},
+      {name:['ns_官网'], covers:[['ns_官网']]},
+      {name:['iap小程序'], covers:[['iap小程序']]},
+      {name:['iaa小程序'], covers:[['iaa小程序']]},
+    ],
+    covers:[['ns_app'],['ns_官网'],['ns_h5']],
+  };
+}
+/* 空白的单组差异化配置（场景类型切换后使用） */
+function bdBlankDiff(){
+  return {sceneId:null, sceneMode:'custom', groups:[{name:[], covers:[[]]}], covers:[[]]};
+}
+const bd = {ids:'', diffType:'剧名剧封差异化', diff:bdDefaultDiff(), remark:''};
+/* 差异化配置（无语言组）：场景模式（常用场景 / 自定义场景） */
+function renderBdDiffCfg(){
+  const mode = modeOf('bd');
+  const lg = bd.diff;
+  const sm = sceneModeOf(lg);
+  if(mode === 'cover-only' && !lg.covers) lg.covers = [[]];
+  if(mode === 'name-cover' && !lg.groups) lg.groups = [{name:[], covers:[[]]}];
+  let html = '<div class="mode-row">' +
+    '<span class="mr-label"><span class="req">*</span>场景模式</span>' +
+    '<div class="radio-group">' +
+      '<label class="radio-opt"><input type="radio" name="bd-sm" data-role="scene-mode" data-g="0" value="common" '+(sm==='common'?'checked':'')+'>常用场景</label>' +
+      '<label class="radio-opt"><input type="radio" name="bd-sm" data-role="scene-mode" data-g="0" value="custom" '+(sm==='custom'?'checked':'')+'>自定义场景</label>' +
+    '</div>' +
+  '</div>';
+  if(sm === 'common'){
+    html += '<div class="form-item lg-scene-item" data-g="0">' +
+      '<label class="form-label"><span class="req">*</span>选择场景</label>' +
+      '<div class="lg-scene-pick">' +
+        '<select class="ant-input" data-role="scene-pick" data-g="0">' +
+          '<option value="">请选择场景</option>' +
+          sceneOptsOf(mode).map(s => '<option value="'+s.id+'" '+(lg.sceneId===s.id?'selected':'')+'>'+s.name+'</option>').join('') +
+        '</select>' +
+        '<button class="btn btn-outline btn-sm" data-act="scene-detail" data-g="0" '+(lg.sceneId?'':'disabled')+'>详情</button>' +
+      '</div>' +
+    '</div>';
+  }else{
+    html += '<div class="grp-top-row">' +
+      '<button class="btn btn-outline btn-sm" data-act="reuse-scene" data-g="0">复用场景</button>' +
+      (mode === 'name-cover'
+        ? '<button class="btn btn-primary btn-sm" data-act="add-group" data-g="0">+ 新增剧名套</button>' +
+          '<span class="grp-tip">每个剧名套代表一套独立剧名；每套剧名可对应多套使用该剧名的剧封</span>'
+        : '<span class="grp-tip">每个剧封套代表一套独立剧封，选择对应应用端</span>') +
+    '</div>';
+    html += customEditorHtml('bd', lg, 0, mode);
+  }
+  document.getElementById('bd-diff-cfg').innerHTML = html;
+  initCfgSelects('bd-diff-cfg');
+}
+function openBatchModal(){
+  bd.ids = '';
+  bd.diffType = '剧名剧封差异化';
+  bd.diff = bdDefaultDiff();
+  document.getElementById('bd-ids').value = '';
+  document.getElementById('fi-bd-ids').classList.remove('has-error');
+  document.querySelector('input[name="bd-diff-type"][value="剧名剧封差异化"]').checked = true;
+  document.getElementById('bd-remark').value = '';
+  renderBdDiffCfg();
+  document.getElementById('batch-modal').classList.add('show');
+}
+
+document.getElementById('btn-batch-stock').addEventListener('click', openBatchModal);
+/* 批量弹窗 · 场景类型切换（两类配置结构不同，切换即清空差异化详情） */
+document.querySelectorAll('input[name="bd-diff-type"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const v = document.querySelector('input[name="bd-diff-type"]:checked').value;
+    if(bd.diffType === v) return;
+    bd.diffType = v;
+    bd.diff = bdBlankDiff();
+    renderBdDiffCfg();
+    toast('已切换场景类型，差异化详情已清空');
+  });
+});
+document.querySelectorAll('[data-close="batch-modal"]').forEach(b => b.addEventListener('click', ()=>document.getElementById('batch-modal').classList.remove('show')));
+document.getElementById('batch-modal').addEventListener('click', e => { if(e.target === document.getElementById('batch-modal')) document.getElementById('batch-modal').classList.remove('show'); });
+/* 差异化配置容器：模式切换 / 场景下拉 / 套编辑器增删 / 选择应用 */
+const bdCfg = document.getElementById('bd-diff-cfg');
+bdCfg.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  if(!t) return;
+  const act = t.getAttribute('data-act');
+  const n = parseInt(t.getAttribute('data-n'));
+  const ci = parseInt(t.getAttribute('data-c'));
+  const lg = bd.diff;
+  if(act === 'add-group'){ lg.groups.push({name:[], covers:[[]]}); }
+  else if(act === 'del-group'){ lg.groups.splice(n, 1); }
+  else if(act === 'add-cover'){
+    if(modeOf('bd') === 'cover-only') lg.covers.push([]);
+    else { const grp = lg.groups[n]; grp.covers.push(grp.name.length ? [grp.name[0]] : []); }
+  }
+  else if(act === 'del-cover'){
+    if(modeOf('bd') === 'cover-only') lg.covers.splice(ci, 1); else lg.groups[n].covers.splice(ci, 1);
+  }
+  else if(act === 'reuse-scene'){ openReuseScene('bd-diff-cfg', 0); return; }
+  else if(act === 'scene-detail'){ openSceneDetail(bd.diff.sceneId); return; }
+  else return;
+  renderBdDiffCfg();
+});
+bdCfg.addEventListener('change', e => {
+  const md = modeOf('bd');
+  if(e.target.matches('input[data-role="scene-mode"]')){
+    bd.diff.sceneMode = e.target.value;
+    if(bd.diff.sceneMode === 'common'){
+      if(bd.diff.sceneId){
+        const seed = sceneSeed(bd.diff.sceneId);
+        if(md === 'cover-only') bd.diff.covers = seed.covers || [[]];
+        else bd.diff.groups = seed.groups || [{name:[], covers:[[]]}];
+      }
+    }else if(bd.diff.sceneId){
+      const seed = sceneSetsSingle(scenes.find(s => s.id === bd.diff.sceneId));
+      if(md === 'cover-only') bd.diff.covers = seed.covers;
+      else bd.diff.groups = seed.groups;
+    }
+    renderBdDiffCfg();
+  }else if(e.target.matches('select[data-role="scene-pick"]')){
+    const id = e.target.value ? parseInt(e.target.value) : null;
+    bd.diff.sceneId = id;
+    if(id){
+      const seed = sceneSeed(id);
+      if(md === 'cover-only') bd.diff.covers = seed.covers || [[]];
+      else bd.diff.groups = seed.groups || [{name:[], covers:[[]]}];
+    }
+    renderBdDiffCfg();
+    if(id) toast('已选择场景「' + sceneName(id) + '」');
+  }
+});
+/* 批量差异化校验（单组配置） */
+function validateBdDiff(){
+  renderBdDiffCfg(); /* 重建以清除上一次标红 */
+  const mode = modeOf('bd');
+  const lg = bd.diff;
+  let ok = true;
+  if(sceneModeOf(lg) === 'common'){
+    if(!lg.sceneId){ markSceneErr('bd-diff-cfg', 0); toast('请选择场景', 'error'); return false; }
+    return true;
+  }
+  if(mode === 'cover-only'){
+    if(!lg.covers.length){ toast('请至少添加一个剧封套', 'error'); ok = false; }
+    lg.covers.forEach((cv, ci) => {
+      if(!cv.length){ markCfgErr('bd-diff-cfg', 0, 0, 'cover', ci, '请选择应用'); ok = false; }
+    });
+  }else{
+    if(!lg.groups.length){ toast('请至少添加一个剧名套', 'error'); ok = false; }
+    lg.groups.forEach((grp, n) => {
+      if(!grp.name.length){ markCfgErr('bd-diff-cfg', 0, n, 'name', -1, '请选择应用'); ok = false; }
+      if(!grp.covers.length){ markGrpErr('bd-diff-cfg', 0, n, '请至少添加一个剧封套'); ok = false; }
+      grp.covers.forEach((cv, ci) => {
+        if(!cv.length){ markCfgErr('bd-diff-cfg', 0, n, 'cover', ci, '请选择应用'); ok = false; }
+      });
+    });
+    dupMark(lg.groups.map((grp, n) => ({n:n, idx:n+1, apps:grp.name})))
+      .forEach(b => { markCfgErr('bd-diff-cfg', 0, b.cfg.n, 'name', -1, '与第'+b.x+'套包含应用有重复'); ok = false; });
+    lg.groups.forEach((grp, n) => {
+      const ns = [...new Set(grp.name)];
+      const cs = [...new Set([].concat.apply([], grp.covers))];
+      if(ns.length !== cs.length || !ns.every(a => cs.includes(a))){
+        markGrpErr('bd-diff-cfg', 0, n, '剧名-剧封套包含应用不相等'); ok = false;
+      }
+    });
+  }
+  if(!ok){ toast('校验未通过，请检查标红项', 'error'); return false; }
+  return true;
+}
+document.getElementById('bd-submit').addEventListener('click', ()=>{
+  bd.ids = document.getElementById('bd-ids').value.trim();
+  const ids = bd.ids ? bd.ids.split(/[,，\s]+/).map(x=>x.trim()).filter(Boolean) : [];
+  if(!ids.length){ document.getElementById('fi-bd-ids').classList.add('has-error'); toast('请输入短剧ID','error'); return; }
+  document.getElementById('fi-bd-ids').classList.remove('has-error');
+  if(!validateBdDiff()) return;
+  document.getElementById('batch-modal').classList.remove('show');
+  toast('批量差异化工单创建成功：' + ids.length + ' 部短剧');
+});
+
+
+/* ================= 状态 tab ================= */
+document.querySelectorAll('.stab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.stab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    listFilter.status = t.getAttribute('data-status');
+    renderTable();
+  });
+});
+
+/* ================= 筛选 ================= */
+document.getElementById('btn-expand').addEventListener('click', () => {
+  const ex = document.getElementById('sf-expanded');
+  const show = ex.style.display === 'none';
+  ex.style.display = show ? '' : 'none';
+  document.getElementById('btn-expand').textContent = show ? '收起' : '展开';
+});
+document.getElementById('btn-search').addEventListener('click', ()=>{
+  listFilter.priority = [...document.querySelectorAll('#f-priority input:checked')].map(i=>i.value);
+  listFilter.drama = document.getElementById('f-drama').value;
+  listFilter.form = document.getElementById('f-form').value;
+  listFilter.series = document.getElementById('f-series').value;
+  listFilter.creator = document.getElementById('f-creator').value;
+  renderTable();
+  toast('查询完成');
+});
+document.getElementById('btn-reset').addEventListener('click', ()=>{
+  document.querySelectorAll('#f-priority input').forEach(i=>{ i.checked = true; });
+  document.getElementById('f-drama').value = '';
+  document.getElementById('f-form').value = '';
+  document.getElementById('f-series').value = '';
+  document.getElementById('f-creator').value = '';
+  listFilter.priority=['P0+','P0','P1','P2','其他']; listFilter.drama=''; listFilter.form=''; listFilter.series=''; listFilter.creator='';
+  renderTable();
+  toast('已重置');
+});
+
+/* ================= 新建剧本抽屉 ================= */
+let editingDrama = null; /* 编辑中的剧本编号，null=新建 */
+function openNb(no){
+  editingDrama = no || null;
+  const d = editingDrama ? dramas.find(x=>x.no===editingDrama) : null;
+  document.getElementById('nb-title').textContent = editingDrama ? '编辑剧本' : '新建剧本';
+  document.getElementById('cb-need-diff').checked = false;
+  document.getElementById('diff-body').classList.remove('show');
+  document.getElementById('nb-remark').value = '';
+  nbCw.needDiff = false;
+  nbCw.diffType = '剧名剧封差异化';
+  document.querySelector('input[name="nb-diff-type"][value="剧名剧封差异化"]').checked = true;
+  nbCw.langGroups = [
+    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', ...sceneSeed(1)},
+    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', groups:singleSets(CUSTOM_SETS)},
+  ];
+  nbCw.coverLangGroups = [
+    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', ...sceneSeed(5)},
+  ];
+  renderLangGroups('nb-lang-groups');
+  document.getElementById('nb-drawer').classList.add('show');
+}
+function closeNb(){ document.getElementById('nb-drawer').classList.remove('show'); }
+document.getElementById('btn-create').addEventListener('click', ()=>openNb());
+document.getElementById('nb-close').addEventListener('click', closeNb);
+document.getElementById('nb-cancel').addEventListener('click', closeNb);
+document.getElementById('nb-drawer').addEventListener('click', e => { if(e.target === document.getElementById('nb-drawer')) closeNb(); });
+document.getElementById('btn-add-lang-nb').addEventListener('click', ()=>{
+  if(modeOf('nb-lang-groups') === 'cover-only') nbCw.coverLangGroups.push({langs:[], sceneId:null, sceneMode:'common', fb:'', covers:[[]]});
+  else nbCw.langGroups.push({langs:[], sceneId:null, sceneMode:'common', fb:'', groups:[{name:[], covers:[[]]}]});
+  renderLangGroups('nb-lang-groups');
+});
+/* 场景类型切换：两类配置结构/交互完全不同，切换时清空已配置的差异化详情 */
+function resetNbDiffDetail(){
+  const blank = () => ({langs:[], sceneId:null, sceneMode:'common', fb:'', groups:[{name:[], covers:[[]]}], covers:[[]]});
+  nbCw.langGroups = [blank()];
+  nbCw.coverLangGroups = [blank()];
+}
+document.querySelectorAll('input[name="nb-diff-type"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const v = document.querySelector('input[name="nb-diff-type"]:checked').value;
+    const changed = (nbCw.diffType !== v);
+    nbCw.diffType = v;
+    if(changed){ resetNbDiffDetail(); toast('已切换场景类型，差异化详情已清空'); }
+    renderLangGroups('nb-lang-groups');
+  });
+});
+document.getElementById('cb-need-diff').addEventListener('change', e => {
+  nbCw.needDiff = e.target.checked;
+  document.getElementById('diff-body').classList.toggle('show', e.target.checked);
+});
+document.getElementById('nb-confirm').addEventListener('click', () => {
+  if(nbCw.needDiff && !validateLangGroups('nb-lang-groups')) return;
+  toast(editingDrama ? '剧本保存成功' : '剧本创建成功');
+  closeNb();
+});
+
+/* 折叠模块（锁定模块不支持展开） */
+document.querySelectorAll('.module-head').forEach(head => {
+  head.addEventListener('click', () => {
+    const module = head.parentElement;
+    if(module.classList.contains('module-locked')) return;
+    const collapsed = module.classList.toggle('collapsed');
+    const toggle = head.querySelector('.module-toggle');
+    toggle.innerHTML = collapsed ? '展开 <span class="arrow">▾</span>' : '收起 <span class="arrow">▴</span>';
+  });
+});
+
+/* ================= 初始化 ================= */
+document.addEventListener('DOMContentLoaded', () => {
+  pGroupMs = initMs('p-group-box','p-group-content','p-group-panel', GROUP_OPTS, arr=>{ pFilter.groups = arr; });
+  pTypeMs  = initMs('p-type-box','p-type-content','p-type-panel', TYPE_OPTS, arr=>{ pFilter.types = arr; });
+  pPayMs   = initMs('p-pay-box','p-pay-content','p-pay-panel', PAY_OPTS, arr=>{ pFilter.pays = arr; });
+
+  /* picker 取消/×/遮罩关闭 */
+document.querySelectorAll('[data-close="picker-modal"]').forEach(b => b.addEventListener('click', ()=>document.getElementById('picker-modal').classList.remove('show')));
+document.getElementById('picker-modal').addEventListener('click', e => { if(e.target === document.getElementById('picker-modal')) document.getElementById('picker-modal').classList.remove('show'); });
+  document.getElementById('p-search').addEventListener('click', ()=>{
+    pFilter.name = document.getElementById('p-name').value;
+    renderPickerTable();
+  });
+  document.getElementById('p-reset').addEventListener('click', ()=>{
+    document.getElementById('p-name').value = '';
+    pGroupMs.clear(); pTypeMs.clear(); pPayMs.clear();
+    pFilter.name=''; pFilter.groups=[]; pFilter.types=[]; pFilter.pays=[];
+    renderPickerTable();
+  });
+  document.getElementById('p-tbody').addEventListener('click', e => {
+    const cb = e.target.closest('input[type=checkbox]');
+    if(!cb) return;
+    const app = APPS.find(a => a.id === cb.getAttribute('data-id'));
+    if(cb.checked){ if(!pickerSel.includes(app.name)) pickerSel.push(app.name); }
+    else pickerSel = pickerSel.filter(v => v !== app.name);
+    renderPickerTags();
+    const boxes = [...document.querySelectorAll('#p-tbody input[type=checkbox]')];
+    document.getElementById('p-checkall').checked = boxes.length > 0 && boxes.every(b=>b.checked);
+  });
+  document.getElementById('p-checkall').addEventListener('change', e => {
+    const checked = e.target.checked;
+    document.querySelectorAll('#p-tbody input[type=checkbox]').forEach(cb => {
+      if(cb.disabled) return;
+      const app = APPS.find(a => a.id === cb.getAttribute('data-id'));
+      cb.checked = checked;
+      if(checked){ if(!pickerSel.includes(app.name)) pickerSel.push(app.name); }
+      else pickerSel = pickerSel.filter(v => v !== app.name);
+    });
+    renderPickerTags();
+  });
+  document.getElementById('p-ok').addEventListener('click', () => {
+    if(!pickerCtx) return;
+    const arr = pickerSel.slice();
+    setCfgArr(pickerCtx.ct, pickerCtx.g, pickerCtx.n, pickerCtx.kind, pickerCtx.c, arr);
+    if(modeOf(pickerCtx.ct) === 'name-cover'){
+      const grp = groupsOf(pickerCtx.ct)[pickerCtx.g].groups[pickerCtx.n];
+      if(grp){
+        if(pickerCtx.kind === 'name'){
+          /* 剧名变更：剧封应用收敛至剧名范围内；第一套剧封为空时默认填入剧名应用 */
+          grp.covers = grp.covers.map(cv => cv.filter(a => arr.includes(a)));
+          if(grp.covers.length && !grp.covers[0].length) grp.covers[0] = arr.slice();
+        }else if(pickerCtx.kind === 'cover'){
+          /* 剧封套选择：其他剧封套中已被本套选择的应用自动移除 */
+          grp.covers.forEach((cv, i) => {
+            if(i !== pickerCtx.c) grp.covers[i] = cv.filter(a => !arr.includes(a));
+          });
+        }
+      }
+    }
+    if(pickerCtx.ct === 'bd'){ renderBdDiffCfg(); }
+    else{ renderLangGroups(pickerCtx.ct); }
+    document.getElementById('picker-modal').classList.remove('show');
+  });
+  /* 跨页全选：当前搜索结果全部应用 选中/清空 */
+  document.getElementById('p-select-all').addEventListener('click', () => {
+    const list = pSelectable();
+    if(!list.length) return;
+    const all = list.every(a => pickerSel.includes(a.name));
+    if(all){
+      const names = new Set(list.map(a => a.name));
+      pickerSel = pickerSel.filter(v => !names.has(v));
+    }else{
+      list.forEach(a => { if(!pickerSel.includes(a.name)) pickerSel.push(a.name); });
+    }
+    renderPickerTags();
+    renderPickerTable();
+  });
+
+  /* 未开放菜单 */
+  document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
+    el.addEventListener('click', () => toast('新版「'+el.getAttribute('data-page')+'」暂未开放，可访问旧版 demo 查看', 'warning'));
+  });
+
+  renderTable();
+});
+</script>
+</body>
+</html>
