@@ -162,12 +162,15 @@ input[type=checkbox],input[type=radio]{accent-color:var(--brand);cursor:pointer;
 .cw-panel{display:none;}
 .cw-panel.show{display:block;}
 .cw-cols{display:flex;gap:40px;align-items:flex-start;}
-.cw-col-left{width:284px;flex-shrink:0;}
+.cw-col-left{width:320px;flex-shrink:0;}
 .cw-col-right{flex:1;min-width:0;}
 .radio-group{display:flex;gap:24px;flex-wrap:wrap;}
 .radio-opt{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;color:var(--text);}
 .env-list{display:flex;flex-direction:column;gap:12px;}
 .env-item{display:flex;flex-direction:column;gap:8px;}
+/* 差异化需求锁定：本地化/海报固定勾选，不可取消 */
+.env-item.locked > label{cursor:not-allowed;color:var(--text-2);}
+.env-item.locked > label::after{content:'随差异化需求锁定';margin-left:6px;font-size:11px;color:var(--brand);background:var(--brand-light);border-radius:3px;padding:0 5px;line-height:16px;display:inline-block;}
 .env-item > label{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--text);cursor:pointer;}
 .env-sub{margin-left:24px;display:flex;flex-direction:column;gap:12px;border-left:2px solid var(--fill-2);padding-left:16px;}
 .env-sub .sub-row{display:flex;align-items:flex-start;gap:10px;}
@@ -202,6 +205,24 @@ input[type=checkbox],input[type=radio]{accent-color:var(--brand);cursor:pointer;
 .grp-top-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
 .grp-tip{font-size:12px;color:var(--text-3);}
 /* 语言 hover tooltip */
+/* ---------- 左列差异化详情（正片）：语言组 → 剧名套 → 剧封套 ---------- */
+.ddp-lg{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--fill-1);}
+.ddp-lg:last-child{margin-bottom:0;}
+.ddp-lg-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;line-height:1.5;}
+.ddp-lg-title .langs{display:block;font-weight:400;color:var(--text-3);font-size:11.5px;margin-top:2px;word-break:break-all;}
+.ddp-set{border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:8px;background:#fff;}
+.ddp-set:last-child{margin-bottom:0;}
+.ddp-set-title{font-size:11px;color:var(--text-3);margin-bottom:6px;}
+.ddp-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;min-width:0;}
+.ddp-row:last-child{margin-bottom:0;}
+.ddp-lab{flex:none;width:50px;font-size:11.5px;color:var(--text-3);}
+.ddp-apps-wrap{flex:1;min-width:0;display:flex;align-items:center;gap:6px;cursor:default;}
+.ddp-apps{flex:1;min-width:0;display:flex;gap:4px;overflow:hidden;white-space:nowrap;}
+.ddp-apps .tag{flex:none;font-size:11px;line-height:18px;padding:1px 6px;}
+.ddp-more{flex:none;font-size:11.5px;color:var(--brand);white-space:nowrap;}
+/* 截断时右侧渐隐，提示还有内容 */
+.ddp-apps-wrap.truncated .ddp-apps{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 14px),rgba(0,0,0,0));mask-image:linear-gradient(90deg,#000 calc(100% - 14px),rgba(0,0,0,0));}
+#ddp-tip{position:fixed;z-index:900;background:#1f2329;color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.8;max-width:360px;pointer-events:none;display:none;box-shadow:0 8px 30px rgba(0,0,0,.25);}
 #app-tip{position:fixed;z-index:500;background:#1f2329;color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.8;max-width:380px;pointer-events:none;display:none;box-shadow:0 8px 30px rgba(0,0,0,.25);}
 .cfg-btn.disabled{border-color:#d9d9d9;color:#c0c6cc;background:#fafafa;cursor:not-allowed;}
 .cfg-btn.disabled:hover{background:#fafafa;}
@@ -497,6 +518,10 @@ input[type=checkbox],input[type=radio]{accent-color:var(--brand);cursor:pointer;
             </select>
             <div class="error">请选择已有剧本</div>
           </div>
+          <div class="form-item" id="fi-drama-diff" style="display:none;">
+            <label class="form-label">差异化详情</label>
+            <div id="drama-diff-panel"></div>
+          </div>
         </div>
         <!-- 右列：随制作内容切换 -->
         <div class="cw-col-right">
@@ -742,6 +767,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--brand);cursor:pointer;
   </div>
 </div>
 
+<div id="ddp-tip"></div>
 <div id="lang-tip"></div>
 <div id="app-tip"></div>
 <div id="toast"></div>
@@ -1084,6 +1110,99 @@ function appDisplayHtml(apps, chipClass){
   const html = apps.map(a => appChipHtml(a, chipClass)).join('');
   return html || '<span style="color:#bfbfbf;font-size:12px;">—</span>';
 }
+/* ================= 左列差异化详情（已有剧本 → 语言组 → 剧名套 → 剧封套） ================= */
+const DRAMA_DIFFS = {
+  '闪婚老公是大佬': [
+    {langs:LANGUAGES.slice(0,9), sceneId:2, sceneMode:'common', ...sceneSeed(2)},
+    {langs:LANGUAGES.slice(9), sceneId:3, sceneMode:'common', ...sceneSeed(3)},
+  ],
+  '重生之都市仙尊': [
+    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', ...sceneSeed(1)},
+    {langs:LANGUAGES.slice(9), sceneMode:'custom', groups:[
+      {name:['ns_app','nt_app','fs_app','ns_官网'], covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
+      {name:['app_iaa马甲包','ns_h5'], covers:[['app_iaa马甲包'],['ns_h5']]},
+      {name:['iap小程序','iaa小程序'], covers:[['iap小程序'],['iaa小程序']]},
+    ]},
+  ],
+  '隐龙出狱': [
+    {langs:LANGUAGES.slice(), sceneId:4, sceneMode:'common', ...sceneSeed(4)},
+  ],
+  '大佬的千亿新娘': [
+    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', ...sceneSeed(5)},
+  ],
+};
+/* 一行应用：超出截断 + 「共x个」，hover 展示全部 */
+function ddpAppsRow(label, apps){
+  const list = (apps || []).slice();
+  if(!list.length){
+    return '<div class="ddp-row"><span class="ddp-lab">'+label+'</span>' +
+      '<div class="ddp-apps-wrap"><div class="ddp-apps"><span style="color:var(--text-3);font-size:12px;">—</span></div></div></div>';
+  }
+  return '<div class="ddp-row"><span class="ddp-lab">'+label+'</span>' +
+    '<div class="ddp-apps-wrap" data-tip="'+list.join('、')+'">' +
+      '<div class="ddp-apps">'+list.map(a => '<span class="tag tag-blue">'+a+'</span>').join('')+'</div>' +
+      '<span class="ddp-more">共'+list.length+'个</span>' +
+    '</div></div>';
+}
+function ddpLgHtml(d, li){
+  const langs = (d.langs || []).join('、') || '—';
+  let body = '';
+  if(d.groups && d.groups.length){
+    d.groups.forEach((grp, n) => {
+      body += '<div class="ddp-set"><div class="ddp-set-title">剧名套 '+(n+1)+'</div>' +
+        ddpAppsRow('剧名', grp.name) +
+        (grp.covers || []).map((cv, ci) => ddpAppsRow('剧封套'+(ci+1), cv)).join('') +
+      '</div>';
+    });
+  }else{
+    body = (d.covers || []).map((cv, ci) => ddpAppsRow('剧封套'+(ci+1), cv)).join('');
+  }
+  return '<div class="ddp-lg">' +
+    '<div class="ddp-lg-title">语言组 '+(li+1)+'<span class="langs">'+langs+'</span></div>' +
+    body + '</div>';
+}
+function renderDramaDiffPanel(){
+  const el = document.getElementById('drama-diff-panel');
+  if(!el) return;
+  const diffs = DRAMA_DIFFS[cw.drama] || [];
+  el.innerHTML = diffs.length
+    ? diffs.map((d, i) => ddpLgHtml(d, i)).join('')
+    : '<span style="color:var(--text-3);font-size:13px;">无差异化需求</span>';
+  /* 没被截断就不显示「共x个」 */
+  el.querySelectorAll('.ddp-apps-wrap').forEach(w => {
+    const box = w.querySelector('.ddp-apps');
+    const more = w.querySelector('.ddp-more');
+    if(!box || !more) return;
+    if(box.scrollWidth <= box.clientWidth + 1){ more.style.display = 'none'; }
+    else { w.classList.add('truncated'); }
+  });
+}
+/* 差异化应用 tooltip */
+(function(){
+  const tip = document.getElementById('ddp-tip');
+  document.addEventListener('mouseover', e => {
+    const t = e.target.closest && e.target.closest('.ddp-apps-wrap');
+    if(t && t.getAttribute('data-tip')){
+      tip.textContent = t.getAttribute('data-tip');
+      tip.style.display = 'block';
+      moveTip(e);
+    }
+  });
+  document.addEventListener('mousemove', e => { if(tip.style.display === 'block') moveTip(e); });
+  document.addEventListener('mouseout', e => {
+    if(e.target.closest && e.target.closest('.ddp-apps-wrap')) tip.style.display = 'none';
+  });
+  function moveTip(e){
+    const pad = 14;
+    let x = e.clientX + pad, y = e.clientY + pad;
+    const r = tip.getBoundingClientRect();
+    if(x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+    if(y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  }
+})();
+
 /* ================= 创建工单 ================= */
 const cw = {
   type:'短剧生产', content:'正片', diffType:'剧名剧封差异化', drama:'闪婚老公是大佬',
@@ -1620,9 +1739,19 @@ function openCreate(){
 }
 function closeCreate(){ document.getElementById('create-modal').classList.remove('show'); }
 /* 环节勾选联动：本地化/海报子项随勾选显隐 */
+/* 正片 + 已选剧本有差异化需求 → 本地化/海报 固定勾选且不可取消 */
+function envLocked(){
+  return cw.content === '正片' && (DRAMA_DIFFS[cw.drama] || []).length > 0;
+}
 function applyEnvLock(){
   const loc = document.getElementById('env-loc');
   const poster = document.getElementById('env-poster');
+  const lock = envLocked();
+  if(lock){ loc.checked = true; poster.checked = true; }
+  const locItem = loc.closest('.env-item');
+  const posterItem = poster.closest('.env-item');
+  if(locItem) locItem.classList.toggle('locked', lock);
+  if(posterItem) posterItem.classList.toggle('locked', lock);
   document.getElementById('env-loc-sub').style.display = loc.checked ? '' : 'none';
   document.getElementById('env-poster-sub').style.display = poster.checked ? '' : 'none';
 }
@@ -1632,6 +1761,9 @@ function switchContent(v){
   syncContentRadios();
   document.getElementById('panel-diff').classList.toggle('show', v==='剧名剧封');
   document.getElementById('panel-prod').classList.toggle('show', v!=='剧名剧封');
+  /* 左列差异化详情：仅正片展示（预告片/剧名剧封不展示） */
+  document.getElementById('fi-drama-diff').style.display = (v === '正片') ? '' : 'none';
+  renderDramaDiffPanel();
   applyEnvLock();
   renderAll();
 }
@@ -1665,6 +1797,14 @@ document.getElementById('env-loc').addEventListener('change', e => {
 });
 document.getElementById('env-poster').addEventListener('change', e => {
   document.getElementById('env-poster-sub').style.display = e.target.checked ? '' : 'none';
+});
+/* 有差异化需求时，本地化/海报不允许取消 */
+['env-loc','env-poster'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => {
+    if(!envLocked()) return;
+    applyEnvLock();
+    toast('该环节已随差异化需求固定勾选，不可取消', 'warning');
+  });
 });
 
 /* 语言组容器事件：场景模式 / 选择场景 / 场景详情 / 复用场景 / 编辑器增删 */
@@ -1751,7 +1891,7 @@ document.getElementById('btn-submit').addEventListener('click', () => {
   toast('工单创建成功');
   closeCreate();
 });
-document.getElementById('cw-drama').addEventListener('change', e => { cw.drama = e.target.value; applyEnvLock(); });
+document.getElementById('cw-drama').addEventListener('change', e => { cw.drama = e.target.value; renderDramaDiffPanel(); applyEnvLock(); });
 
 /* ================= 批量差异化（选择短剧；短剧具体到语言，差异化固定单组剧名/剧封套配置） ================= */
 function bdDefaultDiff(){
