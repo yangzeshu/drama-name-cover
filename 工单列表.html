@@ -326,14 +326,17 @@ input[type=checkbox],input[type=radio]{accent-color:var(--brand);cursor:pointer;
 .ss-opt:hover{background:var(--fill-2);}
 .ss-empty{padding:10px 12px;font-size:12px;color:var(--text-3);text-align:center;}
 .ss-sub{float:right;margin-left:10px;color:var(--text-3);font-size:12px;font-style:normal;}
-/* 选择应用：多选（chips + 搜索框 + 勾选面板） */
-.cfg-search{flex:0 0 96px;height:26px;margin:2px 0;border:none;border-left:1px solid var(--border);padding:0 0 0 8px;font-size:12px;background:transparent;outline:none;color:var(--text);}
-.cfg-search::placeholder{color:#bfbfbf;}
-.cfg-x{margin-left:5px;font-style:normal;font-size:12px;cursor:pointer;opacity:.55;}
-.cfg-x:hover{opacity:1;}
-.ss-opt.checked{color:var(--brand);background:var(--brand-light);}
-.ss-check{display:inline-block;width:14px;font-style:normal;color:var(--brand);opacity:0;}
-.ss-opt.checked .ss-check{opacity:1;}
+/* ---------- 选择应用：常规多选下拉（标签 + 输入筛选 + 全选） ---------- */
+.sel-wrap{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:1px 0;cursor:text;}
+.sel-tag{display:inline-flex;align-items:center;height:22px;padding:0 6px;background:var(--brand-light);color:var(--brand);border-radius:4px;font-size:12px;white-space:nowrap;}
+.sel-x{margin-left:4px;font-style:normal;font-size:12px;cursor:pointer;opacity:.6;line-height:1;}
+.sel-x:hover{opacity:1;}
+.sel-input{flex:1;min-width:64px;height:24px;border:none;background:transparent;outline:none;font-size:13px;color:var(--text);padding:0;}
+.sel-input::placeholder{color:#bfbfbf;}
+.sel-all,.sel-opt{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:13px;color:var(--text);cursor:pointer;}
+.sel-all{border-bottom:1px solid var(--border);}
+.sel-all:hover,.sel-opt:hover{background:var(--fill-2);}
+.sel-all input,.sel-opt input{margin:0;pointer-events:none;accent-color:var(--brand);}
 /* ---------- 场景详情 / 复用场景 弹窗 ---------- */
 #scene-detail-modal,#reuse-scene-modal{z-index:1500;}
 .sd-name{font-size:14px;font-weight:600;margin-bottom:4px;}
@@ -1130,15 +1133,14 @@ function msHtml(uid){
     '<span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>' +
     '<div class="ms-panel" id="'+uid+'-p"></div></div>';
 }
-/* 选择应用：下拉多选（chips + 输入筛选 + 勾选面板），值为应用名称数组 */
+/* 选择应用：常规多选下拉（标签 + 输入筛选 + 全选），值为应用名称数组 */
 function cfgBox(g, n, kind, ci, apps){
   const list = apps || [];
-  const chips = list.length
-    ? list.map(a => '<span class="cfg-chip">'+a+'<i class="cfg-x" data-v="'+a+'">×</i></span>').join('')
-    : '<span class="cfg-ph">请选择应用</span>';
+  const tags = list.map(a => '<span class="sel-tag">'+a+'<i class="sel-x" data-v="'+a+'">×</i></span>').join('');
   return '<div class="cfg-box" data-g="'+g+'" data-n="'+n+'" data-kind="'+kind+'" data-c="'+ci+'">' +
-    '<div class="cfg-chips">'+chips+'</div>' +
-    '<input class="cfg-search" data-role="cfg" placeholder="搜索" autocomplete="off">' +
+    '<div class="sel-wrap">' + tags +
+      '<input class="sel-input" data-role="cfg" placeholder="'+(list.length ? '' : '请选择应用')+'" autocomplete="off">' +
+    '</div>' +
     '<div class="ss-panel"></div>' +
   '</div>';
 }
@@ -1296,7 +1298,7 @@ function bindSsScroll(){
     });
   }, true);
 }
-/* 绑定「选择应用」下拉多选：点击选项即勾选/取消，面板保持打开；支持输入筛选 */
+/* 绑定「选择应用」常规多选下拉：勾选保持打开、支持输入筛选与全选 */
 function initCfgSelects(ct){
   const c = document.getElementById(ct);
   if(!c) return;
@@ -1307,53 +1309,69 @@ function initCfgSelects(ct){
     box._cfgBound = true;
     const g = parseInt(box.dataset.g), n = parseInt(box.dataset.n);
     const kind = box.dataset.kind, ci = parseInt(box.dataset.c);
+    const wrap = box.querySelector('.sel-wrap');
     const input = box.querySelector('input[data-role="cfg"]');
     const panel = box.querySelector('.ss-panel');
-    const chipsEl = box.querySelector('.cfg-chips');
     const getArr = () => getCfgArr(key, g, n, kind, ci) || [];
-    const renderChips = () => {
+    const filtered = () => {
+      const k = (input.value || '').trim().toLowerCase();
+      return ALL_APP_NAMES.filter(a => !k || a.toLowerCase().indexOf(k) >= 0);
+    };
+    const renderTags = () => {
       const arr = getArr();
-      chipsEl.innerHTML = arr.length
-        ? arr.map(a => '<span class="cfg-chip">'+a+'<i class="cfg-x" data-v="'+a+'">×</i></span>').join('')
-        : '<span class="cfg-ph">请选择应用</span>';
+      wrap.querySelectorAll('.sel-tag').forEach(t => t.remove());
+      wrap.insertAdjacentHTML('afterbegin', arr.map(a => '<span class="sel-tag">'+a+'<i class="sel-x" data-v="'+a+'">×</i></span>').join(''));
+      input.placeholder = arr.length ? '' : '请选择应用';
     };
-    const renderPanel = kw => {
-      const k = (kw || '').trim().toLowerCase();
-      const sel = getArr();
-      const list = ALL_APP_NAMES.filter(a => !k || a.toLowerCase().indexOf(k) >= 0);
-      panel.innerHTML = list.length
-        ? list.map(a => '<div class="ss-opt'+(sel.indexOf(a) >= 0 ? ' checked' : '')+'" data-v="'+a+'"><i class="ss-check">✓</i>'+a+'</div>').join('')
-        : '<div class="ss-empty">无匹配应用</div>';
+    const renderPanel = () => {
+      const sel = getArr(), list = filtered();
+      const allSel = list.length > 0 && list.every(a => sel.indexOf(a) >= 0);
+      panel.innerHTML =
+        '<div class="sel-all" data-all="1"><input type="checkbox" '+(allSel ? 'checked' : '')+'><span>全选</span></div>' +
+        (list.length
+          ? list.map(a => '<div class="sel-opt" data-v="'+a+'"><input type="checkbox" '+(sel.indexOf(a) >= 0 ? 'checked' : '')+'><span>'+a+'</span></div>').join('')
+          : '<div class="ss-empty">无匹配应用</div>');
     };
-    const open = () => { panel._anchor = box; renderPanel(input.value); panel.classList.add('show'); placeSsPanel(box, panel); };
-    input.addEventListener('focus', open);
-    input.addEventListener('click', open);
-    input.addEventListener('input', () => { panel._anchor = box; panel.classList.add('show'); renderPanel(input.value); placeSsPanel(box, panel); });
-    input.addEventListener('blur', () => setTimeout(() => { panel.classList.remove('show'); input.value = ''; }, 150));
-    const toggle = a => {
-      const arr = getArr().slice();
-      const i = arr.indexOf(a);
-      if(i >= 0) arr.splice(i, 1); else arr.push(a);
+    const open = () => { panel._anchor = box; renderPanel(); panel.classList.add('show'); placeSsPanel(box, panel); };
+    const apply = arr => {
       setCfgArr(key, g, n, kind, ci, arr);
       box.classList.remove('invalid');
       const err = box.parentElement && box.parentElement.querySelector('.cfg-err');
       if(err) err.classList.remove('show');
-      renderChips();
-      renderPanel(input.value);
+      renderTags();
+      renderPanel();
       if(panel.classList.contains('show')) placeSsPanel(box, panel);
     };
+    const toggle = a => {
+      const arr = getArr().slice();
+      const i = arr.indexOf(a);
+      if(i >= 0) arr.splice(i, 1); else arr.push(a);
+      apply(arr);
+    };
+    const toggleAll = () => {
+      const sel = getArr().slice(), list = filtered();
+      const allSel = list.length > 0 && list.every(a => sel.indexOf(a) >= 0);
+      const arr = allSel
+        ? sel.filter(a => list.indexOf(a) < 0)
+        : sel.concat(list.filter(a => sel.indexOf(a) < 0));
+      apply(arr);
+    };
+    wrap.addEventListener('click', e => {
+      const x = e.target.closest('.sel-x');
+      if(x){ e.stopPropagation(); toggle(x.getAttribute('data-v')); return; }
+      input.focus();
+      open();
+    });
+    input.addEventListener('focus', open);
+    input.addEventListener('input', () => { panel._anchor = box; renderPanel(); panel.classList.add('show'); placeSsPanel(box, panel); });
+    input.addEventListener('blur', () => setTimeout(() => { panel.classList.remove('show'); input.value = ''; }, 150));
     panel.addEventListener('mousedown', e => {
-      const o = e.target.closest('.ss-opt');
-      if(!o) return;
       e.preventDefault();   /* 保持输入框焦点，面板不关闭，可连续多选 */
-      toggle(o.getAttribute('data-v'));
+      if(e.target.closest('.sel-all')){ toggleAll(); return; }
+      const o = e.target.closest('.sel-opt');
+      if(o) toggle(o.getAttribute('data-v'));
     });
-    chipsEl.addEventListener('click', e => {
-      const x = e.target.closest('.cfg-x');
-      if(!x) return;
-      e.stopPropagation();
-      toggle(x.getAttribute('data-v'));
-    });
+    panel.addEventListener('click', e => e.preventDefault());
   });
 }
 /* 语言组渲染：顶部语言行 + 场景模式（常用场景=选场景看详情 / 自定义场景=套编辑器，可复用场景） */
@@ -1392,7 +1410,7 @@ function renderLangGroups(ct){
             '<option value="">请选择场景</option>' +
             scOpts.map(s => '<option value="'+s.id+'" '+(lg.sceneId===s.id?'selected':'')+'>'+s.name+'</option>').join('') +
           '</select>' +
-          '<button class="link" data-act="scene-detail" data-g="'+g+'" '+(lg.sceneId?'':'disabled')+'>详情</button>' +
+          (lg.sceneId ? '<button class="link" data-act="scene-detail" data-g="'+g+'">详情</button>' : '') +
         '</div>' +
       '</div>';
     }else{
@@ -1772,7 +1790,7 @@ function renderBdDiffCfg(){
           '<option value="">请选择场景</option>' +
           sceneOptsOf(mode).map(s => '<option value="'+s.id+'" '+(lg.sceneId===s.id?'selected':'')+'>'+s.name+'</option>').join('') +
         '</select>' +
-        '<button class="link" data-act="scene-detail" data-g="0" '+(lg.sceneId?'':'disabled')+'>详情</button>' +
+        (lg.sceneId ? '<button class="link" data-act="scene-detail" data-g="0">详情</button>' : '') +
       '</div>' +
     '</div>';
   }else{
