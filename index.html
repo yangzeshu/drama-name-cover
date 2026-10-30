@@ -1398,8 +1398,8 @@ function renderLangGroups(ct){
       '</div>';
       html += customEditorHtml(ct, lg, g, mode);
     }
-    /* 兜底：剧名剧封差异化=兜底剧名剧封，仅剧封差异化=兜底剧封（交互/枚举一致） */
-    const fbLabel = (mode === 'name-cover') ? '兜底剧名剧封' : '兜底剧封';
+    /* 兜底：两种场景类型统一叫【兜底剧名剧封】（交互/枚举一致） */
+    const fbLabel = '兜底剧名剧封';
     html += '<div class="form-item fb-item" data-g="'+g+'">' +
       '<label class="form-label"><span class="req">*</span>'+fbLabel+'</label>' +
       '<div class="ss-wrap">' +
@@ -1559,7 +1559,7 @@ function validateLangGroups(ct){
     const lg = groups[g];
     if(!lg.langs.length){ toast('语言组'+(g+1)+'：请选择语言', 'error'); return false; }
     if(!lg.fb){
-      markFbErr(ct, g, mode === 'name-cover' ? '请选择兜底剧名剧封' : '请选择兜底剧封'); ok = false;
+      markFbErr(ct, g, '请选择兜底剧名剧封'); ok = false;
     }
     /* 常用场景：只需选择场景，套数由场景决定 */
     if(sceneModeOf(lg) === 'common'){
