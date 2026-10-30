@@ -318,7 +318,14 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
 .mv-cover-title{font-size:12px;color:var(--text-3);}
 .mv-cover-apps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:12px;}
 .mv-pgrid{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;}
-.mv-pcard{width:166px;border:1px solid var(--border);border-radius:8px;padding:8px;background:#fff;align-self:flex-start;}
+.mv-pcard{position:relative;width:166px;border:1px solid var(--border);border-radius:8px;padding:8px;background:#fff;align-self:flex-start;}
+.mv-pcard.picked{border-color:var(--brand);box-shadow:0 0 0 2px rgba(255,46,99,.08);}
+.mv-pick{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;background:rgba(255,255,255,.92);box-shadow:0 1px 3px rgba(20,24,30,.18);}
+.mv-pick input{margin:0;cursor:pointer;accent-color:var(--brand);}
+.mv-toolbar{margin:0 0 14px;}
+.mv-all{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer;}
+.mv-all input{margin:0;cursor:pointer;accent-color:var(--brand);}
+.mv-selcount{font-size:12px;color:var(--text-3);margin-right:4px;}
 .mv-pbox{width:100%;aspect-ratio:3/4;border-radius:6px;background:var(--fill-2);display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .mv-pimg{width:100%;background:#e7e9ec;border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:16px;}
 .mv-pimg.ph{height:100%;border:1px dashed var(--border-strong);background:transparent;font-size:12px;}
@@ -1159,12 +1166,15 @@ function openDetail(taskId){
   currentTask = posterTasks.find(x=>x.id===taskId);
   sizeFilter = '';
   mvSel = 0;
+  mvChecked.clear();
   renderDetail(currentTask);
   showView('detail');
 }
 /* ===== 海报详情视图：列表视图（原交互）/ 主从视图（新增） ===== */
 let posterMode = 'list';
 let mvSel = 0;
+/* 主从视图 · 卡片多选（存海报 id） */
+let mvChecked = new Set();
 /* 某剧名 + 某剧封套下的所有海报数据组 */
 function mvCoverPosters(t, name, cover){
   return (t.posters || []).filter(p => p.name === name && sameArr(p.cover || [], cover || []));
@@ -1200,7 +1210,10 @@ function mvPosterCard(t, name, cover, p){
       '<span class="op-link" data-demo="下载">下载</span>' +
       '<span class="op-link danger" data-act="delposter" data-tid="'+t.id+'" data-pid="'+p.id+'">删除</span>';
   }
-  return '<div class="mv-pcard">' +
+  const pick = emp ? '' :
+    '<label class="mv-pick"><input type="checkbox" class="mv-check" data-pid="'+p.id+'" '+(mvChecked.has(p.id)?'checked':'')+'></label>';
+  return '<div class="mv-pcard'+(p && mvChecked.has(p.id) ? ' picked' : '')+'">' +
+    pick +
     '<div class="mv-pbox">'+img+'</div>' +
     '<div class="mv-pvals">'+vals+'</div>' +
     '<div class="mv-pops">'+ops+'</div>' +
@@ -1246,7 +1259,9 @@ function masterViewHtml(t){
     const real = ps.filter(p => !p.empty);
     const empties = ps.filter(p => p.empty);
     let ordered = SIZES.map(sz => real.find(p => p.size === sz)).filter(Boolean);
-    ordered = ordered.concat(empties);
+    if(sizeFilter) ordered = ordered.filter(p => p.size === sizeFilter);
+    else ordered = ordered.concat(empties);
+    if(sizeFilter && !ordered.length) return '';
     const cards = ordered.length
       ? ordered.map(p => mvPosterCard(t, cur.name, c, p)).join('')
       : mvPosterCard(t, cur.name, c, null);
@@ -1269,11 +1284,25 @@ function masterViewHtml(t){
       '<div class="mv-sec-head">' +
         '<span class="mv-sec-title"><span class="bar"></span>海报制作</span>' +
         '<span class="mv-meta">共 '+ncs.length+' 个剧名 · 剧封套 '+setDone+'/'+setTotal+' 套已产出</span>' +
-        '<div class="mv-ops">' +
-          '<button class="btn btn-primary btn-sm" data-act="upload" data-title="批量上传">批量上传</button>' +
-          '<button class="btn btn-primary btn-sm" data-act="batch" data-id="'+t.id+'">批量AI生成</button>' +
-          '<button class="btn btn-primary btn-sm" data-demo="完成海报制作">完成海报制作</button>' +
-        '</div>' +
+      '</div>' +
+      '<div class="ops-row mv-toolbar">' +
+        '<label class="mv-all"><input type="checkbox" id="mv-checkall"> 全选</label>' +
+        '<button class="btn btn-primary btn-sm" data-act="upload" data-title="批量上传">批量上传</button>' +
+        '<button class="btn btn-primary btn-sm" data-act="batch" data-id="'+t.id+'">批量AI生成</button>' +
+        '<button class="btn btn-primary btn-sm" data-demo="下载">下载</button>' +
+        '<div class="more-wrap"><button class="btn btn-outline btn-sm">更多工具<svg viewBox="0 0 20 20" fill="none" width="12" height="12"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+          '<div class="more-menu">' +
+            '<div class="more-item" data-act="upload" data-title="批量替换">批量替换</div>' +
+            '<div class="more-item" data-demo="AI海报标识擦除">AI海报标识擦除</div>' +
+          '</div></div>' +
+        '<select class="ant-input" id="mv-size-filter" style="width:110px;">' +
+          '<option value="">全部尺寸</option>' +
+          ['3:4','16:9','1600:620'].map(sz => '<option value="'+sz+'" '+(sizeFilter===sz?'selected':'')+'>'+sz+'</option>').join('') +
+        '</select>' +
+        '<button class="btn btn-outline btn-sm" id="mv-refresh">刷新</button>' +
+        '<span class="spacer"></span>' +
+        '<span class="mv-selcount" id="mv-selcount">已选 0 项</span>' +
+        '<button class="btn btn-primary btn-sm" data-demo="完成海报制作">完成海报制作</button>' +
       '</div>' +
       '<div class="mv-body">' +
         '<div class="mv-list">'+items+'</div>' +
@@ -1326,20 +1355,6 @@ function renderDramaInfo(t){
   if(nnCheckall) nnCheckall.addEventListener('change', e => {
     document.querySelectorAll('.nn-check').forEach(c => { c.checked = e.target.checked; });
   });
-}
-/* 差异化需求详情列表（按创建时间逆序，同本地化任务详情） */
-function diffReqListHtml(t){
-  const ds = (t.diffs||[]).map((d,i)=>({d:d, i:i})).sort((a,b)=>(b.d.createTime||'').localeCompare(a.d.createTime||''));
-  const rows = ds.map(x =>
-    '<tr>' +
-    '<td class="wrap-cell" style="text-align:center;"><div class="ds-line" style="justify-content:center;">'+diffSceneLine(x.d, x.i, t.id)+'</div></td>' +
-    '<td>'+x.d.createTime+'</td>' +
-    '<td>'+x.d.creator+'</td>' +
-    '<td>'+x.d.woId+'</td>' +
-    '</tr>').join('');
-  return '<div class="table-wrap" style="margin-bottom:14px;"><table class="loc-table"><thead><tr>' +
-    '<th style="width:320px;min-width:320px;">差异化场景</th><th>创建时间</th><th style="width:90px;">创建人</th><th style="width:140px;">关联工单ID</th>' +
-    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
 }
 /* 本地化信息备注 + 剧本备注（每个任务一组，两列展示在关联工单列表下方） */
 function remarkHtml(t){
@@ -1518,10 +1533,8 @@ function renderPosterSection(t){
     '</tr></thead><tbody>' + posterRows(t) + '</tbody></table></div>' +
     '</div>';
   }
-  // tab2 关联信息 = 关联工单 + 历史任务
+  // tab2 关联信息 = 历史任务
   html += '<div class="loc-tab-panel" data-panel="rel" style="display:none;">' +
-    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>关联工单</span></div>' +
-    diffReqListHtml(t) +
     '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>历史任务</span></div>' +
     relTableHtml(t) +
     '</div>';
@@ -1547,6 +1560,42 @@ function renderPosterSection(t){
   if(checkall) checkall.addEventListener('change', e => {
     document.querySelectorAll('.p-check').forEach(c => { c.checked = e.target.checked; });
   });
+  bindMvControls();
+}
+/* 主从视图：尺寸筛选 / 刷新 / 卡片多选（全选 + 已选数） */
+function bindMvControls(){
+  const sizeSel = document.getElementById('mv-size-filter');
+  if(sizeSel) sizeSel.addEventListener('change', e => {
+    sizeFilter = e.target.value;
+    renderPosterSection(currentTask);
+  });
+  const refreshBtn = document.getElementById('mv-refresh');
+  if(refreshBtn) refreshBtn.addEventListener('click', ()=>{ renderPosterSection(currentTask); toast('已刷新'); });
+  const all = document.getElementById('mv-checkall');
+  const boxes = [...document.querySelectorAll('.mv-check')];
+  const syncCount = () => {
+    const cnt = document.getElementById('mv-selcount');
+    if(cnt) cnt.textContent = '已选 ' + mvChecked.size + ' 项';
+    if(all) all.checked = boxes.length > 0 && boxes.every(b => b.checked);
+    boxes.forEach(b => {
+      const card = b.closest('.mv-pcard');
+      if(card) card.classList.toggle('picked', b.checked);
+    });
+  };
+  boxes.forEach(b => b.addEventListener('change', () => {
+    const pid = b.getAttribute('data-pid');
+    if(b.checked) mvChecked.add(pid); else mvChecked.delete(pid);
+    syncCount();
+  }));
+  if(all) all.addEventListener('change', () => {
+    boxes.forEach(b => {
+      b.checked = all.checked;
+      const pid = b.getAttribute('data-pid');
+      if(all.checked) mvChecked.add(pid); else mvChecked.delete(pid);
+    });
+    syncCount();
+  });
+  syncCount();
 }
 
 /* ================= 差异化场景详情弹窗 ================= */

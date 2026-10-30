@@ -277,75 +277,16 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
 .range-inputs .ant-input{flex:1;min-width:0;}
 .range-sep{color:var(--text-3);flex-shrink:0;}
 .new-badge{display:inline-block;margin-left:4px;padding:0 5px;border-radius:3px;background:var(--danger);color:#fff;font-size:10px;line-height:15px;vertical-align:1px;}
-/* ---------- 详情交互切换（列表 / 工作台） ---------- */
-.mode-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.mode-bar .mode-label{font-size:13px;color:var(--text-3);}
-.seg-toggle{display:inline-flex;padding:2px;border-radius:8px;background:var(--fill-2);}
-.seg-toggle .seg-btn{padding:5px 16px;border-radius:6px;font-size:13px;color:var(--text-2);cursor:pointer;user-select:none;transition:all .15s;}
-.seg-toggle .seg-btn:hover{color:var(--text);}
-.seg-toggle .seg-btn.active{background:#fff;color:var(--brand);font-weight:600;box-shadow:0 1px 3px rgba(20,24,30,.08);}
-/* ---------- 剧名工作台 ---------- */
-.wb-head{display:flex;align-items:center;gap:10px;margin:2px 0 14px;}
-.wb-title{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px;}
-.wb-title .bar,.wb-title2 .bar{width:3px;height:14px;background:var(--brand);border-radius:2px;display:inline-block;}
-.wb-head .spacer{flex:1;}
-.wb-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.55fr);gap:16px;align-items:start;}
-.wb-card{border:1px solid var(--border);border-radius:10px;padding:14px 16px;background:#fff;}
-.wb-card .tag{padding:1px 6px;font-size:11px;}
-.wb-card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
-.wb-card-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;}
-.wb-note{font-size:12px;color:var(--text-3);font-weight:400;}
-/* 历史剧名参考：剧名一行加粗 + 适用端换行 */
+/* ---------- 历史剧名参考（剧名加粗一行 + 适用端换行）/ 新需求标签 ---------- */
 .wb-hist-row{padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;}
 .wb-hist-row:last-child{margin-bottom:0;}
 .wb-hist-name{font-size:13px;font-weight:600;line-height:1.55;word-break:break-word;}
 .wb-hist-apps{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
-/* 本次剧名套 */
-.wb-set{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
-.wb-set:last-child{margin-bottom:0;}
-.wb-set-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.wb-set-title{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--text-3);}
-.wb-set-top .spacer{flex:1;}
-.wb-new-tag{display:inline-flex;align-items:center;gap:3px;padding:0 6px;border-radius:3px;background:var(--danger);color:#fff;font-size:10px;line-height:16px;font-weight:500;}
-.wb-name-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.wb-name-col{min-width:0;}
-.wb-lab{display:block;font-size:11px;color:var(--text-3);margin-bottom:4px;}
-.wb-lab .op-link{font-size:11px;margin:0 0 0 8px;font-weight:400;}
-.wb-cand,.wb-final{display:flex;align-items:center;gap:4px;min-width:0;font-size:13px;font-weight:600;padding:5px 9px;border-radius:5px;line-height:1.5;}
-.wb-cand{color:var(--brand);background:var(--brand-light);}
-.wb-final{color:var(--text);background:var(--fill-1);border:1px solid var(--border);}
-.wb-cand .t,.wb-final .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.wb-line{display:flex;align-items:flex-start;gap:10px;margin-top:12px;}
-.wb-line > .wb-lab{flex-shrink:0;width:52px;margin:3px 0 0;text-align:right;}
-.wb-line-body{flex:1;min-width:0;}
-.wb-thumbs{display:flex;gap:12px;align-items:flex-start;}
-.wb-thumb-item{display:flex;flex-direction:column;align-items:center;gap:4px;}
-.wb-thumb{width:54px;height:72px;border-radius:6px;border:1px dashed var(--border-strong);background:var(--fill-1);display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.wb-thumb:hover{border-color:var(--brand);background:var(--brand-light);}
-.wb-thumb-ph{display:block;border-radius:3px;background:linear-gradient(160deg,#dfe4ea,#b9c2ce);}
-.wb-thumb-ph.r34{width:44px;height:58px;}
-.wb-thumb-ph.r169{width:46px;height:26px;}
-.wb-thumb-ph.rbn{width:46px;height:18px;}
-.wb-thumb-cap{font-size:10px;color:var(--text-3);line-height:1.4;}
-/* 状态 */
-.st{display:inline-flex;align-items:center;padding:1px 8px;border-radius:10px;font-size:11px;white-space:nowrap;}
-.st-pending{background:#fff7e8;color:var(--warn);}
-.st-done{background:#e9f9f0;color:var(--ok);}
-/* 其他本地化内容 */
-.wb-other{margin-top:22px;}
-.wb-other-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.wb-title2{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;}
-.wb-oth-grid{display:grid;grid-template-columns:1fr;gap:12px;}
-.wb-oth-card{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:#fff;}
-.wb-oth-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.wb-oth-head .spacer{flex:1;}
-.wb-oth-title{font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;}
-.wb-oth-blk{margin-bottom:10px;}
-.wb-oth-blk:last-child{margin-bottom:0;}
-.wb-oth-text{font-size:13px;color:var(--text-2);line-height:1.7;background:var(--fill-1);border-radius:6px;padding:8px 10px;word-break:break-word;max-height:132px;overflow:auto;white-space:pre-wrap;}
-.wb-oth-text.muted{color:var(--text-3);}
-/* 工作台弹窗 */
-.wb-rof{font-size:13px;color:var(--text-2);background:var(--fill-1);border-radius:6px;padding:8px 10px;line-height:1.7;word-break:break-word;}
+.wb-new-tag{display:inline-flex;align-items:center;gap:3px;padding:0 6px;border-radius:3px;background:var(--danger);color:#fff;font-size:10px;line-height:16px;font-weight:500;margin-left:6px;}
+/* 编辑页子模块标题 / 历史剧名容器 / 剧名海报缩略图 */
+.sec-sub{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin:18px 0 12px;}
+.sec-sub .bar{width:3px;height:14px;background:var(--brand);border-radius:2px;display:inline-block;}
+.np-thumb{width:52px;height:69px;border-radius:6px;background:var(--fill-2);display:flex;align-items:center;justify-content:center;color:var(--text-3);margin:0 auto;}
 
 </style>
 </head>
@@ -393,8 +334,7 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
       <div class="card">
         <div class="filter-box">
           <div class="sf-grid">
-            <div class="search-item"><label>制作内容</label><select class="ant-input" id="f-content"><option value="">全部</option><option value="正片">正片</option><option value="剧名剧封">剧名剧封</option></select></div>
-            <div class="search-item"><label>任务类型</label><select class="ant-input" id="f-taskcat"><option value="">全部</option><option value="翻译">翻译</option><option value="精修">精修</option></select></div>
+            <div class="search-item"><label>任务类型</label><select class="ant-input" id="f-taskcat"><option value="">全部</option><option value="翻译">翻译</option><option value="精修">精修</option><option value="剧名">剧名</option></select></div>
             <div class="search-item"><label>剧本名称</label><input type="text" class="ant-input" id="f-name" placeholder="请输入剧本名称"></div>
             <div class="search-item"><label>本地化语种</label><select class="ant-input" id="f-lang"><option value="">全部</option><option>英语</option><option>繁体中文</option><option>韩语</option><option>西班牙语</option><option>日语</option><option>印尼语</option><option>泰语</option><option>葡萄牙语</option><option>简体中文</option><option>法语</option><option>德语</option><option>意大利语</option><option>阿拉伯语</option><option>马来西亚语</option><option>土耳其语</option><option>越南语</option><option>印地语</option></select></div>
             <div class="search-item"><label>优先级</label><select class="ant-input" id="f-priority"><option value="">请选择优先级</option><option>P0+</option><option>P0</option><option>P1</option><option>P2</option></select></div>
@@ -419,7 +359,7 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
             <thead>
               <tr>
                 <th style="width:90px;">剧本编号</th>
-                <th style="width:100px;">制作内容</th>
+                <th style="width:100px;">任务类型</th>
                 <th style="width:50px;">......</th>
                 <th style="width:60px;">集数</th>
                 <th style="width:300px;">本地化剧名</th>
@@ -445,13 +385,6 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
         <span class="back" id="btn-detail-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>返回</span>
         <span class="sep">/</span><span>本地化车间</span><span class="sep">/</span><span>任务详情</span>
       </div>
-      <div class="mode-bar">
-        <span class="mode-label">详情交互</span>
-        <div class="seg-toggle" id="loc-mode-toggle">
-          <span class="seg-btn active" data-mode="list">列表交互</span>
-          <span class="seg-btn" data-mode="bench">工作台交互</span>
-        </div>
-      </div>
       <div class="card">
         <div class="sec-title"><span><span class="bar"></span>基础信息</span><span class="sec-ops" id="detail-base-ops"></span></div>
         <div id="detail-base"></div>
@@ -459,8 +392,6 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
         <div id="detail-glossary"></div>
         <div class="sec-title"><span><span class="bar"></span>本地化信息</span><span class="sec-ops" id="detail-loc-ops"></span></div>
         <div id="detail-loc"></div>
-        <div class="sec-title" id="detail-poster-sec"><span><span class="bar"></span>海报信息</span><span class="sec-ops" id="detail-poster-ops"></span></div>
-        <div id="detail-poster"></div>
         <div class="sec-title" id="detail-frames-sec"><span><span class="bar"></span>画面字列表</span></div>
         <div id="detail-frames"></div>
         <div class="sec-title" id="detail-subs-sec"><span><span class="bar"></span>视频字幕列表</span></div>
@@ -505,18 +436,12 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
       <span class="modal-close" id="task-modal-close"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
     </div>
     <div class="modal-body">
-      <div class="form-item">
-        <label class="form-label"><span class="req">*</span>制作内容</label>
-        <select class="ant-input" id="tm-content">
-          <option value="正片">正片</option>
-          <option value="剧名剧封" id="tm-content-stock">剧名剧封</option>
-        </select>
-      </div>
       <div class="form-item" id="fi-tm-taskcat">
         <label class="form-label"><span class="req">*</span>任务类型</label>
         <select class="ant-input" id="tm-taskcat">
           <option value="翻译">翻译</option>
           <option value="精修">精修</option>
+          <option value="剧名">剧名</option>
         </select>
       </div>
       <div class="form-item" id="fi-tm-name">
@@ -608,18 +533,15 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
   </div>
 </div>
 
-<!-- 工作台 · 校对弹窗（剧名 / 其他本地化内容） -->
-<div class="modal-mask" id="wb-edit-modal">
-  <div class="modal" style="width:560px;">
+<!-- 剧名关联海报 -->
+<div class="modal-mask" id="name-poster-modal">
+  <div class="modal" style="width:720px;">
     <div class="modal-head">
-      <div class="modal-title" id="wb-edit-title">修改</div>
-      <span class="modal-close" data-close="wb-edit-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <div class="modal-title" id="np-title">剧名</div>
+      <span class="modal-close" data-close="name-poster-modal"><svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
     </div>
-    <div class="modal-body" id="wb-edit-body"></div>
-    <div class="modal-foot">
-      <button class="btn btn-outline" data-close="wb-edit-modal">取消</button>
-      <button class="btn btn-primary" id="wb-edit-ok">确定</button>
-    </div>
+    <div class="modal-body" id="np-body"></div>
+    <div class="modal-foot"><button class="btn btn-outline" data-close="name-poster-modal">关闭</button></div>
   </div>
 </div>
 
@@ -759,40 +681,40 @@ function sceneName(id){ const s = scenes.find(x=>x.id===id); return s ? s.name :
 const NAME_COVER_SCENES = scenes.filter(s => s.type === 'name_cover');
 
 /* ================= 任务数据 =================
-   制作内容：正片（原短剧生产）/ 剧名剧封（原存量剧差异化）
+   任务类型：翻译 / 精修（= 原「制作内容=正片」）、剧名（= 原「制作内容=剧名剧封」）
    差异化需求 diffs：单个任务可关联多个工单 → 多条需求，每条
      {woId 关联工单ID, mode:'common'|'custom', sceneId?|groups?, createTime, creator}
      common → sceneId（一个常用场景）；custom → groups:[{name:[应用端]}]（剧名套，无剧封套） */
 let tasks = [
-  {id:'LOC1', content:'正片', no:'N6788', name:'w测试0911', lang:'马来西亚语', srcLang:'中文', priority:'P1', episodes:'1~5', intro:'w测试0911简介', remark:'-',
+  {id:'LOC1', no:'N6788', name:'w测试0911', lang:'马来西亚语', srcLang:'中文', priority:'P1', episodes:'1~5', intro:'w测试0911简介', remark:'-',
    diffs:[{woId:'W20260928001', mode:'common', sceneId:1, createTime:'2026-09-28 16:28:36', creator:'春明'}],
    syncedNames:['Permainan Nyawa 0911','Cerita Hidupku 0911','Rebirth 0911'],
    nameSync:['已同步','已同步','未同步'],
    status:'未开始', owner:'-', proofread:'-', qc:'王强', planStart:'2026-09-30 16:28:36', planEnd:'-', creator:'春明', createTime:'2026-09-30 16:28:36', sysNo:'643969', taskId:'455489', taskCat:'翻译', flow:'校对-质检',
    detailLangs:['马来西亚语','土耳其语','英语']},
-  {id:'LOC2', content:'正片', no:'B0930', name:'嫡女她有备而来', lang:'英语', srcLang:'中文', priority:'P0', episodes:'1~5', intro:'沈明珠上一世被庶妹夺了婚约、被继母推进枯井。重生在及笄前夜，她不再争一句宠爱。', remark:'-',
+  {id:'LOC2', no:'B0930', name:'嫡女她有备而来', lang:'英语', srcLang:'中文', priority:'P0', episodes:'1~5', intro:'沈明珠上一世被庶妹夺了婚约、被继母推进枯井。重生在及笄前夜，她不再争一句宠爱。', remark:'-',
    diffs:[
      {woId:'W20260927008', mode:'common', sceneId:2, createTime:'2026-09-27 09:30:00', creator:'春明'},
      {woId:'W20260926015', mode:'custom', groups:[{name:['ns_官网','ns_h5']}], createTime:'2026-09-28 14:20:00', creator:'李婉'},
    ],
    syncedNames:['The Legitimate Daughter Came Prepared','La Hija Legitima','Putri Sah','Frozen Throne of the Capital'],
    nameSync:['已同步','未同步','已同步','未同步'],
-   status:'未开始', owner:'-', proofread:'-', qc:'李婉', planStart:'2026-09-30 15:37:01', planEnd:'-', creator:'春明', createTime:'2026-09-30 15:37:01', sysNo:'295233', taskId:'114753', taskCat:'翻译', flow:'校对-质检',
+   status:'未开始', owner:'-', proofread:'-', qc:'李婉', planStart:'2026-09-30 15:37:01', planEnd:'-', creator:'春明', createTime:'2026-09-30 15:37:01', sysNo:'295233', taskId:'114753', taskCat:'精修', flow:'校对-质检',
    detailLangs:['英语','法语']},
-  {id:'LOC3', content:'剧名剧封', no:'N0001', name:'重生之都市仙尊', lang:'英语,西班牙语', srcLang:'中文', priority:'P0+', episodes:'', intro:'重生都市，逆天改命。', remark:'-',
+  {id:'LOC3', no:'N0001', name:'重生之都市仙尊', lang:'英语,西班牙语', srcLang:'中文', priority:'P0+', episodes:'', intro:'重生都市，逆天改命。', remark:'-',
    diffs:[
      {woId:'W20260925003', mode:'common', sceneId:4, createTime:'2026-09-25 10:00:00', creator:'春明'},
      {woId:'W20260924012', mode:'custom', groups:[{name:['ns_app','ns_官网']}], createTime:'2026-09-26 11:00:00', creator:'王强'},
    ],
    syncedNames:['Reborn City Immortal','El Inmortal de la Ciudad','The Immortal Reborn'],
    nameSync:['已同步','未同步','已同步'],
-   status:'进行中', owner:'春明', proofread:'', qc:'王强', planStart:'2026-09-29 10:00:00', planEnd:'2026-10-10 18:00:00', creator:'春明', createTime:'2026-09-29 10:00:00', sysNo:'-', taskId:'455490', taskCat:'翻译', flow:'质检',
+   status:'进行中', owner:'春明', proofread:'', qc:'王强', planStart:'2026-09-29 10:00:00', planEnd:'2026-10-10 18:00:00', creator:'春明', createTime:'2026-09-29 10:00:00', sysNo:'-', taskId:'455490', taskCat:'剧名', flow:'质检',
    detailLangs:['英语','西班牙语']},
-  {id:'LOC4', content:'剧名剧封', no:'N0002', name:'闪婚老公是大佬', lang:'法语', srcLang:'中文', priority:'P1', episodes:'', intro:'闪婚老公竟是大佬。', remark:'-',
+  {id:'LOC4', no:'N0002', name:'闪婚老公是大佬', lang:'法语', srcLang:'中文', priority:'P1', episodes:'', intro:'闪婚老公竟是大佬。', remark:'-',
    diffs:[{woId:'W20260923001', mode:'custom', groups:[{name:ALL_APP_NAMES.slice()}], createTime:'2026-09-23 09:00:00', creator:'李婉'}],
    syncedNames:['Mon Mari est un Boss'],
    nameSync:['未同步'],
-   status:'未开始', owner:'-', proofread:'', qc:'李婉', planStart:'2026-10-01 09:00:00', planEnd:'2026-10-15 18:00:00', creator:'李婉', createTime:'2026-10-01 09:00:00', sysNo:'-', taskId:'455491', taskCat:'翻译', flow:'质检',
+   status:'未开始', owner:'-', proofread:'', qc:'李婉', planStart:'2026-10-01 09:00:00', planEnd:'2026-10-15 18:00:00', creator:'李婉', createTime:'2026-10-01 09:00:00', sysNo:'-', taskId:'455491', taskCat:'剧名', flow:'质检',
    detailLangs:['法语']},
 ];
 
@@ -1010,7 +932,7 @@ function showView(v){
 }
 
 /* ================= 任务列表 ================= */
-const listFilter = {content:'', taskcat:'', name:'', lang:'', priority:'', status:'', remark:''};
+const listFilter = {taskcat:'', name:'', lang:'', priority:'', status:'', remark:''};
 /* 剧名套数（去重：多个场景中应用端完全相同的只记一套） */
 function nameSetCount(t){
   const seen = new Set();
@@ -1057,7 +979,7 @@ function openNamesModal(t){
 }
 function taskOpsHtml(t){
   let ops = '<span class="op-link" data-act="edit" data-id="'+t.id+'">编辑任务</span>';
-  if(t.content === '正片'){
+  if(!isNameTask(t)){
     ops += '<span class="op-link" data-act="edit-ep" data-id="'+t.id+'">编辑集数</span>';
     ops += '<span class="op-link" data-act="person" data-id="'+t.id+'">设置本地化人</span>';
     ops += '<span class="op-link" data-act="detail" data-id="'+t.id+'">查看详情</span>';
@@ -1070,7 +992,6 @@ function taskOpsHtml(t){
 }
 function filteredTasks(){
   return tasks.filter(t => {
-    if(listFilter.content && t.content !== listFilter.content) return false;
     if(listFilter.taskcat && t.taskCat !== listFilter.taskcat) return false;
     if(listFilter.name && !t.name.toLowerCase().includes(listFilter.name.toLowerCase())) return false;
     if(listFilter.lang && t.lang.indexOf(listFilter.lang) < 0) return false;
@@ -1091,7 +1012,7 @@ function renderTasks(){
   tbody.innerHTML = list.map(t =>
     '<tr>' +
     '<td class="cell-title">'+t.no+'</td>' +
-    '<td><span class="tag '+(t.content==='正片'?'tag-blue':'tag-pink')+'">'+t.content+'</span></td>' +
+    '<td><span class="tag '+(isNameTask(t)?'tag-pink':'tag-blue')+'">'+t.taskCat+'</span></td>' +
     '<td class="cell-title" style="color:var(--text-3);">......</td>' +
     '<td>'+(t.episodes || '<span style="color:var(--text-3);">-</span>')+'</td>' +
     '<td>'+namesCellHtml(t)+'</td>' +
@@ -1102,10 +1023,13 @@ function renderTasks(){
 }
 
 /* ================= 任务弹窗（新建/编辑） ================= */
-const tm = {editing:null, content:'正片'};
+const tm = {editing:null, taskCat:'翻译'};
+/* 任务类型=剧名 → 走原「制作内容=剧名剧封」逻辑；翻译/精修 → 走原「制作内容=正片」逻辑 */
+function isNameTask(t){ return !!t && t.taskCat === '剧名'; }
 function applyTmVisibility(){
   const flow = document.getElementById('tm-flow').value;
   const editing = !!tm.editing;
+  document.getElementById('fi-tm-episodes').style.display = (tm.taskCat === '剧名') ? 'none' : '';
   // 校对人：仅任务流程=校对-质检时显示
   document.getElementById('fi-tm-proofread').style.display = (flow === '校对-质检') ? '' : 'none';
   // 编辑时：隐藏任务流程/设置校对人/设置质检人
@@ -1122,14 +1046,16 @@ function applyEditLock(){
   });
 }
 /* 剧名套选择应用框 */
-function openTaskModal(content, editingTask){
+function openTaskModal(taskCat, editingTask){
   tm.editing = editingTask || null;
-  tm.content = content;
+  tm.taskCat = taskCat || '翻译';
   document.getElementById('task-modal-title').textContent = editingTask ? '编辑本地化任务' : '新增本地化任务';
-  document.getElementById('tm-content').value = content;
-  document.getElementById('tm-content').disabled = !!editingTask;
-  /* 新建时禁用「剧名剧封」选项（只能创建正片）；编辑时正常回显 */
-  document.getElementById('tm-content-stock').disabled = !editingTask;
+  document.getElementById('tm-taskcat').value = tm.taskCat;
+  document.getElementById('tm-taskcat').disabled = !!editingTask;
+  /* 新建时仅支持 翻译/精修；剧名任务由剧本库差异化流转产生，编辑时才会出现 */
+  const catSel = document.getElementById('tm-taskcat');
+  const nameOpt = catSel.querySelector('option[value="剧名"]');
+  if(nameOpt){ nameOpt.hidden = !editingTask; nameOpt.disabled = !editingTask; }
   document.getElementById('fi-tm-name').classList.remove('has-error');
   // 表单回填
   if(editingTask){
@@ -1203,7 +1129,7 @@ function openDetail(taskId){
   showView('detail');
 }
 function renderDetail(t){
-  const isStock = t.content === '剧名剧封';
+  const isStock = isNameTask(t);
   // 基础信息
   document.getElementById('detail-base-ops').innerHTML = '<span class="op-link" data-act="edit" data-id="'+t.id+'">编辑任务</span>' + (isStock?'':'<span class="op-link" data-act="edit-ep" data-id="'+t.id+'">编辑集数</span>');
   document.getElementById('detail-base').innerHTML =
@@ -1220,20 +1146,14 @@ function renderDetail(t){
     '<td class="lab">预计本地化开始时间</td><td>'+t.planStart+'</td>' +
     '<td class="lab">预计本地化完成时间</td><td>'+(t.planEnd||'-')+'</td>' +
     '<td class="lab">本地化备注</td><td>'+(t.remark||'-')+'</td></tr></table>';
-  // 本地化术语库（仅正片显示；剧名剧封任务彻底清除，不渲染表格）
+  // 本地化术语库（翻译/精修显示；剧名任务彻底清除，不渲染表格）
   document.getElementById('detail-glossary-sec').style.display = isStock ? 'none' : '';
   document.getElementById('detail-glossary').innerHTML = isStock ? '' : glossaryHtml();
   // 本地化信息（tab：当前任务/历史任务 + 剧名列表；刷新/启动机翻下移到剧名列表右上角）
   document.getElementById('detail-loc-ops').innerHTML =
-    (isStock && locMode !== 'bench' ? '<span class="op-link" data-demo="完成剧名差异化校对">完成剧名差异化校对</span>' : '');
+    (isStock ? '<span class="op-link" data-demo="完成剧名差异化校对">完成剧名差异化校对</span>' : '');
   document.getElementById('detail-loc').innerHTML = locInfoHtml(t);
-  // 海报信息（工作台交互下整块删除）
-  const hidePoster = (locMode === 'bench');
-  document.getElementById('detail-poster-sec').style.display = hidePoster ? 'none' : '';
-  document.getElementById('detail-poster').style.display = hidePoster ? 'none' : '';
-  document.getElementById('detail-poster-ops').innerHTML = hidePoster ? '' : ('<span class="op-link" data-demo="刷新">刷新</span>' + (isStock?'':'<span class="op-link" data-demo="海报负责人">海报负责人：-</span>'));
-  document.getElementById('detail-poster').innerHTML = hidePoster ? '' : posterHtml(t);
-  // 画面字 / 字幕（正片一行占位；剧名剧封隐藏并清空）
+  // 画面字 / 字幕（翻译/精修一行占位；剧名任务隐藏并清空）
   ['detail-frames-sec','detail-subs-sec','detail-frames','detail-subs'].forEach(id => {
     document.getElementById(id).style.display = isStock ? 'none' : '';
   });
@@ -1262,7 +1182,7 @@ function relTableHtml(t){
   const rows = [t, ...others].map(x =>
     '<tr>' +
     '<td>'+x.taskId+'</td>' +
-    '<td><span class="tag '+(x.content==='正片'?'tag-blue':'tag-pink')+'">'+x.content+'</span></td>' +
+    '<td><span class="tag '+(isNameTask(x)?'tag-pink':'tag-blue')+'">'+x.taskCat+'</span></td>' +
     '<td class="wrap-cell" style="min-width:230px;">'+relNamesCell(x)+'</td>' +
     '<td>'+(x.remark||'-')+'</td>' +
     '<td><span class="tag '+(x.status==='已完成'?'tag-green':(x.status==='进行中'?'tag-blue':'tag-gray'))+'">'+x.status+'</span></td>' +
@@ -1271,7 +1191,7 @@ function relTableHtml(t){
     '</tr>'
   ).join('');
   return '<div class="table-wrap"><table class="loc-table"><thead><tr>' +
-    '<th>本地化任务ID</th><th>制作内容</th><th style="width:230px;min-width:230px;">本地化剧名</th><th>本地化备注</th><th>本地化状态</th><th>校对人</th><th>质检人</th><th>创建时间</th>' +
+    '<th>本地化任务ID</th><th>任务类型</th><th style="width:230px;min-width:230px;">本地化剧名</th><th>本地化备注</th><th>本地化状态</th><th>校对人</th><th>质检人</th><th>创建时间</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table></div>';
 }
 /* 本地化剧名详情：每个剧名对应适用端 */
@@ -1297,21 +1217,6 @@ function openNameDetail(t, i){
     '</tbody></table></div>';
   document.getElementById('rel-name-modal').classList.add('show');
 }
-/* 差异化需求列表（按创建时间逆序）：差异化场景 | 创建时间 | 创建人 | 关联工单ID */
-function diffReqListHtml(t){
-  const ds = (t.diffs||[]).map((d,i)=>({d:d, i:i}))
-    .sort((a,b)=>(b.d.createTime||'').localeCompare(a.d.createTime||''));
-  const rows = ds.map(x =>
-    '<tr>' +
-    '<td class="wrap-cell" style="text-align:left;"><div class="ds-line">'+diffSceneLine(x.d, x.i, t.id)+'</div></td>' +
-    '<td>'+x.d.createTime+'</td>' +
-    '<td>'+x.d.creator+'</td>' +
-    '<td>'+x.d.woId+'</td>' +
-    '</tr>').join('');
-  return '<div class="table-wrap" style="margin-bottom:14px;"><table class="loc-table"><thead><tr>' +
-    '<th style="width:320px;min-width:320px;">差异化需求</th><th>创建时间</th><th style="width:90px;">创建人</th><th style="width:140px;">关联工单ID</th>' +
-    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
-}
 /* 文本截断（机翻/校对结果：>100 字符截断 + 查看弹窗展示全部） */
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function textCell(s){
@@ -1320,19 +1225,44 @@ function textCell(s){
   if(str.length <= 100) return '<span>'+esc(str)+'</span>';
   return '<span>'+esc(str.slice(0,100))+'…</span><span class="op-link" data-act="view-text" data-text="'+encodeURIComponent(str)+'" style="margin:0 0 0 4px;">查看</span>';
 }
+/* 校对结果列：已同步才展示【海报】入口 */
+function posterBtnHtml(t, i){
+  if((t.nameSync||[])[i] !== '已同步') return '';
+  return '<span class="op-link" data-act="name-posters" data-id="'+t.id+'" data-i="'+i+'" style="margin:0 0 0 6px;">海报</span>';
+}
+/* 某剧名关联的海报（仅 3:4）：演示数据按该剧名的适用端拆分 */
+function postersOfName(t, i){
+  const apps = nameGroups(t)[i] || [];
+  if(!apps.length) return [];
+  const half = Math.ceil(apps.length/2);
+  const list = [{cover:apps.slice(0, half), updater:'春明', time:'2026-10-06 11:20:45'}];
+  if(apps.length > half) list.push({cover:apps.slice(half), updater:'李婉', time:'2026-10-05 17:30:20'});
+  return list;
+}
+function openNamePosters(t, i){
+  const name = (t.syncedNames||[])[i] || '';
+  const list = postersOfName(t, i);
+  document.getElementById('np-title').textContent = name || '剧名';
+  const rows = list.length ? list.map(p =>
+    '<tr>' +
+    '<td class="wrap-cell" style="text-align:left;"><div class="chips-row">'+appDisplayHtml(p.cover,'tag tag-blue')+'</div></td>' +
+    '<td><div class="np-thumb">🖼</div></td>' +
+    '<td>'+p.updater+'</td>' +
+    '<td class="wrap-cell">'+foldTime(p.time)+'</td>' +
+    '</tr>').join('')
+    : '<tr><td colspan="4"><div class="empty" style="padding:24px 0;"><div>暂无海报</div></div></td></tr>';
+  document.getElementById('np-body').innerHTML =
+    '<div class="table-wrap"><table class="loc-table"><thead><tr>' +
+    '<th style="width:280px;">剧封适用端</th><th style="width:96px;">图片</th><th style="width:100px;">更新人</th><th style="width:180px;">更新时间</th>' +
+    '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+  document.getElementById('name-poster-modal').classList.add('show');
+}
 /* 本地化信息：适用端列展示具体应用端 */
 function nameSyncTag(s){
   const v = s || '未同步';
   return '<span class="tag '+(v==='已同步'?'tag-green':'tag-gray')+'">'+v+'</span>';
 }
-/* ===== 本地化信息模块：列表交互（默认）/ 工作台交互 ===== */
-let locMode = 'list';
-/* 工作台核验状态（demo 内存） */
-const wbState = {};
-function wbOf(id){
-  if(!wbState[id]) wbState[id] = {synced:false, edited:{}, pf:{}, oSync:{}};
-  return wbState[id];
-}
+/* ===== 本地化信息模块 ===== */
 function locShellHtml(mainHtml, relHtml){
   return '<div class="loc-tabs">' +
     '<span class="tab-item active" data-loctab="main">主要信息</span>' +
@@ -1341,21 +1271,20 @@ function locShellHtml(mainHtml, relHtml){
     '<div class="loc-tab-panel" data-panel="main">' + mainHtml + '</div>' +
     '<div class="loc-tab-panel" data-panel="rel" style="display:none;">' + relHtml + '</div>';
 }
-/* 关联信息 tab（两种交互共用） */
+/* 关联信息 tab */
 function locRelHtml(t){
-  return '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>关联工单</span></div>' +
-    diffReqListHtml(t) +
-    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>历史任务</span></div>' +
+  return '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>历史任务</span></div>' +
     relTableHtml(t);
 }
 function locInfoHtml(t){
-  if(locMode === 'bench') return locShellHtml(benchMainHtml(t), locRelHtml(t));
   return locShellHtml(mainNamesHtml(t), locRelHtml(t));
 }
 /* 列表交互 · 主要信息：已有剧名 + 剧名列表（保持原交互不变） */
 function mainNamesHtml(t){
-  const isStock = t.content === '剧名剧封';
+  const isStock = isNameTask(t);
   const groups = nameGroups(t);
+  /* 随机取一个剧名行标记「新需求」（按任务 ID 稳定取，刷新不变） */
+  const newIdx = groups.length ? ([...t.id].reduce((a,c)=>a+c.charCodeAt(0), 0) % groups.length) : -1;
   const nameRows = groups.length ? groups.length : 1;
   const machine = Array.from({length:nameRows}, (_,i)=>'blablabla'+(i+1));
   const proofed = Array.from({length:nameRows}, (_,i)=>'blablabla'+(i+1));
@@ -1364,8 +1293,9 @@ function mainNamesHtml(t){
     const apps = groups[i] || [];
     rows += '<tr>' +
       (i===0 ? '<td rowspan="'+nameRows+'" style="font-weight:500;">剧名</td>' : '') +
-      '<td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(machine[i])+'</td><td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(proofed[i])+'</td>' +
-      '<td class="wrap-cell" style="text-align:left;"><div class="chips-row">'+appDisplayHtml(apps,'tag tag-blue')+'</div></td>' +
+      '<td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(machine[i])+'</td>' +
+      '<td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(proofed[i])+posterBtnHtml(t, i)+'</td>' +
+      '<td class="wrap-cell" style="text-align:left;"><div class="chips-row">'+appDisplayHtml(apps,'tag tag-blue')+(i===newIdx?'<span class="wb-new-tag">✦ 新需求</span>':'')+'</div></td>' +
       '<td>'+nameSyncTag((t.nameSync||[])[i])+'</td>' +
       (i===0 ? '<td rowspan="'+nameRows+'">blablabla<br>blablabla<br>blablabla<br>blablabla</td>' : '') +
       (i===0 ? '<td rowspan="'+nameRows+'"><div class="op-col"><span class="op-link" data-act="editinfo" data-id="'+t.id+'">编辑</span><span class="op-link" data-demo="派发海报">派发海报</span><span class="op-link" data-demo="同步" style="color:var(--danger);">同步</span><span class="op-link" data-demo="机翻校验" style="color:var(--info);">机翻校验</span></div></td>' : '') +
@@ -1389,194 +1319,6 @@ function mainNamesHtml(t){
     '<th style="width:90px;">翻译类别</th><th style="width:200px;">机翻结果</th><th style="width:200px;">校对结果</th><th>适用端</th><th style="width:80px;">同步状态</th><th>信息备注</th><th style="width:90px;">操作</th>' +
     '</tr></thead><tbody>' + rows + otherCats + '</tbody></table></div>';
 }
-/* 工作台交互 · 主要信息：剧名工作台（剧名套 + 其他本地化内容） */
-const WB_OTHERS = [
-  {k:'intro', ico:'📄', label:'剧本简介'},
-  {k:'cast', ico:'👤', label:'演员名称'},
-  {k:'castIntro', ico:'🎬', label:'演员简介'},
-  {k:'remark', ico:'🗒', label:'信息备注'},
-];
-const WB_OTHER_SEED = {intro:'已同步', cast:'待同步', castIntro:'待同步', remark:'待同步'};
-/* 其他本地化内容：机翻结果 / 校对结果 */
-function wbOtherData(t, k){
-  const st = wbOf(t.id);
-  const mt = k === 'intro' ? (t.intro || '暂无')
-           : k === 'remark' ? '—'
-           : '暂无';
-  const pf = (st.pf[k] != null) ? st.pf[k]
-           : k === 'intro' ? (t.intro || '暂无')
-           : k === 'remark' ? ((t.remark && t.remark !== '-') ? t.remark : '')
-           : '暂无';
-  return {mt: mt, pf: pf};
-}
-function wbOtherSync(t, k){
-  const st = wbOf(t.id);
-  return st.oSync[k] || WB_OTHER_SEED[k] || '待同步';
-}
-/* 关联海报：3:4 占位框，内部实际尺寸可为 3:4 / 16:9 / 1600:620 */
-function wbThumbsHtml(){
-  return [
-    {cls:'r34', cap:'3:4'},
-    {cls:'r169', cap:'16:9'},
-    {cls:'rbn', cap:'1600:620'},
-  ].map(x =>
-    '<div class="wb-thumb-item">' +
-      '<div class="wb-thumb" data-demo="查看海报"><span class="wb-thumb-ph '+x.cls+'"></span></div>' +
-      '<span class="wb-thumb-cap">'+x.cap+'</span>' +
-    '</div>'
-  ).join('');
-}
-function benchMainHtml(t){
-  const done = (t.status === '已完成');
-  const groups = nameGroups(t);
-  const names = (t.syncedNames || []);
-  const st = wbOf(t.id);
-  /* 随机取一个剧名套标记为「新需求」（按任务 ID 稳定取，刷新不变） */
-  const newIdx = groups.length
-    ? ([...t.id].reduce((a,c)=>a+c.charCodeAt(0), 0) % groups.length)
-    : -1;
-  /* 历史剧名参考：剧名一行加粗，适用端换行 */
-  const histRows = (names.length ? names : ['暂无历史剧名']).map((n, i) => {
-    const apps = groups[i] || [];
-    return '<div class="wb-hist-row">' +
-      '<div class="wb-hist-name">'+esc(n)+'</div>' +
-      (apps.length ? '<div class="wb-hist-apps">'+appDisplayHtml(apps, 'tag tag-blue')+'</div>' : '') +
-    '</div>';
-  }).join('');
-  /* 本次剧名套 */
-  const setRows = groups.map((g, i) => {
-    const mtName = names[i] || 'blablabla'+(i+1);
-    const pfName = (st.edited[i] != null) ? st.edited[i] : mtName;
-    const synced = done || st.synced || (t.nameSync||[])[i] === '已同步';
-    const statusHtml = synced ? '<span class="st st-done">已同步</span>' : '<span class="st st-pending">待同步</span>';
-    const newTag = (i === newIdx) ? '<span class="wb-new-tag">✦ 新需求</span>' : '';
-    return '<div class="wb-set">' +
-      '<div class="wb-set-top">' +
-        '<span class="wb-set-title">剧名套 '+(i+1)+newTag+'</span>' +
-        '<span class="spacer"></span>' + statusHtml +
-      '</div>' +
-      '<div class="wb-name-row">' +
-        '<div class="wb-name-col"><span class="wb-lab">机翻剧名</span>' +
-          '<span class="wb-cand"><span class="t">'+esc(mtName)+'</span><span class="copy-ico" data-demo="复制剧名">⧉</span></span>' +
-        '</div>' +
-        '<div class="wb-name-col"><span class="wb-lab">校对剧名<span class="op-link" data-act="wb-edit-name" data-id="'+t.id+'" data-i="'+i+'">修改</span></span>' +
-          '<span class="wb-final"><span class="t">'+esc(pfName)+'</span></span>' +
-        '</div>' +
-      '</div>' +
-      '<div class="wb-line"><span class="wb-lab">适用端</span><div class="wb-line-body">' +
-        '<div class="chips-row">'+appDisplayHtml(g, 'tag tag-blue')+'</div>' +
-      '</div></div>' +
-      '<div class="wb-line"><span class="wb-lab">关联海报</span><div class="wb-line-body">' +
-        '<div class="wb-thumbs">'+wbThumbsHtml()+'</div>' +
-      '</div></div>' +
-    '</div>';
-  }).join('');
-  /* 其他本地化内容 */
-  const others = WB_OTHERS.map(o => {
-    const d = wbOtherData(t, o.k);
-    const sy = wbOtherSync(t, o.k);
-    const stTag = sy === '已同步' ? '<span class="st st-done">已同步</span>' : '<span class="st st-pending">待同步</span>';
-    const editLink = '<span class="op-link" data-act="wb-edit-other" data-id="'+t.id+'" data-k="'+o.k+'">修改</span>';
-    /* 信息备注：无机翻/校对之分，直接是独立内容（默认为空），【修改】放标题行右侧 */
-    if(o.k === 'remark'){
-      return '<div class="wb-oth-card">' +
-        '<div class="wb-oth-head"><span class="wb-oth-title">'+o.ico+' '+o.label+'</span><span class="spacer"></span>' + editLink + stTag + '</div>' +
-        (d.pf ? '<div class="wb-oth-text">'+esc(d.pf)+'</div>'
-              : '<div class="wb-oth-text muted" style="min-height:48px;">暂无内容</div>') +
-      '</div>';
-    }
-    const head = '<div class="wb-oth-head"><span class="wb-oth-title">'+o.ico+' '+o.label+'</span><span class="spacer"></span>' + stTag + '</div>';
-    return '<div class="wb-oth-card">' + head +
-      '<div class="wb-oth-blk"><span class="wb-lab">机翻结果</span>' +
-        '<div class="wb-oth-text'+(d.mt === '暂无' || d.mt === '—' ? ' muted' : '')+'">'+esc(d.mt)+'</div></div>' +
-      '<div class="wb-oth-blk"><span class="wb-lab">校对结果<span class="op-link" data-act="wb-edit-other" data-id="'+t.id+'" data-k="'+o.k+'">修改</span></span>' +
-        '<div class="wb-oth-text'+(d.pf ? '' : ' muted')+'">'+(d.pf ? esc(d.pf) : '暂无')+'</div></div>' +
-    '</div>';
-  }).join('');
-  return '<div class="wb-head">' +
-      '<span class="wb-title"><span class="bar"></span>'+(done ? '剧名结果' : '剧名工作台')+'</span>' +
-      '<span class="spacer"></span>' +
-      '<button class="btn btn-primary btn-sm" data-act="wb-sync" data-id="'+t.id+'">同步</button>' +
-    '</div>' +
-    '<div class="wb-grid">' +
-      '<div class="wb-card">' +
-        '<div class="wb-card-head"><span class="wb-card-title">🗂 历史剧名参考</span><span class="wb-note">（仅查重）</span></div>' +
-        histRows +
-      '</div>' +
-      '<div class="wb-card">' +
-        '<div class="wb-card-head"><span class="wb-card-title">🎯 '+(done ? '最终剧名套' : '本次剧名套')+'</span><span class="wb-note">每个剧名套独立生成，校对剧名默认取机翻剧名。</span></div>' +
-        (setRows || '<div class="wb-note">暂无剧名套</div>') +
-      '</div>' +
-    '</div>' +
-    '<div class="wb-other">' +
-      '<div class="wb-other-head"><span class="wb-title2"><span class="bar"></span>其他本地化内容</span><span class="wb-note">以下内容为辅助本地化项。</span></div>' +
-      '<div class="wb-oth-grid">'+others+'</div>' +
-    '</div>';
-}
-/* ===== 工作台弹窗：校对剧名 / 其他本地化内容校对 ===== */
-let wbEditCtx = null;
-function wbEditShell(title, bodyHtml){
-  document.getElementById('wb-edit-title').textContent = title;
-  document.getElementById('wb-edit-body').innerHTML = bodyHtml;
-  document.getElementById('wb-edit-modal').classList.add('show');
-}
-function openWbNameEdit(t, i){
-  const st = wbOf(t.id);
-  const mt = (t.syncedNames||[])[i] || 'blablabla'+(i+1);
-  const pf = (st.edited[i] != null) ? st.edited[i] : mt;
-  wbEditCtx = {type:'name', id:t.id, i:i, mt:mt};
-  wbEditShell('修改校对剧名 · 剧名套 '+(i+1),
-    '<div class="form-item"><label class="form-label">机翻剧名</label><div class="wb-rof">'+esc(mt)+'</div></div>' +
-    '<div class="form-item" style="margin-bottom:0;">' +
-      '<label class="form-label">校对剧名<span class="op-link" id="wb-apply-mt" style="margin-left:8px;">应用机翻</span></label>' +
-      '<input class="ant-input" id="wb-edit-input" maxlength="100" value="'+esc(pf)+'">' +
-      '<div style="text-align:right;font-size:12px;color:var(--text-3);margin-top:4px;"><span id="wb-edit-count">'+pf.length+'</span> / 100</div>' +
-    '</div>');
-}
-function openWbOtherEdit(t, k){
-  const st = wbOf(t.id);
-  const o = WB_OTHERS.find(x=>x.k===k) || {label:''};
-  const d = wbOtherData(t, k);
-  wbEditCtx = {type:'other', id:t.id, k:k, mt:d.mt};
-  let body = '';
-  if(k === 'intro'){
-    body = '<div class="form-item"><label class="form-label">剧本简介（原文）</label><div class="wb-rof">'+esc(t.intro || '暂无')+'</div></div>' +
-      '<div class="form-item"><label class="form-label">机翻简介</label><div class="wb-rof">'+esc(d.mt)+'</div>' +
-        '<div style="margin-top:6px;"><span class="tag tag-green">已通过</span></div></div>' +
-      '<div class="form-item" style="margin-bottom:0;">' +
-        '<label class="form-label">校对简介<span class="op-link" id="wb-apply-mt" style="margin-left:8px;">应用机翻</span></label>' +
-        '<textarea class="ant-input" id="wb-edit-input" maxlength="500" style="min-height:130px;">'+esc(d.pf)+'</textarea>' +
-        '<div style="text-align:right;font-size:12px;color:var(--text-3);margin-top:4px;"><span id="wb-edit-count">'+d.pf.length+'</span> / 500</div>' +
-      '</div>';
-  }else if(k === 'remark'){
-    body = '<div class="form-item"><div class="example-box">给海报同学说明译名断行信息、重点单词翻译<br>例子：剧名翻译为 Sumiku Jago Kungfu，本地化备注信息需要描述为：Sumiku我的老公 / Jago Kungfu武功高手（可加粗），/ 表示可以换行</div></div>' +
-      '<div class="form-item" style="margin-bottom:0;">' +
-        '<label class="form-label">信息备注</label>' +
-        '<textarea class="ant-input" id="wb-edit-input" maxlength="300" style="min-height:110px;" placeholder="请输入">'+esc(d.pf)+'</textarea>' +
-        '<div style="text-align:right;font-size:12px;color:var(--text-3);margin-top:4px;"><span id="wb-edit-count">'+d.pf.length+'</span> / 300</div>' +
-      '</div>';
-  }else{
-    body = '<div class="form-item"><label class="form-label">机翻结果</label><div class="wb-rof">'+esc(d.mt)+'</div></div>' +
-      '<div class="form-item" style="margin-bottom:0;">' +
-        '<label class="form-label">校对结果</label>' +
-        '<textarea class="ant-input" id="wb-edit-input" maxlength="500" style="min-height:110px;" placeholder="请输入">'+(d.pf === '暂无' ? '' : esc(d.pf))+'</textarea>' +
-      '</div>';
-  }
-  wbEditShell((k === 'remark' ? '修改' : '修改校对结果 · ') + o.label, body);
-}
-/* 海报信息：剧封适用端列展示具体应用端 */
-function posterHtml(t){
-  const isStock = t.content === '剧名剧封';
-  const groups = nameGroups(t);
-  const list = groups.length ? groups : [[]];
-  const rows = list.map((apps, i) => {
-    const name = (t.syncedNames||[])[i] || 'blablabla'+(i+1);
-    return '<tr><td class="wrap-cell" style="text-align:left;">'+name+'</td>' +
-    '<td><div style="width:60px;height:60px;background:#f0f1f3;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-3);">🖼</div></td>' +
-    '<td class="wrap-cell" style="text-align:left;"><div class="chips-row">'+appDisplayHtml(apps,'tag tag-blue')+'</div></td><td>-</td><td>-</td></tr>';
-  }).join('');
-  return '<table class="loc-table"><thead><tr><th>关联剧名</th><th>图片</th><th>剧封适用端</th><th>更新人</th><th>更新时间</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
 function glossaryHtml(){
   return '<div class="table-wrap"><table class="loc-table"><thead><tr><th>源术语</th><th>译文</th></tr></thead><tbody>' +
     '<tr><td>暂无</td><td>--</td></tr>' +
@@ -1599,12 +1341,18 @@ function openEditInfo(taskId){
   showView('edit');
 }
 function renderEditInfo(t){
-  const isStock = t.content === '剧名剧封';
+  const isStock = isNameTask(t);
   let groups = nameGroups(t);
   if(!groups.length) groups = [['ns_app']];
   const machine = Array.from({length: groups.length}, (_,i)=>'blablabla'+(i+1));
   const groupOpts = groups.map(appsText);
-  let html = '<div class="diff-line">剧本名称：<b>'+t.name+'</b>&nbsp;&nbsp;&nbsp;&nbsp;差异化需求：<b>'+((t.diffs||[]).length)+'个</b>&nbsp;&nbsp;&nbsp;&nbsp;共'+groups.length+'套剧名</div>';
+  /* 历史剧名子模块（同任务页「已有剧名」：平铺 chip，不展示适用端） */
+  const histNames = t.syncedNames || [];
+  const histRows = (histNames.length ? histNames : ['暂无历史剧名'])
+    .map(n => '<span class="name-icon" style="cursor:default;">'+esc(n)+'</span>').join('');
+  let html = '<div class="sec-sub"><span class="bar"></span>历史剧名</div>' +
+    '<div class="name-icon-grid">'+histRows+'</div>';
+  html += '<div class="sec-sub"><span class="bar"></span>本次剧名校对</div>';
   html += '<div class="edit-name-grid">' +
     '<div><div class="col-h">机翻剧名（按评分降序）</div>' + machine.map((m,i)=>'<div class="machine-item">'+(i+1)+'. '+m+'</div>').join('') + '</div>' +
     '<div><div class="col-h">校对剧名</div><div class="proof-row">' +
@@ -1734,7 +1482,7 @@ document.body.addEventListener('click', e => {
     document.getElementById('text-modal').classList.add('show');
     return;
   }
-  if(act === 'edit'){ openTaskModal(task.content, task); }
+  if(act === 'edit'){ openTaskModal(task.taskCat, task); }
   else if(act === 'edit-ep'){ toast('编辑集数（demo）'); }
   else if(act === 'person'){ openPerson(id); }
   else if(act === 'detail'){ openDetail(id); }
@@ -1742,19 +1490,8 @@ document.body.addEventListener('click', e => {
   else if(act === 'diff-detail'){ openDiffSceneDetail(task, parseInt(t.getAttribute('data-di'))||0); }
   else if(act === 'rel-name-detail'){ openRelNameDetail(task); }
   else if(act === 'names'){ openNamesModal(task); }
-  else if(act === 'wb-sync'){
-    wbOf(id).synced = true;
-    const n = nameGroups(task).length;
-    renderDetail(currentTask);
-    toast('已同步 '+n+' 个剧名套');
-  }
-  else if(act === 'wb-edit-name'){
-    openWbNameEdit(task, parseInt(t.getAttribute('data-i'), 10) || 0);
-  }
-  else if(act === 'wb-edit-other'){
-    openWbOtherEdit(task, t.getAttribute('data-k'));
-  }
   else if(act === 'name-detail'){ openNameDetail(task, parseInt(t.getAttribute('data-i'))||0); }
+  else if(act === 'name-posters'){ openNamePosters(task, parseInt(t.getAttribute('data-i'), 10)||0); }
   else if(act === 'del'){
     tasks = tasks.filter(x=>x.id!==id);
     renderTasks();
@@ -1762,50 +1499,9 @@ document.body.addEventListener('click', e => {
   }
 });
 
-/* ================= 工作台校对弹窗事件 ================= */
-document.getElementById('wb-edit-body').addEventListener('input', e => {
-  const cnt = document.getElementById('wb-edit-count');
-  if(cnt && e.target.id === 'wb-edit-input') cnt.textContent = e.target.value.length;
-});
-document.getElementById('wb-edit-body').addEventListener('click', e => {
-  if(e.target.closest('#wb-apply-mt')){
-    const inp = document.getElementById('wb-edit-input');
-    if(inp && wbEditCtx){ inp.value = wbEditCtx.mt; inp.dispatchEvent(new Event('input')); }
-    toast('已应用机翻内容');
-  }
-});
-document.getElementById('wb-edit-ok').addEventListener('click', () => {
-  const ctx = wbEditCtx;
-  const inp = document.getElementById('wb-edit-input');
-  if(!ctx || !inp) return;
-  const v = inp.value;
-  const st = wbOf(ctx.id);
-  if(ctx.type === 'name'){
-    st.edited[ctx.i] = v.trim() || ctx.mt;
-    toast('剧名套'+(ctx.i+1)+' 校对剧名已更新');
-  }else{
-    st.pf[ctx.k] = v;
-    toast(ctx.k === 'remark' ? '信息备注已更新' : '校对结果已更新');
-  }
-  document.getElementById('wb-edit-modal').classList.remove('show');
-  if(currentTask) renderDetail(currentTask);
-});
-
-/* ================= 详情交互切换 ================= */
-document.querySelectorAll('#loc-mode-toggle .seg-btn').forEach(b => {
-  b.addEventListener('click', () => {
-    const m = b.getAttribute('data-mode');
-    if(locMode === m) return;
-    locMode = m;
-    document.querySelectorAll('#loc-mode-toggle .seg-btn').forEach(x => x.classList.toggle('active', x === b));
-    if(currentTask) renderDetail(currentTask);
-    toast(m === 'bench' ? '已切换到工作台交互' : '已切换到列表交互');
-  });
-});
-
 /* ================= 任务弹窗事件 ================= */
-document.getElementById('tm-content').addEventListener('change', e => {
-  tm.content = e.target.value;
+document.getElementById('tm-taskcat').addEventListener('change', e => {
+  tm.taskCat = e.target.value;
   applyTmVisibility();
 });
 document.getElementById('tm-flow').addEventListener('change', applyTmVisibility);
@@ -1881,7 +1577,6 @@ document.getElementById('p-select-all').addEventListener('click', () => {
 
 /* ================= 筛选 ================= */
 document.getElementById('btn-search').addEventListener('click', ()=>{
-  listFilter.content = document.getElementById('f-content').value;
   listFilter.taskcat = document.getElementById('f-taskcat').value;
   listFilter.name = document.getElementById('f-name').value;
   listFilter.lang = document.getElementById('f-lang').value;
@@ -1892,7 +1587,6 @@ document.getElementById('btn-search').addEventListener('click', ()=>{
   toast('查询完成');
 });
 document.getElementById('btn-reset').addEventListener('click', ()=>{
-  document.getElementById('f-content').value = '';
   document.getElementById('f-taskcat').value = '';
   document.getElementById('f-name').value = '';
   document.getElementById('f-lang').value = '';
@@ -1901,13 +1595,13 @@ document.getElementById('btn-reset').addEventListener('click', ()=>{
   document.getElementById('f-remark').value = '';
   document.getElementById('f-planstart').value = '';
   document.getElementById('f-planend').value = '';
-  listFilter.content=''; listFilter.taskcat=''; listFilter.name=''; listFilter.lang=''; listFilter.priority=''; listFilter.status=''; listFilter.remark='';
+  listFilter.taskcat=''; listFilter.name=''; listFilter.lang=''; listFilter.priority=''; listFilter.status=''; listFilter.remark='';
   renderTasks();
   toast('已重置');
 });
 
 /* ================= 初始化 ================= */
-document.getElementById('btn-add').addEventListener('click', ()=>openTaskModal('正片', null));
+document.getElementById('btn-add').addEventListener('click', ()=>openTaskModal('翻译', null));
 document.getElementById('btn-batch-qc').addEventListener('click', ()=>toast('批量完成质检（demo）'));
 document.getElementById('task-modal-close').addEventListener('click', closeTaskModal);
 document.getElementById('task-modal-cancel').addEventListener('click', closeTaskModal);
@@ -1916,7 +1610,7 @@ document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click
 document.getElementById('diff-detail-modal').addEventListener('click', e => { if(e.target === document.getElementById('diff-detail-modal')) document.getElementById('diff-detail-modal').classList.remove('show'); });
 document.getElementById('text-modal').addEventListener('click', e => { if(e.target === document.getElementById('text-modal')) document.getElementById('text-modal').classList.remove('show'); });
 document.getElementById('rel-name-modal').addEventListener('click', e => { if(e.target === document.getElementById('rel-name-modal')) document.getElementById('rel-name-modal').classList.remove('show'); });
-document.getElementById('wb-edit-modal').addEventListener('click', e => { if(e.target === document.getElementById('wb-edit-modal')) document.getElementById('wb-edit-modal').classList.remove('show'); });
+document.getElementById('name-poster-modal').addEventListener('click', e => { if(e.target === document.getElementById('name-poster-modal')) document.getElementById('name-poster-modal').classList.remove('show'); });
 document.getElementById('picker-modal').addEventListener('click', e => { if(e.target === document.getElementById('picker-modal')) document.getElementById('picker-modal').classList.remove('show'); });
 document.getElementById('btn-detail-back').addEventListener('click', ()=>showView('list'));
 document.getElementById('btn-edit-back').addEventListener('click', ()=>showView('detail'));

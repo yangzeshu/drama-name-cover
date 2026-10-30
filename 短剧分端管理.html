@@ -365,6 +365,8 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 .pf-table tr:last-child td{border-bottom:none;}
 .pf-table tbody tr:hover td{background:#fcfcfd;}
 .pf-cell-name{font-weight:500;color:var(--text);overflow-wrap:anywhere;}
+.pf-cell-merge{vertical-align:middle;background:#fcfcfd;}
+.pf-cell-time{font-size:12px;color:var(--text-2);white-space:nowrap;}
 .pf-app{display:inline-block;padding:1px 7px;margin:2px 4px 2px 0;border-radius:4px;background:var(--fill-2);color:var(--text-2);font-size:12px;line-height:18px;}
 .pf-app.app-merge{background:#e8f1ff;color:#2f6bdc;cursor:default;}
 .pf-thumb{width:48px;height:64px;border-radius:5px;margin:0 auto;display:flex;align-items:center;justify-content:center;padding:4px;color:#fff;font-size:10px;line-height:1.3;text-align:center;overflow-wrap:anywhere;}
@@ -569,16 +571,16 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 
         <div class="pf-table-wrap" data-kind="name">
           <table class="pf-table">
-            <colgroup><col style="width:32%"><col><col style="width:104px"></colgroup>
-            <thead><tr><th>剧名</th><th>适用端</th><th>操作</th></tr></thead>
+            <colgroup><col style="width:30%"><col><col style="width:160px"><col style="width:104px"></colgroup>
+            <thead><tr><th>剧名</th><th>适用端</th><th>同步时间</th><th>操作</th></tr></thead>
             <tbody id="fit-name-body"></tbody>
           </table>
         </div>
 
         <div class="pf-table-wrap" data-kind="cover">
           <table class="pf-table">
-            <colgroup><col style="width:24%"><col><col style="width:92px"><col style="width:104px"></colgroup>
-            <thead><tr><th>关联剧名</th><th>剧封适用端</th><th>图片</th><th>操作</th></tr></thead>
+            <colgroup><col style="width:22%"><col><col style="width:92px"><col style="width:92px"><col style="width:150px"><col style="width:96px"></colgroup>
+            <thead><tr><th>关联剧名</th><th>剧封适用端</th><th>图片</th><th>海报来源</th><th>同步时间</th><th>操作</th></tr></thead>
             <tbody id="fit-cover-body"></tbody>
           </table>
         </div>
@@ -593,16 +595,16 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 
         <div class="pf-table-wrap" data-kind="name">
           <table class="pf-table">
-            <colgroup><col style="width:32%"><col><col style="width:104px"></colgroup>
-            <thead><tr><th>剧名</th><th>适用端</th><th>操作</th></tr></thead>
+            <colgroup><col style="width:30%"><col><col style="width:160px"><col style="width:104px"></colgroup>
+            <thead><tr><th>剧名</th><th>适用端</th><th>同步时间</th><th>操作</th></tr></thead>
             <tbody id="all-name-body"></tbody>
           </table>
         </div>
 
         <div class="pf-table-wrap" data-kind="cover">
           <table class="pf-table">
-            <colgroup><col style="width:24%"><col><col style="width:92px"><col style="width:104px"></colgroup>
-            <thead><tr><th>关联剧名</th><th>剧封适用端</th><th>图片</th><th>操作</th></tr></thead>
+            <colgroup><col style="width:22%"><col><col style="width:92px"><col style="width:92px"><col style="width:150px"><col style="width:96px"></colgroup>
+            <thead><tr><th>关联剧名</th><th>剧封适用端</th><th>图片</th><th>海报来源</th><th>同步时间</th><th>操作</th></tr></thead>
             <tbody id="all-cover-body"></tbody>
           </table>
         </div>
@@ -647,26 +649,27 @@ function appChips(list){ return (list || []).map(appChipHtml).join(''); }
 /* ================= 车间产出演示数据 ================= */
 /* 适用：与当前短剧所属应用端匹配 */
 const FIT_NAMES = [
-  {name:'紫薇甜点',         apps:['ns_app','iap小程序']},
-  {name:'Sweet Violet',     apps:['app_iaa马甲包']},
-  {name:'紫薇甜点（独家标）', apps:['ns_官网','ns_h5']},
+  {name:'紫薇甜点',         apps:['ns_app','iap小程序'], syncTime:'2026-10-28 16:28:36'},
+  {name:'Sweet Violet',     apps:['app_iaa马甲包'],      syncTime:'2026-10-27 10:12:05'},
+  {name:'紫薇甜点（独家标）', apps:['ns_官网','ns_h5'],   syncTime:'2026-10-26 19:40:22'},
 ];
 const ALL_NAMES = FIT_NAMES.concat([
-  {name:'Violet Dessert',       apps:['nt_app','fs_app']},
-  {name:'紫薇甜点·高清版',      apps:['iaa小程序']},
-  {name:'Sweet Violet Deluxe',  apps:['app_iaa马甲包']},
-  {name:'紫薇甜点 短版',        apps:['ns_h5']},
+  {name:'Violet Dessert',       apps:['nt_app','fs_app'],   syncTime:'2026-10-25 14:03:11'},
+  {name:'紫薇甜点·高清版',      apps:['iaa小程序'],        syncTime:'2026-10-24 09:26:48'},
+  {name:'Sweet Violet Deluxe',  apps:['app_iaa马甲包'],     syncTime:'2026-10-23 20:15:37'},
+  {name:'紫薇甜点 短版',        apps:['ns_h5'],             syncTime:'-'},
 ]);
 const FIT_COVERS = [
-  {name:'紫薇甜点',     apps:['ns_app'],                                    tone:0},
-  {name:'紫薇甜点',     apps:['iap小程序'],                                  tone:1},
-  {name:'Sweet Violet', apps:['app_iaa马甲包'],        tone:2},
+  {name:'紫薇甜点',     apps:['ns_app'],          tone:0, source:'人工',    syncTime:'2026-10-28 16:28:36'},
+  {name:'紫薇甜点',     apps:['iap小程序'],        tone:1, source:'AI制作',  syncTime:'2026-10-28 16:28:36'},
+  {name:'Sweet Violet', apps:['app_iaa马甲包'],   tone:2, source:'AI制作',  syncTime:'2026-10-27 10:12:05'},
 ];
 const ALL_COVERS = FIT_COVERS.concat([
-  {name:'紫薇甜点（独家标）', apps:['ns_官网'],       tone:3},
-  {name:'紫薇甜点·高清版',    apps:['iaa小程序'],     tone:4},
-  {name:'Violet Dessert',     apps:['nt_app','fs_app'], tone:5},
-  {name:'Sweet Violet Deluxe', apps:['app_iaa马甲包'],    tone:6},
+  {name:'紫薇甜点（独家标）', apps:['ns_官网'],          tone:3, source:'人工',   syncTime:'2026-10-26 19:40:22'},
+  {name:'紫薇甜点·高清版',    apps:['iaa小程序'],        tone:4, source:'AI制作', syncTime:'2026-10-24 09:26:48'},
+  {name:'Violet Dessert',     apps:['nt_app','fs_app'],  tone:5, source:'人工',   syncTime:'2026-10-25 14:03:11'},
+  {name:'Sweet Violet Deluxe', apps:['app_iaa马甲包'],   tone:6, source:'AI制作', syncTime:'2026-10-23 20:15:37'},
+  {name:'紫色甜点·再版',      apps:['ns_h5'],            tone:2, source:'AI制作', syncTime:'-'},
 ]);
 
 /* ================= toast ================= */
@@ -686,6 +689,7 @@ function nameRowsHtml(list, part){
     '<tr>' +
       '<td class="pf-cell-name">' + x.name + '</td>' +
       '<td>' + appChips(x.apps) + '</td>' +
+      '<td class="pf-cell-time">' + (x.syncTime || '-') + '</td>' +
       '<td><button class="btn btn-outline btn-sm" data-sync-name="' + part + ':' + i + '">同步</button></td>' +
     '</tr>'
   ).join('');
@@ -693,14 +697,25 @@ function nameRowsHtml(list, part){
 function coverThumb(tone, label){
   return '<div class="pf-thumb t' + (tone % 7) + '"><span>' + label + '</span></div>';
 }
+/* 剧封：同一剧名的多张海报合并展示（关联剧名跨行），每张海报一行 */
 function coverRowsHtml(list, part){
-  return list.map((x, i) =>
-    '<tr>' +
-      '<td class="pf-cell-name">' + x.name + '</td>' +
-      '<td>' + appChips(x.apps) + '</td>' +
-      '<td>' + coverThumb(x.tone, x.name) + '</td>' +
-      '<td><button class="btn btn-outline btn-sm" data-sync-cover="' + part + ':' + i + '">同步</button></td>' +
-    '</tr>'
+  const groups = [];
+  list.forEach((x, i) => {
+    let g = groups.find(y => y.name === x.name);
+    if(!g){ g = {name:x.name, items:[]}; groups.push(g); }
+    g.items.push({x:x, i:i});
+  });
+  return groups.map(g =>
+    g.items.map((it, pi) =>
+      '<tr>' +
+        (pi === 0 ? '<td class="pf-cell-name pf-cell-merge" rowspan="' + g.items.length + '">' + g.name + '</td>' : '') +
+        '<td>' + appChips(it.x.apps) + '</td>' +
+        '<td>' + coverThumb(it.x.tone, it.x.name) + '</td>' +
+        '<td>' + (it.x.source || '人工') + '</td>' +
+        '<td class="pf-cell-time">' + (it.x.syncTime || '-') + '</td>' +
+        '<td><button class="btn btn-outline btn-sm" data-sync-cover="' + part + ':' + it.i + '">同步</button></td>' +
+      '</tr>'
+    ).join('')
   ).join('');
 }
 function renderSyncModal(){
