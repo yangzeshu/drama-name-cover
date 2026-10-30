@@ -367,6 +367,15 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 .pf-cell-name{font-weight:500;color:var(--text);overflow-wrap:anywhere;}
 .pf-cell-merge{vertical-align:middle;background:#fcfcfd;}
 .pf-cell-time{font-size:12px;color:var(--text-2);white-space:nowrap;}
+/* 兜底应用端：chip 高亮 + 对应剧名/剧封整行标识 */
+.pf-app.app-fb{background:var(--brand-weak);color:var(--brand);box-shadow:inset 0 0 0 1px rgba(255,46,99,.45);}
+.fb-tag{display:inline-block;margin-left:4px;padding:0 4px;border-radius:3px;background:var(--danger);color:#fff;font-size:10px;font-style:normal;line-height:14px;vertical-align:1px;}
+.pf-table tbody tr.fb-row td{background:#fff8fa;}
+.pf-table tbody tr.fb-row:hover td{background:#fff1f5;}
+/* 左侧红条只加在剧名单元格（合并行不会出现重复竖线） */
+.pf-table tbody tr.fb-row > td.pf-cell-name:first-child{box-shadow:inset 2px 0 0 var(--danger);}
+.pf-fb-legend{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3);margin:-6px 0 12px;}
+.pf-fb-legend .pf-app{cursor:default;}
 .pf-app{display:inline-block;padding:1px 7px;margin:2px 4px 2px 0;border-radius:4px;background:var(--fill-2);color:var(--text-2);font-size:12px;line-height:18px;}
 .pf-app.app-merge{background:#e8f1ff;color:#2f6bdc;cursor:default;}
 .pf-thumb{width:48px;height:64px;border-radius:5px;margin:0 auto;display:flex;align-items:center;justify-content:center;padding:4px;color:#fff;font-size:10px;line-height:1.3;text-align:center;overflow-wrap:anywhere;}
@@ -562,6 +571,7 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
       </div>
     </div>
     <div class="pf-modal-body">
+      <div class="pf-fb-legend">兜底应用端：<span class="pf-app app-fb">ns_app<i class="fb-tag">兜底</i></span>· 该应用端的剧名/剧封行已高亮标识</div>
       <!-- 第一部分：适用（按入口二选一展示：剧名 / 剧封） -->
       <div class="pf-part">
         <div class="pf-part-head">
@@ -633,6 +643,8 @@ const APPS = [
   {id:'140', name:'ns_h5',         pay:'IAP', group:'NS',            type:'h5',  children:['ReelNivo','DramaNivo','DramaZora','ReelMira','ReelVero']},
 ];
 const appMap = name => APPS.find(a => a.name === name);
+/* 兜底应用端：未命中任何剧名/剧封套时按该应用端下发，弹窗内高亮标识 */
+const FALLBACK_APP = 'ns_app';
 
 /* 集合型应用单位：hover 展示全部明细 */
 function appTipText(name){
@@ -642,8 +654,11 @@ function appTipText(name){
 }
 function appChipHtml(name){
   const t = appTipText(name);
-  return '<span class="pf-app' + (t ? ' app-merge' : '') + '"' + (t ? ' data-tip="' + t + '"' : '') + '>' + name + '</span>';
+  const fb = (name === FALLBACK_APP);
+  return '<span class="pf-app' + (t ? ' app-merge' : '') + (fb ? ' app-fb' : '') + '"' + (t ? ' data-tip="' + t + '"' : '') + '>' +
+    name + (fb ? '<i class="fb-tag">兜底</i>' : '') + '</span>';
 }
+function isFbRow(apps){ return (apps || []).indexOf(FALLBACK_APP) >= 0; }
 function appChips(list){ return (list || []).map(appChipHtml).join(''); }
 
 /* ================= 车间产出演示数据 ================= */
@@ -657,7 +672,7 @@ const ALL_NAMES = FIT_NAMES.concat([
   {name:'Violet Dessert',       apps:['nt_app','fs_app'],   syncTime:'2026-10-25 14:03:11'},
   {name:'紫薇甜点·高清版',      apps:['iaa小程序'],        syncTime:'2026-10-24 09:26:48'},
   {name:'Sweet Violet Deluxe',  apps:['app_iaa马甲包'],     syncTime:'2026-10-23 20:15:37'},
-  {name:'紫薇甜点 短版',        apps:['ns_h5'],             syncTime:'-'},
+  {name:'紫薇甜点 短版',        apps:['ns_h5'],             syncTime:'2026-10-22 11:08:54'},
 ]);
 const FIT_COVERS = [
   {name:'紫薇甜点',     apps:['ns_app'],          tone:0, source:'人工',    syncTime:'2026-10-28 16:28:36'},
@@ -669,7 +684,7 @@ const ALL_COVERS = FIT_COVERS.concat([
   {name:'紫薇甜点·高清版',    apps:['iaa小程序'],        tone:4, source:'AI制作', syncTime:'2026-10-24 09:26:48'},
   {name:'Violet Dessert',     apps:['nt_app','fs_app'],  tone:5, source:'人工',   syncTime:'2026-10-25 14:03:11'},
   {name:'Sweet Violet Deluxe', apps:['app_iaa马甲包'],   tone:6, source:'AI制作', syncTime:'2026-10-23 20:15:37'},
-  {name:'紫色甜点·再版',      apps:['ns_h5'],            tone:2, source:'AI制作', syncTime:'-'},
+  {name:'紫色甜点·再版',      apps:['ns_h5'],            tone:2, source:'AI制作', syncTime:'2026-10-21 15:42:10'},
 ]);
 
 /* ================= toast ================= */
@@ -686,7 +701,7 @@ function toast(msg, type = 'success'){
 /* ================= 表格渲染 ================= */
 function nameRowsHtml(list, part){
   return list.map((x, i) =>
-    '<tr>' +
+    '<tr' + (isFbRow(x.apps) ? ' class="fb-row"' : '') + '>' +
       '<td class="pf-cell-name">' + x.name + '</td>' +
       '<td>' + appChips(x.apps) + '</td>' +
       '<td class="pf-cell-time">' + (x.syncTime || '-') + '</td>' +
@@ -705,18 +720,20 @@ function coverRowsHtml(list, part){
     if(!g){ g = {name:x.name, items:[]}; groups.push(g); }
     g.items.push({x:x, i:i});
   });
-  return groups.map(g =>
-    g.items.map((it, pi) =>
-      '<tr>' +
-        (pi === 0 ? '<td class="pf-cell-name pf-cell-merge" rowspan="' + g.items.length + '">' + g.name + '</td>' : '') +
+  return groups.map(g => {
+    const gFb = g.items.some(it => isFbRow(it.x.apps));
+    return g.items.map((it, pi) =>
+      '<tr' + (gFb ? ' class="fb-row"' : '') + '>' +
+        (pi === 0 ? '<td class="pf-cell-name pf-cell-merge" rowspan="' + g.items.length + '">' + g.name +
+          (gFb ? '<i class="fb-tag" style="margin-left:6px;">兜底</i>' : '') + '</td>' : '') +
         '<td>' + appChips(it.x.apps) + '</td>' +
         '<td>' + coverThumb(it.x.tone, it.x.name) + '</td>' +
         '<td>' + (it.x.source || '人工') + '</td>' +
         '<td class="pf-cell-time">' + (it.x.syncTime || '-') + '</td>' +
         '<td><button class="btn btn-outline btn-sm" data-sync-cover="' + part + ':' + it.i + '">同步</button></td>' +
       '</tr>'
-    ).join('')
-  ).join('');
+    ).join('');
+  }).join('');
 }
 function renderSyncModal(){
   document.getElementById('fit-name-body').innerHTML  = nameRowsHtml(FIT_NAMES, 'fit');
