@@ -482,7 +482,7 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
         <div id="detail-base"></div>
         <div class="sec-title"><span><span class="bar"></span>剧相关信息</span><span class="sec-ops" id="detail-drama-ops"></span></div>
         <div id="detail-drama"></div>
-        <div class="sec-title"><span><span class="bar"></span>海报信息</span><span class="sec-ops"><span class="seg-toggle" id="poster-mode-toggle"><span class="seg-btn active" data-pmode="list">列表视图</span><span class="seg-btn" data-pmode="master">主从视图</span></span></span></div>
+        <div class="sec-title"><span><span class="bar"></span>海报信息</span></div>
         <div id="detail-poster"></div>
       </div>
     </div>
@@ -566,7 +566,7 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
       <div class="up-tips">
         <div>支持批量上传文件，最多支持同时上传 100 个图片</div>
         <div>上传文件格式：.jpg/png/jpeg</div>
-        <div>图片文件统一命名要求：应用端/宽比高，eg：ns_app/_3比4.png。该张剧封会去读名称中的应用端上传至列表中</div>
+        <div>图片文件统一命名要求：应用端/宽比高，eg：ns_app/3比4.png。该张剧封会读取名称中的应用端上传至列表中</div>
         <div>关闭弹窗和页面不影响上传进度</div>
       </div>
       <div class="form-item"><button class="btn btn-primary btn-sm" id="up-add">上传图片</button></div>
@@ -614,16 +614,6 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
         <div class="bz-head"><div class="h">关联剧名选择</div><div class="h">尺寸要求</div></div>
         <div id="bz-rows"></div>
       </div>
-      <!-- 模块4：已有海报 -->
-      <div class="bz-module">
-        <div class="bz-module-title">已有海报</div>
-        <div class="table-wrap">
-          <table class="loc-table" style="min-width:780px;">
-            <thead><tr><th style="width:40px;"><input type="checkbox" id="bz-checkall" checked></th><th>关联剧名</th><th>适用端</th><th>尺寸</th><th>图片</th><th>海报来源</th></tr></thead>
-            <tbody id="bz-tbody"></tbody>
-          </table>
-        </div>
-      </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-outline" data-close="batch-modal">取消</button>
@@ -644,10 +634,10 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
     </div>
     <div class="modal-body" style="padding-bottom:24px;">
       <div class="table-wrap" style="overflow-x:auto;max-height:560px;">
-        <table class="loc-table" style="table-layout:fixed;min-width:1090px;">
+        <table class="loc-table" style="table-layout:fixed;min-width:1000px;">
           <thead><tr>
             <th style="width:36px;"><input type="checkbox" disabled></th>
-            <th style="width:200px;">关联剧名</th><th style="width:220px;">适用端</th><th style="width:58px;">尺寸</th><th style="width:88px;">图片</th><th style="width:78px;">制作状态</th><th style="width:76px;">海报来源</th><th style="width:72px;">文件大小</th><th style="width:72px;">更新人</th><th style="width:92px;white-space:normal;">完成海报制作时间</th><th style="width:80px;">同步状态</th>
+            <th style="width:300px;">关联剧名</th><th style="width:58px;">尺寸</th><th style="width:88px;">图片</th><th style="width:78px;">制作状态</th><th style="width:76px;">海报来源</th><th style="width:72px;">文件大小</th><th style="width:72px;">更新人</th><th style="width:92px;white-space:normal;">完成海报制作时间</th><th style="width:80px;">同步状态</th>
           </tr></thead>
           <tbody id="rel-posters-tbody"></tbody>
         </table>
@@ -775,6 +765,8 @@ const APPS = [
   {id:'131', name:'iaa小程序',     pay:'IAA', group:'NS',            type:'小程序', children:['TTFizzDrama','TTJellyReel','TTBoomShort','TTRichDrama','TTSparkDrama']},
   {id:'113', name:'ns_官网',       pay:'IAP', group:'NS',            type:'官网'},
   {id:'140', name:'ns_h5',         pay:'IAP', group:'NS',            type:'h5',  children:['ReelNivo','DramaNivo','DramaZora','ReelMira','ReelVero']},
+  {id:'141', name:'iap_h5',        pay:'IAP', group:'NS',            type:'h5'},
+  {id:'142', name:'iaa_h5',        pay:'IAA', group:'NS',            type:'h5'},
 ];
 const ALL_APP_NAMES = APPS.map(a=>a.name);
 const APP_SET = ['ns_app','nt_app','fs_app','app_iaa马甲包','app_iap马甲包'];
@@ -789,10 +781,11 @@ const IAA_MINI = ['iaa小程序'];
 const NS_EXCLUSIVE = ['ns_app','ns_官网','ns_h5'];
 const APP_PLUS_NS_WEB = APP_SET.concat(NS_WEB);
 const scenes = [
-  {id:1, name:'主包/iap/iaa三套剧名剧封+ns独家标剧封', desc:'ns_app和官网加独家标，主包/iap/iaa小程序差异化', type:'name_cover', groups:[
-    {name:APP_PLUS_NS_WEB.slice(), covers:[NS_EXCLUSIVE.slice(), ['nt_app','fs_app','app_iaa马甲包','app_iap马甲包']]},
-    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
-    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+  {id:1, name:'主包/iap/iaa三套剧名剧封', desc:'主包 / iap / iaa 各一套剧名剧封（含对应 h5 端）', type:'name_cover',
+   langs:LANGUAGES.slice(0,9), groups:[
+    {name:['ns_app','ns_官网','ns_h5'], covers:[['ns_app','ns_官网','ns_h5']]},
+    {name:['nt_app','app_iap马甲包','iap小程序','iap_h5'], covers:[['nt_app','app_iap马甲包','iap小程序','iap_h5']]},
+    {name:['fs_app','app_iaa马甲包','iaa小程序','iaa_h5'], covers:[['fs_app','app_iaa马甲包','iaa小程序','iaa_h5']]},
   ]},
   {id:2, name:'主包/iap/iaa小程序三套剧名剧封', desc:'主包/iap/iaa小程序差异化', type:'name_cover', groups:[
     {name:APP_PLUS_NS_WEB.slice(), covers:[APP_PLUS_NS_WEB.slice()]},
@@ -1210,150 +1203,11 @@ let sizeFilter = '';
 function openDetail(taskId){
   currentTask = posterTasks.find(x=>x.id===taskId);
   sizeFilter = '';
-  mvSel = 0;
-  mvChecked.clear();
   renderDetail(currentTask);
   showView('detail');
 }
-/* ===== 海报详情视图：列表视图（原交互）/ 主从视图（新增） ===== */
-let posterMode = 'list';
 let mvSel = 0;
-/* 主从视图 · 卡片多选（存海报 id） */
 let mvChecked = new Set();
-/* 某剧名 + 某剧封套下的所有海报数据组 */
-function mvCoverPosters(t, name, cover){
-  return (t.posters || []).filter(p => p.name === name && sameArr(p.cover || [], cover || []));
-}
-/* 该剧封套是否已有完成的海报（有则可算「已产出」） */
-function mvCoverDone(t, name, cover){
-  return mvCoverPosters(t, name, cover).some(p => !p.empty && p.makeStatus === '已完成');
-}
-function mvStCls(s){ return s === '已完成' ? 'st-done' : (s === '制作中' ? 'st-pending' : 'st-todo'); }
-/* 单个海报数据组卡片：3:4 占位框 + 框内按实际比例居中的图（无图用占位符）+ 值 + 操作 */
-function mvPosterCard(t, name, cover, p){
-  const emp = !p || p.empty;
-  const asp = emp ? '3/4' : (p.size === '16:9' ? '16/9' : (p.size === '1600:620' ? '1600/620' : '3/4'));
-  const img = emp
-    ? '<div class="mv-pimg ph">无图片</div>'
-    : '<div class="mv-pimg" style="aspect-ratio:'+asp+';">🖼</div>';
-  /* 值：尺寸 / 制作状态 / 海报来源 / 文件大小 / 更新人 / 完成海报制作时间（只展示值，不展示字段名） */
-  const vals = emp ? '<div class="mv-pv-row" style="color:var(--text-3);">暂无数据</div>'
-    : '<div class="mv-pv-row"><span>'+p.size+'</span>' +
-        '<span class="st '+mvStCls(p.makeStatus)+'">'+p.makeStatus+'</span>' +
-        '<span>'+(p.source || '-')+'</span></div>' +
-      '<div class="mv-pv-row"><span>'+(p.fileSize || '-')+'</span><span>'+(p.updater || '-')+'</span></div>' +
-      '<div class="mv-pv-row mv-pv-time">'+(p.finishTime || '-')+'</div>';
-  let ops;
-  if(emp){
-    ops = '<span class="op-link" data-act="upload" data-title="上传">上传</span>' +
-      '<span class="op-link" data-act="aigen" data-tid="'+t.id+'" data-name="'+encodeURIComponent(name||'')+'" data-cover="'+encodeURIComponent(JSON.stringify(cover||[]))+'">AI生成</span>' +
-      (p ? '<span class="op-link danger" data-act="delposter" data-tid="'+t.id+'" data-pid="'+p.id+'">删除</span>' : '');
-  }else{
-    ops = (p.size === '3:4' ? '<span class="op-link" data-demo="同步海报">同步</span>' : '') +
-      '<span class="op-link" data-act="replace" data-tid="'+t.id+'" data-pid="'+p.id+'">替换</span>' +
-      '<span class="op-link" data-act="edit-cover" data-tid="'+t.id+'" data-pid="'+p.id+'">编辑适用端</span>' +
-      '<span class="op-link" data-demo="下载">下载</span>' +
-      '<span class="op-link danger" data-act="delposter" data-tid="'+t.id+'" data-pid="'+p.id+'">删除</span>';
-  }
-  const pick = emp ? '' :
-    '<label class="mv-pick"><input type="checkbox" class="mv-check" data-pid="'+p.id+'" '+(mvChecked.has(p.id)?'checked':'')+'></label>';
-  return '<div class="mv-pcard'+(p && mvChecked.has(p.id) ? ' picked' : '')+'">' +
-    pick +
-    '<div class="mv-pbox">'+img+'</div>' +
-    '<div class="mv-pvals">'+vals+'</div>' +
-    '<div class="mv-pops">'+ops+'</div>' +
-  '</div>';
-}
-function masterViewHtml(t){
-  const ncs = (t.nameCovers || []);
-  if(mvSel >= ncs.length) mvSel = 0;
-  const cur = ncs[mvSel] || {name:'-', nameApps:[], covers:[]};
-  /* 剧名与剧封一比一：一个剧名只对应一组适用端 */
-  const setTotal = ncs.length;
-  const setDone = ncs.filter(nc => (nc.covers || []).length === 1 && mvCoverDone(t, nc.name, nc.covers[0])).length;
-  /* 一、已有海报：图 3:4 + 剧名在图下方，点击图片打开详情预览（同列表视图） */
-  const hist = (t.posters || []).filter(p => p.size === '3:4' && p.name && !p.empty);
-  const hcards = hist.length ? hist.map(p =>
-    '<div class="mv-hcard">' +
-      '<div class="mv-himg" data-act="poster-detail" data-id="'+t.id+'" data-pid="'+p.id+'">🖼</div>' +
-      '<div class="mv-hname">'+p.name+'</div>' +
-      '<div class="mv-hstatus">'+p.makeStatus+'</div>' +
-    '</div>').join('') : '<div style="color:var(--text-3);font-size:13px;">暂无</div>';
-  /* 二、备注信息：本地化信息备注 + 剧本备注，分块纯展示 */
-  const noteBlock = (lab, val) =>
-    '<div class="mv-note-block"><div class="mv-note-lab">'+lab+'</div>' +
-      ((val && val !== '-') ? '<div class="mv-note-val">'+val+'</div>' : '<div class="mv-note-val muted">暂无</div>') +
-    '</div>';
-  const notes = noteBlock('本地化信息备注', t.localRemark) + noteBlock('剧本备注', t.intro);
-  /* 三、左：剧名 + 剧名适用端 */
-  const items = ncs.length ? ncs.map((nc, i) => {
-    const cover = (nc.covers || [])[0] || [];
-    const done = mvCoverDone(t, nc.name, cover);
-    return '<div class="mv-item'+(i===mvSel?' active':'')+'" data-act="mv-sel" data-idx="'+i+'">' +
-      '<div class="mv-item-top"><span class="mv-item-name">'+nc.name+'</span>' +
-      '<span class="mv-badge '+(done?'ok':'gap')+'">'+(done?'已完成':'待制作')+'</span></div>' +
-      '<div class="mv-item-sub">适用端 '+((cover||[]).length)+' 个</div>' +
-    '</div>';
-  }).join('') : '<div style="color:var(--text-3);font-size:13px;">暂无剧名</div>';
-  /* 四、右：一个剧封套一个模块（剧封适用端 → 海报数据组卡片） */
-  const SIZES = ['3:4','16:9','1600:620'];
-  const coverSecs = (cur.covers || []).length ? cur.covers.map((c, ci) => {
-    const ps = mvCoverPosters(t, cur.name, c);
-    const real = ps.filter(p => !p.empty);
-    const empties = ps.filter(p => p.empty);
-    let ordered = SIZES.map(sz => real.find(p => p.size === sz)).filter(Boolean);
-    if(sizeFilter) ordered = ordered.filter(p => p.size === sizeFilter);
-    else ordered = ordered.concat(empties);
-    if(sizeFilter && !ordered.length) return '';
-    const cards = ordered.length
-      ? ordered.map(p => mvPosterCard(t, cur.name, c, p)).join('')
-      : mvPosterCard(t, cur.name, c, null);
-    const addLink = '<span class="op-link" data-act="add-poster" data-tid="'+t.id+'" data-name="'+encodeURIComponent(cur.name)+'" data-cover="'+encodeURIComponent(JSON.stringify(c))+'">+ 新增海报</span>';
-    const many = (cur.covers || []).length > 1;
-    return '<div class="mv-cover">' +
-      '<div class="mv-cover-head"><span class="mv-cover-title">'+(many ? '剧封套 '+(ci+1) : '海报制作')+'</span><span class="mv-meta">'+addLink+'</span></div>' +
-      '<div class="mv-cover-apps"><span class="mv-cover-title">适用端</span>'+appDisplayHtml(c, 'tag tag-blue')+'</div>' +
-      '<div class="mv-pgrid">'+cards+'</div>' +
-    '</div>';
-  }).join('') : '<div class="mv-empty">该剧名暂无剧封套</div>';
-  return '<div class="mv-sec">' +
-      '<div class="mv-sec-head"><span class="mv-sec-title"><span class="bar"></span>已有海报</span><span class="mv-note">点击图片查看详情预览</span></div>' +
-      '<div class="mv-hcards">'+hcards+'</div>' +
-    '</div>' +
-    '<div class="mv-sec">' +
-      '<div class="mv-sec-head"><span class="mv-sec-title"><span class="bar"></span>备注信息</span></div>' +
-      '<div class="mv-notes">'+notes+'</div>' +
-    '</div>' +
-    '<div class="mv-sec">' +
-      '<div class="mv-sec-head">' +
-        '<span class="mv-sec-title"><span class="bar"></span>海报制作</span>' +
-        '<span class="mv-meta">共 '+ncs.length+' 个剧名 · 已产出 '+setDone+'/'+setTotal+' 个</span>' +
-      '</div>' +
-      '<div class="ops-row mv-toolbar">' +
-        '<label class="mv-all"><input type="checkbox" id="mv-checkall"> 全选</label>' +
-        '<button class="btn btn-primary btn-sm" data-act="upload" data-title="批量上传">批量上传</button>' +
-        '<button class="btn btn-primary btn-sm" data-act="batch" data-id="'+t.id+'">批量AI生成</button>' +
-        '<button class="btn btn-primary btn-sm" data-demo="下载">下载</button>' +
-        '<div class="more-wrap"><button class="btn btn-outline btn-sm">更多工具<svg viewBox="0 0 20 20" fill="none" width="12" height="12"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
-          '<div class="more-menu">' +
-            '<div class="more-item" data-act="upload" data-title="批量替换">批量替换</div>' +
-            '<div class="more-item" data-demo="AI海报标识擦除">AI海报标识擦除</div>' +
-          '</div></div>' +
-        '<select class="ant-input" id="mv-size-filter" style="width:110px;">' +
-          '<option value="">全部尺寸</option>' +
-          ['3:4','16:9','1600:620'].map(sz => '<option value="'+sz+'" '+(sizeFilter===sz?'selected':'')+'>'+sz+'</option>').join('') +
-        '</select>' +
-        '<button class="btn btn-outline btn-sm" id="mv-refresh">刷新</button>' +
-        '<span class="spacer"></span>' +
-        '<span class="mv-selcount" id="mv-selcount">已选 0 项</span>' +
-        '<button class="btn btn-primary btn-sm" data-demo="完成海报制作">完成海报制作</button>' +
-      '</div>' +
-      '<div class="mv-body">' +
-        '<div class="mv-list">'+items+'</div>' +
-        '<div class="mv-detail">'+coverSecs+'</div>' +
-      '</div>' +
-    '</div>';
-}
 function renderDetail(t){
   // 基础信息
   document.getElementById('detail-base-ops').innerHTML =
@@ -1449,10 +1303,12 @@ function relTableHtml(t){
     '<th>海报任务ID</th><th>海报备注</th><th>任务状态</th><th style="width:320px;min-width:320px;">差异化场景</th><th style="width:70px;">海报</th><th>创建时间</th><th>海报负责人</th>' +
     '</tr></thead><tbody>' + (rows || '<tr><td colspan="7"><div class="empty" style="padding:20px;">暂无</div></td></tr>') + '</tbody></table></div>';
 }
-/* 关联剧名单元格：剧名 + 复制（剧名与剧封一比一，不再展示适用端） */
+/* 关联剧名单元格：剧名 + 复制 + 适用端（合并为一列） */
 function nameCellHtml(nc, tid){
+  const cover = (nc.covers || [])[0] || [];
   return '<div style="font-weight:600;line-height:1.5;text-align:center;overflow-wrap:anywhere;">'+nc.name+'</div>' +
-    '<div style="margin-top:2px;text-align:center;"><span class="op-link" data-copy="'+nc.name+'" style="margin:0;">复制</span></div>';
+    '<div style="margin-top:2px;text-align:center;"><span class="op-link" data-copy="'+nc.name+'" style="margin:0;">复制</span></div>' +
+    '<div class="chips-row" style="margin-top:6px;justify-content:center;">'+appDisplayHtml(cover, 'tag tag-blue')+'</div>';
 }
 function sameArr(a, b){
   if(a.length !== b.length) return false;
@@ -1527,27 +1383,14 @@ function posterRows(t, viewOnly){
     coverRows.forEach((cr, ci) => {
       cr.items.forEach((it, pi) => {
         const nameCell = (ci===0 && pi===0) ? '<td rowspan="'+total+'" class="name-cell">'+nameCellHtml(nc, t.id)+'</td>' : '';
-        const coverCell = (pi===0) ? '<td rowspan="'+cr.items.length+'" class="wrap-cell" style="text-align:center;vertical-align:middle;">' +
-          '<div class="chips-row" style="justify-content:center;">'+appDisplayHtml(cr.cover,'tag tag-blue')+'</div>' +
-          (cr.hasData ? addBtn(nc.name, cr.cover) : '') +
-          '</td>' : '';
-        rows.push('<tr>'+checkCell+nameCell+coverCell+posterCells(it.poster, t.id, nc.name, cr.cover, viewOnly)+'</tr>');
+        rows.push('<tr>'+checkCell+nameCell+posterCells(it.poster, t.id, nc.name, cr.cover, viewOnly)+'</tr>');
       });
     });
   });
-  return rows.join('') || '<tr><td colspan="12"><div class="empty" style="padding:20px;">暂无数据</div></td></tr>';
+  return rows.join('') || '<tr><td colspan="11"><div class="empty" style="padding:20px;">暂无数据</div></td></tr>';
 }
 function renderPosterSection(t){
   let html = '';
-  // tab 切换：主要信息 / 关联信息
-  html += '<div class="loc-tabs">' +
-    '<span class="tab-item active" data-loctab="main">主要信息</span>' +
-    '<span class="tab-item" data-loctab="rel">关联信息</span>' +
-    '</div>';
-  // tab1 主要信息 = 已有海报 + 本地化信息备注&剧本备注 + 海报列表
-  if(posterMode === 'master'){
-    html += '<div class="loc-tab-panel" data-panel="main">' + masterViewHtml(t) + '</div>';
-  }else{
   html += '<div class="loc-tab-panel" data-panel="main">' +
     '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>已有海报</span></div>' +
     existingPostersHtml(t) +
@@ -1570,28 +1413,12 @@ function renderPosterSection(t){
     '<span class="spacer"></span>' +
     '<button class="btn btn-primary btn-sm" data-demo="完成海报制作">完成海报制作</button>' +
     '</div>' +
-    '<div class="table-wrap"><table class="loc-table" style="table-layout:fixed;min-width:1180px;"><thead><tr>' +
+    '<div class="table-wrap"><table class="loc-table" style="table-layout:fixed;min-width:1000px;"><thead><tr>' +
     '<th style="width:36px;"><input type="checkbox" id="p-checkall"></th>' +
-    '<th style="width:200px;">关联剧名</th><th style="width:220px;">适用端</th><th style="width:58px;">尺寸</th><th style="width:88px;">图片</th><th style="width:78px;">制作状态</th><th style="width:76px;">海报来源</th><th style="width:72px;">文件大小</th><th style="width:72px;">更新人</th><th style="width:92px;white-space:normal;">完成海报制作时间</th><th style="width:76px;">同步状态</th><th style="width:90px;" class="sticky-h">操作</th>' +
+    '<th style="width:286px;">关联剧名</th><th style="width:58px;">尺寸</th><th style="width:86px;">图片</th><th style="width:78px;">制作状态</th><th style="width:76px;">海报来源</th><th style="width:72px;">文件大小</th><th style="width:70px;">更新人</th><th style="width:92px;white-space:normal;">完成海报制作时间</th><th style="width:74px;">同步状态</th><th style="width:104px;" class="sticky-h">操作</th>' +
     '</tr></thead><tbody>' + posterRows(t) + '</tbody></table></div>' +
     '</div>';
-  }
-  // tab2 关联信息 = 历史任务
-  html += '<div class="loc-tab-panel" data-panel="rel" style="display:none;">' +
-    '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>历史任务</span></div>' +
-    relTableHtml(t) +
-    '</div>';
   document.getElementById('detail-poster').innerHTML = html;
-  // tab 切换事件
-  document.querySelectorAll('#detail-poster .tab-item').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const tabName = tab.getAttribute('data-loctab');
-      document.querySelectorAll('#detail-poster .tab-item').forEach(x => x.classList.toggle('active', x === tab));
-      document.querySelectorAll('#detail-poster .loc-tab-panel').forEach(p => {
-        p.style.display = (p.getAttribute('data-panel') === tabName) ? '' : 'none';
-      });
-    });
-  });
   const sizeSel = document.getElementById('poster-size-filter');
   if(sizeSel) sizeSel.addEventListener('change', e => {
     sizeFilter = e.target.value;
@@ -1603,42 +1430,6 @@ function renderPosterSection(t){
   if(checkall) checkall.addEventListener('change', e => {
     document.querySelectorAll('.p-check').forEach(c => { c.checked = e.target.checked; });
   });
-  bindMvControls();
-}
-/* 主从视图：尺寸筛选 / 刷新 / 卡片多选（全选 + 已选数） */
-function bindMvControls(){
-  const sizeSel = document.getElementById('mv-size-filter');
-  if(sizeSel) sizeSel.addEventListener('change', e => {
-    sizeFilter = e.target.value;
-    renderPosterSection(currentTask);
-  });
-  const refreshBtn = document.getElementById('mv-refresh');
-  if(refreshBtn) refreshBtn.addEventListener('click', ()=>{ renderPosterSection(currentTask); toast('已刷新'); });
-  const all = document.getElementById('mv-checkall');
-  const boxes = [...document.querySelectorAll('.mv-check')];
-  const syncCount = () => {
-    const cnt = document.getElementById('mv-selcount');
-    if(cnt) cnt.textContent = '已选 ' + mvChecked.size + ' 项';
-    if(all) all.checked = boxes.length > 0 && boxes.every(b => b.checked);
-    boxes.forEach(b => {
-      const card = b.closest('.mv-pcard');
-      if(card) card.classList.toggle('picked', b.checked);
-    });
-  };
-  boxes.forEach(b => b.addEventListener('change', () => {
-    const pid = b.getAttribute('data-pid');
-    if(b.checked) mvChecked.add(pid); else mvChecked.delete(pid);
-    syncCount();
-  }));
-  if(all) all.addEventListener('change', () => {
-    boxes.forEach(b => {
-      b.checked = all.checked;
-      const pid = b.getAttribute('data-pid');
-      if(all.checked) mvChecked.add(pid); else mvChecked.delete(pid);
-    });
-    syncCount();
-  });
-  syncCount();
 }
 
 /* ================= 差异化场景详情弹窗 ================= */
@@ -1796,7 +1587,6 @@ function openBatchModal(t, preset){
   document.getElementById('bz-src').innerHTML =
     '<label class="bz-src-item"><input type="checkbox" checked><div class="poster-thumb">🖼</div><span>剧本首个语种海报</span></label>' +
     '<label class="bz-src-item"><input type="checkbox" checked><div class="poster-thumb">🖼</div><span>编辑源海报</span></label>';
-  document.getElementById('bz-tbody').innerHTML = bzListRows(t);
   let count, rowPreset;
   if(preset){
     count = 1;
@@ -1813,30 +1603,6 @@ function openBatchModal(t, preset){
 function bzNameCellHtml(nc){
   return '<div style="font-weight:600;line-height:1.5;text-align:center;overflow-wrap:anywhere;">'+nc.name+'</div>' +
     '<div class="chips-row" style="margin-top:6px;justify-content:center;">'+appDisplayHtml(nc.nameApps,'tag tag-gray')+'</div>';
-}
-function bzListRows(t){
-  const SIZES = ['3:4','16:9','1600:620'];
-  const rows = [];
-  const itemsOf = (name, cover) => {
-    const ps = (t.posters||[]).filter(p => p.name===name && sameArr(p.cover, cover));
-    return SIZES.map(s => ps.find(p => p.size===s)).filter(Boolean);
-  };
-  (t.nameCovers||[]).forEach(nc => {
-    nc.covers.forEach(c => {
-      const items = itemsOf(nc.name, c);
-      if(!items.length) return;
-      items.forEach((p, pi) => {
-        const nameCell = pi===0 ? '<td rowspan="'+items.length+'" class="name-cell">'+bzNameCellHtml(nc)+'</td>' : '';
-        const coverCell = pi===0 ? '<td rowspan="'+items.length+'" class="wrap-cell" style="text-align:center;"><div class="chips-row" style="justify-content:center;">'+appDisplayHtml(c,'tag tag-blue')+'</div></td>' : '';
-        rows.push('<tr><td><input type="checkbox" class="bz-check" checked></td>'+nameCell+coverCell+
-          '<td>'+p.size+'</td>' +
-          '<td><div class="poster-thumb" style="margin:0 auto;">🖼</div></td>' +
-          '<td>'+p.source+'</td>' +
-          '</tr>');
-      });
-    });
-  });
-  return rows.join('') || '<tr><td colspan="6"><div class="empty" style="padding:16px;">暂无海报</div></td></tr>';
 }
 function renderBzRows(t, count, preset){
   const names = (t.nameCovers||[]).map(nc => nc.name);
@@ -2065,18 +1831,6 @@ document.body.addEventListener('click', e => {
   }
 });
 
-/* ================= 海报详情视图切换 ================= */
-document.querySelectorAll('#poster-mode-toggle .seg-btn').forEach(b => {
-  b.addEventListener('click', () => {
-    const m = b.getAttribute('data-pmode');
-    if(posterMode === m) return;
-    posterMode = m;
-    document.querySelectorAll('#poster-mode-toggle .seg-btn').forEach(x => x.classList.toggle('active', x === b));
-    if(currentTask) renderPosterSection(currentTask);
-    toast(m === 'master' ? '已切换到主从视图' : '已切换到列表视图');
-  });
-});
-
 /* ================= 设置海报负责人 ================= */
 let personTargetId = null;
 function openPerson(taskId){
@@ -2144,9 +1898,6 @@ document.getElementById('pm-close').addEventListener('click', closePosterModal);
 document.getElementById('pm-cancel').addEventListener('click', closePosterModal);
 document.getElementById('poster-modal').addEventListener('click', e => { if(e.target === document.getElementById('poster-modal')) closePosterModal(); });
 document.getElementById('pm-submit').addEventListener('click', submitPosterModal);
-document.getElementById('bz-checkall').addEventListener('change', e => {
-  document.querySelectorAll('.bz-check').forEach(c => { c.checked = e.target.checked; });
-});
 document.getElementById('bz-count').addEventListener('input', e => {
   const v = parseInt(e.target.value, 10);
   if(v >= 1){ renderBzRows(bzTask, v); }

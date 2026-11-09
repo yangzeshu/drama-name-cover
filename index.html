@@ -699,7 +699,7 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
           <!-- 差异化需求 -->
           <div class="diff-check"><label class="radio-opt"><input type="checkbox" id="cb-need-diff">需要剧名剧封差异化</label></div>
           <div class="diff-body" id="diff-body">
-            <div class="diff-detail-head"><label class="diff-field-label"><span class="req">*</span>差异化详情</label></div>
+            <div class="diff-detail-head"><label class="diff-field-label"><span class="req">*</span>差异化详情</label><button class="btn btn-primary btn-sm" id="btn-add-lang-nb">新增语言组</button></div>
             <div id="nb-lang-groups"></div>
             <div class="remark-row" style="margin-top:14px;">
               <label class="form-label">差异化备注</label>
@@ -750,6 +750,8 @@ const APPS = [
   {id:'131', name:'iaa小程序',     pay:'IAA', group:'NS',            type:'小程序', children:['TTFizzDrama','TTJellyReel','TTBoomShort','TTRichDrama','TTSparkDrama']},
   {id:'113', name:'ns_官网',       pay:'IAP', group:'NS',            type:'官网'},
   {id:'140', name:'ns_h5',         pay:'IAP', group:'NS',            type:'h5',  children:['ReelNivo','DramaNivo','DramaZora','ReelMira','ReelVero']},
+  {id:'141', name:'iap_h5',        pay:'IAP', group:'NS',            type:'h5'},
+  {id:'142', name:'iaa_h5',        pay:'IAA', group:'NS',            type:'h5'},
 ];
 const ALL_APP_NAMES = APPS.map(a=>a.name);
 /* 兜底剧名剧封：枚举不合并的应用端（集合型应用展开为独立应用名） */
@@ -771,11 +773,11 @@ const NS_EXCLUSIVE = ['ns_app','ns_官网','ns_h5'];
 const APP_PLUS_NS_WEB = APP_SET.concat(NS_WEB);
 /* 常用场景：每个场景自带「包含语言」，一处场景 = 一组语言 + 一套剧名剧封配置 */
 const scenes = [
-  {id:1, name:'主包/iap/iaa三套剧名剧封+ns独家标剧封', desc:'ns_app和官网加独家标，主包/iap/iaa小程序差异化', type:'name_cover',
+  {id:1, name:'主包/iap/iaa三套剧名剧封', desc:'主包 / iap / iaa 各一套剧名剧封（含对应 h5 端）', type:'name_cover',
    langs:LANGUAGES.slice(0,9), groups:[
-    {name:APP_PLUS_NS_WEB.slice(), covers:[NS_EXCLUSIVE.slice(), ['nt_app','fs_app','app_iaa马甲包','app_iap马甲包']]},
-    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
-    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+    {name:['ns_app','ns_官网','ns_h5'], covers:[['ns_app','ns_官网','ns_h5']]},
+    {name:['nt_app','app_iap马甲包','iap小程序','iap_h5'], covers:[['nt_app','app_iap马甲包','iap小程序','iap_h5']]},
+    {name:['fs_app','app_iaa马甲包','iaa小程序','iaa_h5'], covers:[['fs_app','app_iaa马甲包','iaa小程序','iaa_h5']]},
   ]},
   {id:2, name:'主包/iap/iaa小程序三套剧名剧封', desc:'主包/iap/iaa小程序差异化', type:'name_cover',
    langs:LANGUAGES.slice(9), groups:[
@@ -1042,13 +1044,16 @@ document.getElementById('table-body').addEventListener('click', e => {
   if(ed){ openNb(ed.getAttribute('data-no')); }
 });
 
-/* ================= 剧本差异化详情（常用场景多选） ================= */
-/* 剧本差异化详情：多选常用场景（场景内含语言）+ 兜底剧名剧封；场景类型固定为剧名剧封差异化 */
+/* ================= 剧本差异化详情（语言组 + 常用场景单选） ================= */
+/* 语言组：每组选语言 + 单选一个常用场景 + 兜底剧名剧封；场景类型固定为剧名剧封差异化 */
 const nbCw = {
   needDiff:false, remark:'',
-  diff:{scenes:[1, 2], fb:'ns_app'},
+  langGroups:[
+    {langs:LANGUAGES.slice(0,9), sceneId:1, fb:'ns_app'},
+    {langs:LANGUAGES.slice(9),   sceneId:2, fb:'iaa小程序'},
+  ],
 };
-function groupsOf(ct){ return [(ct === 'bd') ? bd.diff : nbCw.diff]; }
+function groupsOf(ct){ return (ct === 'bd') ? [bd.diff] : nbCw.langGroups; }
 function modeOf(){ return 'name-cover'; }
 function msHtml(uid){
   return '<div class="ms-wrap"><div class="ms-box" id="'+uid+'"><div id="'+uid+'-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>' +
@@ -1362,114 +1367,52 @@ function initCfgSelects(ct){
     panel.addEventListener('click', e => e.preventDefault());
   });
 }
-/* 差异化详情：常用场景多选（场景内含语言）+ 兜底剧名剧封 */
-function sceneTagHtml(id){
-  return '<span class="sel-tag">'+sceneName(id)+'<i class="sel-x" data-v="'+id+'">×</i></span>';
-}
-function sceneRowsHtml(){
-  const ids = nbCw.diff.scenes || [];
-  if(!ids.length) return '<div class="scene-empty">尚未选择场景，选择后在此展示「场景名称 — 包含语言」</div>';
-  return ids.map((id, i) => {
-    const sc = scenes.find(x => x.id === id);
-    if(!sc) return '';
-    return '<div class="scene-row">' +
-      '<span class="scene-idx">'+(i+1)+'</span>' +
-      '<div class="scene-main">' +
-        '<div class="scene-name">'+sc.name+'</div>' +
-        '<div class="scene-langs">语言：'+((sc.langs || []).join('、') || '—')+'</div>' +
-      '</div>' +
-      '<button class="link" data-act="scene-detail" data-id="'+sc.id+'">详情</button>' +
-    '</div>';
-  }).join('');
-}
+/* 差异化详情：每个语言组 = 语言（多选）+ 常用场景（单选）+ 兜底剧名剧封 */
 function renderLangGroups(ct){
-  const ids = nbCw.diff.scenes || [];
-  let html = '<div class="form-item" style="margin-bottom:0;">' +
-    '<label class="diff-field-label"><span class="req">*</span>选择场景</label>' +
-    '<div class="scene-sel">' +
-      '<div class="sel-wrap">' + ids.map(sceneTagHtml).join('') +
-        '<input class="sel-input" data-role="scene" placeholder="'+(ids.length ? '' : '请选择场景，支持多选')+'" autocomplete="off">' +
+  const groups = nbCw.langGroups;
+  const scOpts = sceneOptsOf();
+  let html = '';
+  groups.forEach((lg, g) => {
+    html += '<div class="lg-block" data-g="'+g+'">';
+    html += '<div class="lg-top">' +
+      '<span class="lg-title">语言组 <span class="idx">'+(g+1)+'</span></span>' +
+      '<div class="lang-pick">语言 ' + msHtml(ct+'-lang-'+g) + '</div>' +
+      '<div class="spacer"></div>' +
+      '<button class="link danger btn-del-lang" data-act="del-lang" data-g="'+g+'" '+(groups.length<=1?'disabled':'')+'>删除语言组</button>' +
+    '</div>';
+    html += '<div class="lg-body">';
+    html += '<div class="form-item lg-scene-item" data-g="'+g+'">' +
+      '<label class="form-label"><span class="req">*</span>常用场景</label>' +
+      '<div class="lg-scene-pick">' +
+        '<select class="ant-input" data-role="scene-pick" data-g="'+g+'">' +
+          '<option value="">请选择场景</option>' +
+          scOpts.map(sc => '<option value="'+sc.id+'" '+(lg.sceneId===sc.id?'selected':'')+'>'+sc.name+'</option>').join('') +
+        '</select>' +
+        (lg.sceneId ? '<button class="link" data-act="scene-detail" data-g="'+g+'">详情</button>' : '') +
       '</div>' +
-      '<div class="ss-panel"></div>' +
-    '</div>' +
-    '<div class="error">请选择场景</div>' +
-  '</div>' +
-  '<div class="scene-list">' + sceneRowsHtml() + '</div>';
-  html += '<div class="form-item fb-item" data-g="0">' +
-    '<label class="form-label"><span class="req">*</span>兜底剧名剧封</label>' +
-    '<div class="ss-wrap">' +
-      '<input class="ant-input ss-input" data-role="fb" data-g="0" value="'+(nbCw.diff.fb || '')+'" placeholder="请选择应用端" autocomplete="off">' +
-      '<div class="ss-panel" id="'+ct+'-fb-panel-0"></div>' +
-    '</div>' +
-    '<div class="error">请选择兜底剧名剧封</div>' +
-  '</div>';
+      '<div class="error">请选择常用场景</div>' +
+    '</div>';
+    html += '<div class="form-item fb-item" data-g="'+g+'">' +
+      '<label class="form-label"><span class="req">*</span>兜底剧名剧封</label>' +
+      '<div class="ss-wrap">' +
+        '<input class="ant-input ss-input" data-role="fb" data-g="'+g+'" value="'+(lg.fb || '')+'" placeholder="请选择应用端" autocomplete="off">' +
+        '<div class="ss-panel" id="'+ct+'-fb-panel-'+g+'"></div>' +
+      '</div>' +
+      '<div class="error">请选择兜底剧名剧封</div>' +
+    '</div>';
+    html += '</div></div>';
+  });
   document.getElementById(ct).innerHTML = html;
-  initSceneSelect(ct);
+  /* 语言多选：已被其他语言组占用的语言置灰不可选 */
+  groups.forEach((lg, g) => {
+    const used = new Set();
+    groups.forEach((x, i) => { if(i !== g) x.langs.forEach(l => used.add(l)); });
+    const uid = ct+'-lang-'+g;
+    const inst = initMs(uid, uid+'-c', uid+'-p', LANGUAGES, arr => { lg.langs = arr; }, true);
+    inst.setValue(lg.langs);
+    inst.setDisabled([...used]);
+  });
   initFbSelects(ct);
-}
-/* 场景多选：勾选保持打开、chips 可删、全选 */
-function initSceneSelect(ct){
-  const box = document.querySelector('#'+ct+' .scene-sel');
-  if(!box) return;
-  bindSsScroll();
-  const wrap = box.querySelector('.sel-wrap');
-  const input = box.querySelector('input[data-role="scene"]');
-  const panel = box.querySelector('.ss-panel');
-  const idsOf = () => nbCw.diff.scenes || [];
-  const refresh = () => {
-    wrap.querySelectorAll('.sel-tag').forEach(t => t.remove());
-    wrap.insertAdjacentHTML('afterbegin', idsOf().map(sceneTagHtml).join(''));
-    input.placeholder = idsOf().length ? '' : '请选择场景，支持多选';
-    const le = document.querySelector('#'+ct+' .scene-list');
-    if(le) le.innerHTML = sceneRowsHtml();
-    const ids = idsOf();
-    panel.querySelectorAll('.sel-opt').forEach(o => {
-      const on = ids.indexOf(parseInt(o.getAttribute('data-v'), 10)) >= 0;
-      const cb = o.querySelector('input'); if(cb) cb.checked = on;
-      o.classList.toggle('checked', on);
-    });
-    const allBox = panel.querySelector('.sel-all input');
-    if(allBox) allBox.checked = ids.length === scenes.length;
-    box.classList.remove('has-error');
-    const fi = box.closest('.form-item');
-    if(fi) fi.classList.remove('has-error');
-  };
-  const renderPanel = () => {
-    const ids = idsOf();
-    panel.innerHTML =
-      '<div class="sel-all"><input type="checkbox" '+(ids.length === scenes.length ? 'checked' : '')+'><span>全选</span></div>' +
-      scenes.map(sc => '<div class="sel-opt'+(ids.indexOf(sc.id) >= 0 ? ' checked' : '')+'" data-v="'+sc.id+'">' +
-        '<input type="checkbox" '+(ids.indexOf(sc.id) >= 0 ? 'checked' : '')+'><span>'+sc.name+'</span></div>').join('');
-    panel.classList.add('show');
-    placeSsPanel(wrap, panel);
-  };
-  const toggle = id => {
-    const ids = idsOf().slice();
-    const i = ids.indexOf(id);
-    if(i >= 0) ids.splice(i, 1); else ids.push(id);
-    ids.sort((a, b) => a - b);
-    nbCw.diff.scenes = ids;
-    refresh();
-  };
-  wrap.addEventListener('click', e => {
-    const x = e.target.closest('.sel-x');
-    if(x){ e.stopPropagation(); toggle(parseInt(x.getAttribute('data-v'), 10)); return; }
-    input.focus();
-    renderPanel();
-  });
-  input.addEventListener('focus', renderPanel);
-  input.addEventListener('blur', () => setTimeout(() => panel.classList.remove('show'), 150));
-  panel.addEventListener('mousedown', e => {
-    e.preventDefault();
-    if(e.target.closest('.sel-all')){
-      nbCw.diff.scenes = (idsOf().length === scenes.length) ? [] : scenes.map(sc => sc.id);
-      refresh();
-      return;
-    }
-    const o = e.target.closest('.sel-opt');
-    if(o) toggle(parseInt(o.getAttribute('data-v'), 10));
-  });
-  panel.addEventListener('click', e => e.preventDefault());
 }
 
 /* ================= 选择应用子页面 ================= */
@@ -1564,6 +1507,10 @@ function markGrpErr(ct, g, n, msg){
   const err = card.querySelector('.grp-err');
   if(err){ err.textContent = msg; err.classList.add('show'); }
 }
+function markSceneErr(ct, g){
+  const item = document.querySelector('#'+ct+' .lg-scene-item[data-g="'+g+'"]');
+  if(item) item.classList.add('has-error');
+}
 function markFbErr(ct, g, msg){
   const item = document.querySelector('#'+ct+' .fb-item[data-g="'+g+'"]');
   if(!item) return;
@@ -1586,29 +1533,48 @@ function dupMark(list){
 }
 function validateLangGroups(ct){
   renderLangGroups(ct); /* 重建以清除上一次标红 */
-  if(!(nbCw.diff.scenes || []).length){
-    const box = document.querySelector('#'+ct+' .scene-sel');
-    if(box){
-      box.classList.add('has-error');
-      const fi = box.closest('.form-item');
-      if(fi) fi.classList.add('has-error');
+  const groups = nbCw.langGroups;
+  const seen = new Set();
+  for(let g=0; g<groups.length; g++){
+    const lg = groups[g];
+    if(!lg.langs.length){ toast('语言组'+(g+1)+'：请选择语言', 'error'); return false; }
+    for(const l of lg.langs){
+      if(seen.has(l)){ toast('语言组之间存在重复语言：'+l+'，请检查', 'error'); return false; }
+      seen.add(l);
     }
-    toast('请选择场景', 'error');
-    return false;
   }
-  if(!nbCw.diff.fb){
-    markFbErr(ct, 0, '请选择兜底剧名剧封');
-    toast('校验未通过，请检查标红项', 'error');
-    return false;
-  }
+  let ok = true;
+  groups.forEach((lg, g) => {
+    if(!lg.sceneId){ markSceneErr(ct, g); ok = false; }
+    if(!lg.fb){ markFbErr(ct, g, '请选择兜底剧名剧封'); ok = false; }
+  });
+  if(!ok){ toast('校验未通过，请检查标红项', 'error'); return false; }
   return true;
 }
 
-/* 场景详情：选中场景行右侧「详情」 */
-document.getElementById('nb-lang-groups').addEventListener('click', e => {
-  const b = e.target.closest('[data-act="scene-detail"]');
-  if(!b) return;
-  openSceneDetail(parseInt(b.getAttribute('data-id'), 10));
+/* 语言组容器事件：选择常用场景 / 场景详情 / 删除语言组 */
+const nbWrap = document.getElementById('nb-lang-groups');
+nbWrap.addEventListener('change', e => {
+  const sel = e.target.closest('select[data-role="scene-pick"]');
+  if(!sel) return;
+  const g = parseInt(sel.getAttribute('data-g'), 10);
+  const lg = nbCw.langGroups[g];
+  if(!lg) return;
+  lg.sceneId = sel.value ? parseInt(sel.value, 10) : null;
+  renderLangGroups('nb-lang-groups');
+  if(lg.sceneId) toast('已选择场景「' + sceneName(lg.sceneId) + '」');
+});
+nbWrap.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  if(!t || t.hasAttribute('disabled')) return;
+  const act = t.getAttribute('data-act');
+  const g = parseInt(t.getAttribute('data-g'), 10);
+  if(act === 'scene-detail'){ openSceneDetail(nbCw.langGroups[g].sceneId); return; }
+  if(act === 'del-lang'){
+    if(nbCw.langGroups.length <= 1){ toast('至少保留一个语言组', 'warning'); return; }
+    nbCw.langGroups.splice(g, 1);
+    renderLangGroups('nb-lang-groups');
+  }
 });
 
 /* 场景详情 / 复用场景 弹窗关闭 */
@@ -1739,7 +1705,10 @@ function openNb(no){
   document.getElementById('diff-body').classList.remove('show');
   document.getElementById('nb-remark').value = '';
   nbCw.needDiff = false;
-  nbCw.diff = {scenes:[1, 2], fb:'ns_app'};
+  nbCw.langGroups = [
+    {langs:LANGUAGES.slice(0,9), sceneId:1, fb:'ns_app'},
+    {langs:LANGUAGES.slice(9),   sceneId:2, fb:'iaa小程序'},
+  ];
   renderLangGroups('nb-lang-groups');
   document.getElementById('nb-drawer').classList.add('show');
 }
@@ -1748,6 +1717,13 @@ document.getElementById('btn-create').addEventListener('click', ()=>openNb());
 document.getElementById('nb-close').addEventListener('click', closeNb);
 document.getElementById('nb-cancel').addEventListener('click', closeNb);
 document.getElementById('nb-drawer').addEventListener('click', e => { if(e.target === document.getElementById('nb-drawer')) closeNb(); });
+document.getElementById('btn-add-lang-nb').addEventListener('click', () => {
+  const used = new Set();
+  nbCw.langGroups.forEach(x => x.langs.forEach(l => used.add(l)));
+  nbCw.langGroups.push({langs:[], sceneId:null, fb:''});
+  renderLangGroups('nb-lang-groups');
+  if(used.size >= LANGUAGES.length) toast('全部语言已分配，新增的语言组请先调整语言', 'warning');
+});
 document.getElementById('cb-need-diff').addEventListener('change', e => {
   nbCw.needDiff = e.target.checked;
   document.getElementById('diff-body').classList.toggle('show', e.target.checked);

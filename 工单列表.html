@@ -795,6 +795,8 @@ const APPS = [
   {id:'131', name:'iaa小程序',     pay:'IAA', group:'NS',            type:'小程序', children:['TTFizzDrama','TTJellyReel','TTBoomShort','TTRichDrama','TTSparkDrama']},
   {id:'113', name:'ns_官网',       pay:'IAP', group:'NS',            type:'官网'},
   {id:'140', name:'ns_h5',         pay:'IAP', group:'NS',            type:'h5',  children:['ReelNivo','DramaNivo','DramaZora','ReelMira','ReelVero']},
+  {id:'141', name:'iap_h5',        pay:'IAP', group:'NS',            type:'h5'},
+  {id:'142', name:'iaa_h5',        pay:'IAA', group:'NS',            type:'h5'},
 ];
 const ALL_APP_NAMES = APPS.map(a=>a.name);
 const APP_SET = ['ns_app','nt_app','fs_app','app_iaa马甲包','app_iap马甲包'];
@@ -810,11 +812,11 @@ const NS_EXCLUSIVE = ['ns_app','ns_官网','ns_h5'];
 const APP_PLUS_NS_WEB = APP_SET.concat(NS_WEB);
 /* 常用场景：每个场景自带「包含语言」，一处场景 = 一组语言 + 一套剧名剧封配置 */
 const scenes = [
-  {id:1, name:'主包/iap/iaa三套剧名剧封+ns独家标剧封', desc:'ns_app和官网加独家标，主包/iap/iaa小程序差异化', type:'name_cover',
+  {id:1, name:'主包/iap/iaa三套剧名剧封', desc:'主包 / iap / iaa 各一套剧名剧封（含对应 h5 端）', type:'name_cover',
    langs:LANGUAGES.slice(0,9), groups:[
-    {name:APP_PLUS_NS_WEB.slice(), covers:[NS_EXCLUSIVE.slice(), ['nt_app','fs_app','app_iaa马甲包','app_iap马甲包']]},
-    {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
-    {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
+    {name:['ns_app','ns_官网','ns_h5'], covers:[['ns_app','ns_官网','ns_h5']]},
+    {name:['nt_app','app_iap马甲包','iap小程序','iap_h5'], covers:[['nt_app','app_iap马甲包','iap小程序','iap_h5']]},
+    {name:['fs_app','app_iaa马甲包','iaa小程序','iaa_h5'], covers:[['fs_app','app_iaa马甲包','iaa小程序','iaa_h5']]},
   ]},
   {id:2, name:'主包/iap/iaa小程序三套剧名剧封', desc:'主包/iap/iaa小程序差异化', type:'name_cover',
    langs:LANGUAGES.slice(9), groups:[
