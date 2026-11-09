@@ -1303,11 +1303,13 @@ function relTableHtml(t){
     '<th>海报任务ID</th><th>海报备注</th><th>任务状态</th><th style="width:320px;min-width:320px;">差异化场景</th><th style="width:70px;">海报</th><th>创建时间</th><th>海报负责人</th>' +
     '</tr></thead><tbody>' + (rows || '<tr><td colspan="7"><div class="empty" style="padding:20px;">暂无</div></td></tr>') + '</tbody></table></div>';
 }
-/* 关联剧名单元格：剧名 + 复制 + 适用端（合并为一列） */
+/* 关联剧名单元格：剧名 + 复制（同行）+ 适用端（合并为一列） */
 function nameCellHtml(nc, tid){
   const cover = (nc.covers || [])[0] || [];
-  return '<div style="font-weight:600;line-height:1.5;text-align:center;overflow-wrap:anywhere;">'+nc.name+'</div>' +
-    '<div style="margin-top:2px;text-align:center;"><span class="op-link" data-copy="'+nc.name+'" style="margin:0;">复制</span></div>' +
+  return '<div style="line-height:1.5;text-align:center;overflow-wrap:anywhere;">' +
+      '<span style="font-weight:600;">'+nc.name+'</span>' +
+      '<span class="op-link" data-copy="'+nc.name+'" style="margin:0 0 0 6px;font-weight:400;">复制</span>' +
+    '</div>' +
     '<div class="chips-row" style="margin-top:6px;justify-content:center;">'+appDisplayHtml(cover, 'tag tag-blue')+'</div>';
 }
 function sameArr(a, b){
@@ -1382,7 +1384,11 @@ function posterRows(t, viewOnly){
     if(!total) return;
     coverRows.forEach((cr, ci) => {
       cr.items.forEach((it, pi) => {
-        const nameCell = (ci===0 && pi===0) ? '<td rowspan="'+total+'" class="name-cell">'+nameCellHtml(nc, t.id)+'</td>' : '';
+        const hasData = coverRows.some(x => x.hasData);
+        const firstCover = coverRows.length ? coverRows[0].cover : [];
+        const nameCell = (ci===0 && pi===0)
+          ? '<td rowspan="'+total+'" class="name-cell">'+nameCellHtml(nc, t.id)+(hasData ? addBtn(nc.name, firstCover) : '')+'</td>'
+          : '';
         rows.push('<tr>'+checkCell+nameCell+posterCells(it.poster, t.id, nc.name, cr.cover, viewOnly)+'</tr>');
       });
     });
