@@ -1006,15 +1006,15 @@ document.getElementById('table-body').addEventListener('click', e => {
 const nbCw = {
   needDiff:false, remark:'', diffType:'剧名剧封差异化',
   langGroups:[
-    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', ...sceneSeed(1)},
-    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', groups:[
+    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', exclusive:'ns_app', ...sceneSeed(1)},
+    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', exclusive:'ns_官网', groups:[
       {name:['ns_app','nt_app','fs_app','ns_官网'], covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
       {name:['app_iaa马甲包','ns_h5'], covers:[['app_iaa马甲包'],['ns_h5']]},
       {name:['iap小程序','iaa小程序'], covers:[['iap小程序'],['iaa小程序']]},
     ]},
   ],
   coverLangGroups:[
-    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', fb:'ns_app', ...sceneSeed(5)},
+    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', fb:'ns_app', exclusive:'ns_官网', ...sceneSeed(5)},
   ],
 };
 function groupsOf(ct){
@@ -1098,30 +1098,21 @@ function customEditorHtml(ct, lg, g, mode){
     return html;
   }
   lg.groups.forEach((grp, n) => {
-    const numbered = grp.covers.length > 1;
-    const coverRows = grp.covers.map((cv, ci) =>
-      '<div class="cover-row">' +
-        (numbered ? '<span class="cover-idx">'+(ci+1)+'</span>' : '') +
-        '<div class="cover-main">' + cfgBox(g, n, 'cover', ci, cv) + '<div class="cfg-err"></div></div>' +
-        '<span class="cfg-del" data-act="del-cover" data-g="'+g+'" data-n="'+n+'" data-c="'+ci+'">删除</span>' +
-      '</div>'
-    ).join('');
+    /* 剧名剧封差异化：每个套只选一组「剧名剧封套」，不再拆成剧名 + 多个剧封 */
+    if(!grp.covers || grp.covers.length !== 1 || JSON.stringify(grp.covers[0]) !== JSON.stringify(grp.name)){
+      grp.covers = [grp.name.slice()];
+    }
     html +=
       '<div class="grp-card" data-g="'+g+'" data-n="'+n+'">' +
         '<div class="grp-head">' +
-          '<span class="grp-title">剧名套 '+(n+1)+'</span>' +
+          '<span class="grp-title">剧名剧封套 '+(n+1)+'</span>' +
           '<span class="grp-del" data-act="del-group" data-g="'+g+'" data-n="'+n+'">删除套</span>' +
         '</div>' +
         '<div class="grp-body">' +
-          '<div class="grp-col name-col">' +
-            '<div class="grp-label">剧名</div>' +
+          '<div class="grp-col" style="flex:1;min-width:0;padding-right:0;border-right:none;">' +
+            '<div class="grp-label">剧名剧封适用端</div>' +
             cfgBox(g, n, 'name', -1, grp.name) +
             '<div class="cfg-err"></div>' +
-          '</div>' +
-          '<div class="grp-col cover-col">' +
-            '<div class="grp-label">该剧名下的剧封套</div>' +
-            coverRows +
-            '<button class="btn-dashed" data-act="add-cover" data-g="'+g+'" data-n="'+n+'">+ 新增剧封套</button>' +
           '</div>' +
         '</div>' +
         '<div class="grp-err"></div>' +
@@ -1199,14 +1190,51 @@ function initFbSelects(ct){
   });
 }
 
-/* 语言组数量提示：上述X个语种分别生成X套剧名，X套剧封 */
+/* 独家标应用端：可搜索单选，枚举=该语言组已选应用 */
+function initExSelects(ct){
+  bindSsScroll();
+  const groups = groupsOf(ct);
+  const mode = modeOf(ct);
+  groups.forEach((lg, g) => {
+    const input = document.querySelector('#'+ct+' input[data-role="ex"][data-g="'+g+'"]');
+    if(!input) return;
+    const panel = document.getElementById(ct+'-ex-panel-'+g);
+    if(!panel) return;
+    const render = kw => {
+      const k = (kw || '').trim().toLowerCase();
+      const list = exclusiveOpts(lg, mode).filter(a => !k || a.toLowerCase().indexOf(k) >= 0);
+      panel.innerHTML = list.length
+        ? list.map(a => '<div class="ss-opt" data-v="'+a+'">'+a+'</div>').join('')
+        : '<div class="ss-empty">请先选择上方应用</div>';
+    };
+    input.addEventListener('focus', () => { input.value = ''; render(''); panel._anchor = input; panel.classList.add('show'); placeSsPanel(input, panel); });
+    input.addEventListener('input', () => { panel._anchor = input; panel.classList.add('show'); render(input.value); placeSsPanel(input, panel); });
+    input.addEventListener('blur', () => {
+      setTimeout(() => { panel.classList.remove('show'); input.value = lg.exclusive || ''; }, 150);
+    });
+    panel.addEventListener('mousedown', e => {
+      const o = e.target.closest('.ss-opt');
+      if(!o) return;
+      e.preventDefault();
+      lg.exclusive = o.getAttribute('data-v');
+      input.value = lg.exclusive;
+      input.blur();
+    });
+  });
+}
+/* 语言组数量提示：上述X个语种分别生成X套剧名剧封 / X套剧封 */
 function langCountTip(lg, mode){
   const nl = lg.langs.length;
-  let ns = 0, cs = 0, coverOnly = (mode === 'cover-only');
-  if(coverOnly){ cs = (lg.covers || []).length; }
-  else { ns = (lg.groups || []).length; cs = (lg.groups || []).reduce((a, x) => a + x.covers.length, 0); }
-  if(coverOnly) return '上述' + nl + '个语种分别生成' + cs + '套剧封';
-  return '上述' + nl + '个语种分别生成' + ns + '套剧名，' + cs + '套剧封';
+  if(mode === 'cover-only') return '上述' + nl + '个语种分别生成' + ((lg.covers || []).length) + '套剧封';
+  return '上述' + nl + '个语种分别生成' + ((lg.groups || []).length) + '套剧名剧封';
+}
+/* 独家标应用端枚举：该语言组已选的全部应用（去重、保持顺序） */
+function exclusiveOpts(lg, mode){
+  const out = [];
+  const push = arr => (arr || []).forEach(a => { if(out.indexOf(a) < 0) out.push(a); });
+  if(mode === 'cover-only'){ (lg.covers || []).forEach(push); }
+  else { (lg.groups || []).forEach(x => push(x.name)); }
+  return out;
 }
 /* 常用场景 → 语言组配置种子（深拷贝，可在其基础上继续编辑） */
 function sceneSeed(id){
@@ -1311,6 +1339,11 @@ function initCfgSelects(ct){
     const open = () => { panel._anchor = box; renderPanel(); panel.classList.add('show'); placeSsPanel(box, panel); };
     const apply = arr => {
       setCfgArr(key, g, n, kind, ci, arr);
+      /* 剧名剧封差异化：剧名与剧封共用同一组应用，改动后同步 */
+      if(kind === 'name' && modeOf(key) === 'name-cover'){
+        const lgx = (key === 'bd' ? bd.diff : groupsOf(key)[g]);
+        if(lgx && lgx.groups && lgx.groups[n]) lgx.groups[n].covers = [arr.slice()];
+      }
       box.classList.remove('invalid');
       const err = box.parentElement && box.parentElement.querySelector('.cfg-err');
       if(err) err.classList.remove('show');
@@ -1398,6 +1431,14 @@ function renderLangGroups(ct){
       '</div>';
       html += customEditorHtml(ct, lg, g, mode);
     }
+    /* 独家标应用端（非必填）：枚举取上方已选的全部应用组 */
+    html += '<div class="form-item fb-item" data-g="'+g+'" style="margin-top:16px;">' +
+      '<label class="form-label">独家标应用端</label>' +
+      '<div class="ss-wrap">' +
+        '<input class="ant-input ss-input" data-role="ex" data-g="'+g+'" value="'+(lg.exclusive || '')+'" placeholder="请选择应用端" autocomplete="off">' +
+        '<div class="ss-panel" id="'+ct+'-ex-panel-'+g+'"></div>' +
+      '</div>' +
+    '</div>';
     /* 兜底：两种场景类型统一叫【兜底剧名剧封】（交互/枚举一致） */
     const fbLabel = '兜底剧名剧封';
     html += '<div class="form-item fb-item" data-g="'+g+'">' +
@@ -1425,6 +1466,7 @@ function renderLangGroups(ct){
     li.setDisabled([...used]);
   });
   initCfgSelects(ct);
+  initExSelects(ct);
   initFbSelects(ct);
 }
 
@@ -1905,15 +1947,15 @@ function openNb(no){
   nbCw.diffType = '剧名剧封差异化';
   document.querySelector('input[name="nb-diff-type"][value="剧名剧封差异化"]').checked = true;
   nbCw.langGroups = [
-    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', ...sceneSeed(1)},
-    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', groups:[
+    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', exclusive:'ns_app', ...sceneSeed(1)},
+    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', exclusive:'ns_官网', groups:[
       {name:['ns_app','nt_app','fs_app','ns_官网'], covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
       {name:['app_iaa马甲包','ns_h5'], covers:[['app_iaa马甲包'],['ns_h5']]},
       {name:['iap小程序','iaa小程序'], covers:[['iap小程序'],['iaa小程序']]},
     ]},
   ];
   nbCw.coverLangGroups = [
-    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', fb:'ns_app', ...sceneSeed(5)},
+    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', fb:'ns_app', exclusive:'ns_官网', ...sceneSeed(5)},
   ];
   renderLangGroups('nb-lang-groups');
   document.getElementById('nb-drawer').classList.add('show');

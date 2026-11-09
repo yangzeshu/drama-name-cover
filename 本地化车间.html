@@ -184,6 +184,10 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
 .name-icon-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
 .name-icon{display:inline-flex;align-items:center;padding:8px 14px;background:var(--brand-weak);color:var(--brand);border-radius:8px;font-size:13px;cursor:pointer;transition:all .15s;border:1px solid transparent;max-width:100%;}
 .name-icon:hover{border-color:var(--brand);}
+/* 置灰剧名行：不可单独同步、编辑页不可编辑 */
+tr.row-locked td{background:#fafafa;color:var(--text-3);}
+tr.row-locked .tag{opacity:.55;}
+.proof-line.locked input{background:var(--fill-1);color:var(--text-3);cursor:not-allowed;}
 /* ===== 编辑本地化信息 ===== */
 .edit-name-box{border:1px solid var(--border-strong);border-radius:10px;padding:16px;margin-bottom:16px;}
 .edit-name-grid{display:grid;grid-template-columns:1fr 1.4fr 1.2fr;gap:20px;align-items:start;margin-top:12px;}
@@ -687,9 +691,17 @@ const NAME_COVER_SCENES = scenes.filter(s => s.type === 'name_cover');
      common → sceneId（一个常用场景）；custom → groups:[{name:[应用端]}]（剧名套，无剧封套） */
 let tasks = [
   {id:'LOC1', no:'N6788', name:'w测试0911', lang:'马来西亚语', srcLang:'中文', priority:'P1', episodes:'1~5', intro:'w测试0911简介', remark:'-',
-   diffs:[{woId:'W20260928001', mode:'common', sceneId:1, createTime:'2026-09-28 16:28:36', creator:'春明'}],
-   syncedNames:['Permainan Nyawa 0911','Cerita Hidupku 0911','Rebirth 0911'],
-   nameSync:['已同步','已同步','未同步'],
+   diffs:[
+     {woId:'W20260928001', mode:'common', sceneId:1, createTime:'2026-09-28 16:28:36', creator:'春明'},
+     {woId:'W20260929007', mode:'custom', groups:[
+       {name:['ns_app','ns_官网']},
+       {name:['ns_app','ns_h5']},
+       {name:['iap小程序','iaa小程序']},
+     ], createTime:'2026-09-29 10:12:08', creator:'李婉'},
+   ],
+   syncedNames:['Permainan Nyawa 0911','Cerita Hidupku 0911','Rebirth 0911','Nyawa Kedua 0911','Hidup Baru 0911','Permainan 0911'],
+   nameSync:['已同步','已同步','未同步','已同步','未同步','未同步'],
+   nameLock:[false,false,false,true,false,true],
    status:'未开始', owner:'-', proofread:'-', qc:'王强', planStart:'2026-09-30 16:28:36', planEnd:'-', creator:'春明', createTime:'2026-09-30 16:28:36', sysNo:'643969', taskId:'455489', taskCat:'翻译', flow:'校对-质检',
    detailLangs:['马来西亚语','土耳其语','英语']},
   {id:'LOC2', no:'B0930', name:'嫡女她有备而来', lang:'英语', srcLang:'中文', priority:'P0', episodes:'1~5', intro:'沈明珠上一世被庶妹夺了婚约、被继母推进枯井。重生在及笄前夜，她不再争一句宠爱。', remark:'-',
@@ -699,6 +711,7 @@ let tasks = [
    ],
    syncedNames:['The Legitimate Daughter Came Prepared','La Hija Legitima','Putri Sah','Frozen Throne of the Capital'],
    nameSync:['已同步','未同步','已同步','未同步'],
+   nameLock:[false,true,false,false],
    status:'未开始', owner:'-', proofread:'-', qc:'李婉', planStart:'2026-09-30 15:37:01', planEnd:'-', creator:'春明', createTime:'2026-09-30 15:37:01', sysNo:'295233', taskId:'114753', taskCat:'精修', flow:'校对-质检',
    detailLangs:['英语','法语']},
   {id:'LOC3', no:'N0001', name:'重生之都市仙尊', lang:'英语,西班牙语', srcLang:'中文', priority:'P0+', episodes:'', intro:'重生都市，逆天改命。', remark:'-',
@@ -708,12 +721,14 @@ let tasks = [
    ],
    syncedNames:['Reborn City Immortal','El Inmortal de la Ciudad','The Immortal Reborn'],
    nameSync:['已同步','未同步','已同步'],
+   nameLock:[false,false,true],
    status:'进行中', owner:'春明', proofread:'', qc:'王强', planStart:'2026-09-29 10:00:00', planEnd:'2026-10-10 18:00:00', creator:'春明', createTime:'2026-09-29 10:00:00', sysNo:'-', taskId:'455490', taskCat:'剧名', flow:'质检',
    detailLangs:['英语','西班牙语']},
   {id:'LOC4', no:'N0002', name:'闪婚老公是大佬', lang:'法语', srcLang:'中文', priority:'P1', episodes:'', intro:'闪婚老公竟是大佬。', remark:'-',
    diffs:[{woId:'W20260923001', mode:'custom', groups:[{name:ALL_APP_NAMES.slice()}], createTime:'2026-09-23 09:00:00', creator:'李婉'}],
    syncedNames:['Mon Mari est un Boss'],
    nameSync:['未同步'],
+   nameLock:[false],
    status:'未开始', owner:'-', proofread:'', qc:'李婉', planStart:'2026-10-01 09:00:00', planEnd:'2026-10-15 18:00:00', creator:'李婉', createTime:'2026-10-01 09:00:00', sysNo:'-', taskId:'455491', taskCat:'剧名', flow:'质检',
    detailLangs:['法语']},
 ];
@@ -1289,29 +1304,31 @@ function mainNamesHtml(t){
   const machine = Array.from({length:nameRows}, (_,i)=>'blablabla'+(i+1));
   const proofed = Array.from({length:nameRows}, (_,i)=>'blablabla'+(i+1));
   let rows = '';
+  const lockArr = t.nameLock || [];
+  const syncArr = t.nameSync || [];
   for(let i=0; i<nameRows; i++){
     const apps = groups[i] || [];
-    rows += '<tr>' +
+    const locked = !!lockArr[i];
+    const sync = syncArr[i] || '未同步';
+    /* 已同步 / 置灰行不给单独同步 */
+    const oneSync = (!locked && sync !== '已同步')
+      ? '<span class="op-link" data-act="name-sync-one" data-id="'+t.id+'" data-i="'+i+'" style="margin:0 0 0 6px;">单独同步</span>'
+      : '';
+    rows += '<tr'+(locked ? ' class="row-locked"' : '')+'>' +
       (i===0 ? '<td rowspan="'+nameRows+'" style="font-weight:500;">剧名</td>' : '') +
       '<td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(machine[i])+'</td>' +
       '<td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(proofed[i])+posterBtnHtml(t, i)+'</td>' +
       '<td class="wrap-cell" style="text-align:left;"><div class="chips-row">'+appDisplayHtml(apps,'tag tag-blue')+(i===newIdx?'<span class="wb-new-tag">✦ 新需求</span>':'')+'</div></td>' +
-      '<td>'+nameSyncTag((t.nameSync||[])[i])+'</td>' +
+      '<td>'+nameSyncTag(sync)+oneSync+'</td>' +
       (i===0 ? '<td rowspan="'+nameRows+'">blablabla<br>blablabla<br>blablabla<br>blablabla</td>' : '') +
-      (i===0 ? '<td rowspan="'+nameRows+'"><div class="op-col"><span class="op-link" data-act="editinfo" data-id="'+t.id+'">编辑</span><span class="op-link" data-demo="派发海报">派发海报</span><span class="op-link" data-demo="同步" style="color:var(--danger);">同步</span><span class="op-link" data-demo="机翻校验" style="color:var(--info);">机翻校验</span></div></td>' : '') +
+      (i===0 ? '<td rowspan="'+nameRows+'"><div class="op-col"><span class="op-link" data-act="editinfo" data-id="'+t.id+'">编辑</span><span class="op-link" data-demo="派发海报">派发海报</span><span class="op-link" data-demo="批量同步" style="color:var(--danger);">批量同步</span><span class="op-link" data-demo="机翻校验" style="color:var(--info);">机翻校验</span></div></td>' : '') +
       '</tr>';
   }
   const otherCats = isStock ? '' :
     '<tr><td style="font-weight:500;">剧本简介</td><td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(t.intro)+'</td><td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(t.intro)+'</td><td>-</td><td>已同步</td><td>暂无</td><td><div class="op-col"><span class="op-link" data-demo="编辑">编辑</span><span class="op-link" data-demo="机翻校验" style="color:var(--info);">机翻校验</span></div></td></tr>' +
     '<tr><td style="font-weight:500;">演员名称</td><td>暂无</td><td>暂无</td><td>-</td><td>未开始</td><td>暂无</td><td><div class="op-col"><span class="op-link" data-demo="编辑">编辑</span></div></td></tr>' +
     '<tr><td style="font-weight:500;">演员简介</td><td>暂无</td><td>暂无</td><td>-</td><td>未开始</td><td>暂无</td><td><div class="op-col"><span class="op-link" data-demo="编辑">编辑</span></div></td></tr>';
-  const nameItems = groups.map((g,i)=>{
-    const n = (t.syncedNames||[])[i] || 'blablabla'+(i+1);
-    return '<div class="name-icon" data-act="name-detail" data-id="'+t.id+'" data-i="'+i+'">'+n+'</div>';
-  }).join('');
-  return '<div class="loc-list-head"><span class="loc-list-title"><span class="bar"></span>已有剧名</span></div>' +
-    '<div class="name-icon-grid">'+nameItems+'</div>' +
-    '<div class="loc-list-head">' +
+  return '<div class="loc-list-head">' +
       '<span class="loc-list-title"><span class="bar"></span>剧名列表</span>' +
       '<span class="sec-ops"><span class="op-link" data-demo="刷新">刷新</span><span class="op-link" data-demo="启动机翻">启动机翻</span></span>' +
     '</div>' +
@@ -1356,7 +1373,10 @@ function renderEditInfo(t){
   html += '<div class="edit-name-grid">' +
     '<div><div class="col-h">机翻剧名（按评分降序）</div>' + machine.map((m,i)=>'<div class="machine-item">'+(i+1)+'. '+m+'</div>').join('') + '</div>' +
     '<div><div class="col-h">校对剧名</div><div class="proof-row">' +
-    groups.map((g,i)=>'<div class="proof-line"><span class="no">'+(i+1)+'.</span><input type="text" class="ant-input" id="proof-'+i+'" value="'+(machine[i]||'')+'"></div>').join('') +
+    groups.map((g,i)=>{
+      const lk = (t.nameLock||[])[i];
+      return '<div class="proof-line'+(lk?' locked':'')+'"><span class="no">'+(i+1)+'.</span><input type="text" class="ant-input" id="proof-'+i+'" value="'+(machine[i]||'')+'"'+(lk?' disabled':'')+'></div>';
+    }).join('') +
     '</div><button class="btn btn-outline btn-sm" id="btn-fill-machine" style="margin-top:8px;">应用机翻</button></div>' +
     '<div><div class="col-h">差异化场景组</div><div class="proof-row">' +
     groups.map((g,i)=>'<div class="proof-line"><div class="ms-wrap"><div class="ms-box" id="eg-'+i+'"><div id="eg-'+i+'-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>' +
@@ -1492,6 +1512,14 @@ document.body.addEventListener('click', e => {
   else if(act === 'names'){ openNamesModal(task); }
   else if(act === 'name-detail'){ openNameDetail(task, parseInt(t.getAttribute('data-i'))||0); }
   else if(act === 'name-posters'){ openNamePosters(task, parseInt(t.getAttribute('data-i'), 10)||0); }
+  else if(act === 'name-sync-one'){
+    const i = parseInt(t.getAttribute('data-i'), 10) || 0;
+    if((task.nameLock||[])[i]){ toast('该剧名已锁定，不支持单独同步', 'warning'); return; }
+    if(!task.nameSync) task.nameSync = [];
+    task.nameSync[i] = '已同步';
+    renderDetail(currentTask);
+    toast('剧名 ' + (i+1) + ' 已单独同步');
+  }
   else if(act === 'del'){
     tasks = tasks.filter(x=>x.id!==id);
     renderTasks();

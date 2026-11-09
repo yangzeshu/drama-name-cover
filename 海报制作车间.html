@@ -89,6 +89,11 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
 .table-fixed{table-layout:fixed;}
 .table-fixed .sticky-h{position:sticky;right:0;top:0;background:#fafbfc;z-index:3;}
 .table-fixed .sticky-col{position:sticky;right:0;background:#fff;z-index:1;}
+.ex-tag{display:inline-block;margin-left:4px;padding:0 4px;border-radius:3px;background:var(--danger);color:#fff;font-size:10px;font-style:normal;line-height:14px;vertical-align:1px;}
+.tag.tag-ex{background:var(--brand-weak);color:var(--brand);border:1px solid rgba(255,46,99,.35);}
+.range-inputs{display:flex;align-items:center;gap:6px;}
+.range-inputs .ant-input{flex:1;min-width:0;}
+.range-sep{color:var(--text-3);flex-shrink:0;}
 .ops-wrap{display:flex;flex-wrap:wrap;gap:2px 12px;justify-content:center;align-items:center;}
 .ops-wrap .op-link{margin:0;white-space:nowrap;}
 .table-fixed tbody tr:hover .sticky-col{background:#fafbfc;}
@@ -214,9 +219,9 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
 .bz-src{display:flex;gap:16px;margin-bottom:14px;}
 .bz-src-item{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--text-2);cursor:pointer;}
 .bz-src-item .poster-thumb{width:72px;height:96px;}
-.bz-head{display:grid;grid-template-columns:240px 260px 180px minmax(0,1fr);gap:10px;margin-bottom:8px;}
+.bz-head{display:grid;grid-template-columns:240px 180px minmax(0,1fr);gap:10px;margin-bottom:8px;}
 .bz-head .h{font-size:12px;color:var(--text-2);font-weight:600;}
-.bz-row{display:grid;grid-template-columns:240px 260px 180px minmax(0,1fr);gap:10px;align-items:start;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--border);}
+.bz-row{display:grid;grid-template-columns:240px 180px minmax(0,1fr);gap:10px;align-items:start;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--border);}
 .bz-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0;}
 .bz-prompt{grid-column:1 / -1;}
 .bz-sub-lab{font-size:12px;color:var(--text-2);font-weight:600;margin-bottom:6px;}
@@ -389,6 +394,13 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
             <div class="search-item"><label>本地化语言</label><select class="ant-input" id="f-lang"><option value="">全部</option><option>英语</option><option>繁体中文</option><option>韩语</option><option>西班牙语</option><option>日语</option><option>印尼语</option><option>泰语</option><option>葡萄牙语</option><option>简体中文</option><option>法语</option><option>德语</option><option>意大利语</option><option>阿拉伯语</option><option>马来西亚语</option><option>土耳其语</option><option>越南语</option><option>印地语</option></select></div>
             <div class="search-item"><label>任务状态</label><select class="ant-input" id="f-status"><option value="">请选择任务状态</option><option>未开始</option><option>进行中</option><option>已完成</option></select></div>
             <div class="search-item"><label>海报负责人</label><input type="text" class="ant-input" id="f-owner" placeholder="请选择海报负责人"></div>
+            <div class="search-item"><label>差异化数量</label>
+              <div class="range-inputs" style="width:200px;">
+                <input type="number" min="1" step="1" class="ant-input" id="f-diff-min" placeholder="最小">
+                <span class="range-sep">~</span>
+                <input type="number" min="1" step="1" class="ant-input" id="f-diff-max" placeholder="最大">
+              </div>
+            </div>
             <div class="search-item"><label>海报备注</label><input type="text" class="ant-input" id="f-remark" placeholder="请输入"></div>
             <div class="search-item"><label>预计海报开始时间</label><input type="text" class="ant-input" id="f-planstart" placeholder="请选择日期"></div>
             <div class="search-item"><label>预计海报完成时间</label><input type="text" class="ant-input" id="f-planend" placeholder="请选择日期"></div>
@@ -413,7 +425,7 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
                 <th style="width:80px;">任务状态</th>
                 <th style="width:120px;">差异化场景</th>
                 <th style="width:50px;">......</th>
-                <th style="width:70px;">海报</th>
+                <th style="width:70px;">源海报</th>
                 <th style="width:150px;" class="sticky-h">操作</th>
               </tr>
             </thead>
@@ -524,7 +536,7 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
       <div class="up-tips">
         <div>支持批量上传文件，最多支持同时上传 100 个图片</div>
         <div>上传文件格式：.jpg/png/jpeg</div>
-        <div>图片文件统一命名要求：本地化剧名_宽比高，eg：The Billionaire's Double Surprise_3比4.png，表示：关联剧名为The Billionaire's Double Surprise，3:4尺寸的图片</div>
+        <div>图片文件统一命名要求：应用端/宽比高，eg：ns_app/_3比4.png。该张剧封会去读名称中的应用端上传至列表中</div>
         <div>关闭弹窗和页面不影响上传进度</div>
       </div>
       <div class="form-item"><button class="btn btn-primary btn-sm" id="up-add">上传图片</button></div>
@@ -569,7 +581,7 @@ select.ant-input:disabled,input.ant-input:disabled{color:var(--text-2);backgroun
           <label class="form-label"><span class="req">*</span>生成数量</label>
           <input type="text" class="ant-input" id="bz-count" placeholder="大于等于1的正整数，默认值为海报差异化需求端的数量" style="width:300px;">
         </div>
-        <div class="bz-head"><div class="h">关联剧名选择</div><div class="h">剧封适用端</div><div class="h">尺寸要求</div></div>
+        <div class="bz-head"><div class="h">关联剧名选择</div><div class="h">尺寸要求</div></div>
         <div id="bz-rows"></div>
       </div>
       <!-- 模块4：已有海报 -->
@@ -1033,6 +1045,18 @@ function appChipHtml(name, chipClass){
   const t = appTipText(name);
   return '<span class="'+chipClass+(t?' app-merge':'')+'"'+(t?' data-tip="'+t+'"':'')+'>'+name+'</span>';
 }
+/* 剧封适用端 chips：最多一个应用带【独家标】标识 */
+const EXCLUSIVE_APP = 'ns_app';
+function coverAppsHtml(apps){
+  const list = (apps || []);
+  if(!list.length) return appDisplayHtml(list, 'tag tag-blue');
+  const ex = list.indexOf(EXCLUSIVE_APP) >= 0 ? EXCLUSIVE_APP : list[0];
+  return list.map(a =>
+    a === ex
+      ? '<span class="tag tag-blue tag-ex" title="独家标">'+a+'<i class="ex-tag">独家标</i></span>'
+      : appChipHtml(a, 'tag tag-blue')
+  ).join('');
+}
 function appDisplayHtml(apps, chipClass){
   if(!apps || !apps.length) return '<span style="color:#bfbfbf;font-size:12px;">—</span>';
   const html = apps.map(a => appChipHtml(a, chipClass)).join('');
@@ -1125,7 +1149,7 @@ function diffSceneCellHtml(t){
 }
 
 /* ================= 海报任务列表 ================= */
-const listFilter = {name:'', lang:'', status:'', owner:'', remark:''};
+const listFilter = {name:'', lang:'', status:'', owner:'', remark:'', diffMin:null, diffMax:null};
 function filteredPosters(){
   return posterTasks.filter(t => {
     if(listFilter.name && !t.name.toLowerCase().includes(listFilter.name.toLowerCase())) return false;
@@ -1133,6 +1157,9 @@ function filteredPosters(){
     if(listFilter.status && t.status !== listFilter.status) return false;
     if(listFilter.owner && !(t.owner||'').includes(listFilter.owner)) return false;
     if(listFilter.remark && !(t.remark||'').includes(listFilter.remark)) return false;
+    const dn = coverSetCount(t);
+    if(listFilter.diffMin != null && dn < listFilter.diffMin) return false;
+    if(listFilter.diffMax != null && dn > listFilter.diffMax) return false;
     return true;
   });
 }
@@ -1485,7 +1512,7 @@ function posterRows(t, viewOnly){
       cr.items.forEach((it, pi) => {
         const nameCell = (ci===0 && pi===0) ? '<td rowspan="'+total+'" class="name-cell">'+nameCellHtml(nc, t.id)+'</td>' : '';
         const coverCell = (pi===0) ? '<td rowspan="'+cr.items.length+'" class="wrap-cell" style="text-align:center;vertical-align:middle;">' +
-          '<div class="chips-row" style="justify-content:center;">'+appDisplayHtml(cr.cover,'tag tag-blue')+'</div>' +
+          '<div class="chips-row" style="justify-content:center;">'+coverAppsHtml(cr.cover)+'</div>' +
           (cr.hasData ? addBtn(nc.name, cr.cover) : '') +
           '</td>' : '';
         rows.push('<tr>'+checkCell+nameCell+coverCell+posterCells(it.poster, t.id, nc.name, cr.cover, viewOnly)+'</tr>');
@@ -1820,7 +1847,6 @@ function renderBzRows(t, count, preset){
     const covers = coverOptsOf(ri.name);
     return '<div class="bz-row">' +
       '<select class="ant-input bz-name">' + nameOpts.map(n=>'<option value="'+n+'"'+(n===ri.name?' selected':'')+'>'+n+'</option>').join('') + '</select>' +
-      '<select class="ant-input bz-cover">' + (covers.length ? covers.map(s=>'<option'+(s===ri.cover?' selected':'')+'>'+s+'</option>').join('') : '<option value="">请选择</option>') + '</select>' +
       msHtml('bz-size-'+i) +
       '<div class="bz-prompt"><div class="bz-sub-lab">附加提示词</div>' +
         '<textarea class="ant-input" placeholder="请输入附加提示词"></textarea></div>' +
@@ -1831,14 +1857,6 @@ function renderBzRows(t, count, preset){
   Array.from({length: rows}).forEach((_,i) => {
     sizeMs[i] = initMs('bz-size-'+i, 'bz-size-'+i+'-c', 'bz-size-'+i+'-p', sizeOpts, ()=>{}, {showAll:true});
     sizeMs[i].setValue(rowInit[i].size);
-  });
-  // 关联剧名联动剧封适用端（只能选该剧名下的适用端套）
-  document.querySelectorAll('.bz-name').forEach(sel => {
-    sel.addEventListener('change', () => {
-      const covers = coverOptsOf(sel.value);
-      const coverSel = sel.closest('.bz-row').querySelector('.bz-cover');
-      coverSel.innerHTML = covers.length ? covers.map(s=>'<option>'+s+'</option>').join('') : '<option value="">请选择</option>';
-    });
   });
 }
 function submitBatchModal(){
@@ -2065,18 +2083,35 @@ document.getElementById('person-submit').addEventListener('click', () => {
 });
 
 /* ================= 筛选 ================= */
+/* 差异化数量：精确到正整数；非法输入按未填处理 */
+function posInt(v){
+  const n = parseInt(v, 10);
+  return (isNaN(n) || n < 1) ? null : n;
+}
 document.getElementById('btn-search').addEventListener('click', ()=>{
   listFilter.name = document.getElementById('f-name').value;
   listFilter.lang = document.getElementById('f-lang').value;
   listFilter.status = document.getElementById('f-status').value;
   listFilter.owner = document.getElementById('f-owner').value;
   listFilter.remark = document.getElementById('f-remark').value;
+  listFilter.diffMin = posInt(document.getElementById('f-diff-min').value);
+  listFilter.diffMax = posInt(document.getElementById('f-diff-max').value);
+  if(listFilter.diffMin != null && listFilter.diffMax != null && listFilter.diffMin > listFilter.diffMax){
+    const tmp = listFilter.diffMin; listFilter.diffMin = listFilter.diffMax; listFilter.diffMax = tmp;
+  }
   renderList();
   toast('查询完成');
 });
+['f-diff-min','f-diff-max'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    const v = el.value.replace(/[^\d]/g, '');
+    if(v !== el.value) el.value = v;
+  });
+});
 document.getElementById('btn-reset').addEventListener('click', ()=>{
-  ['f-name','f-lang','f-status','f-owner','f-remark','f-planstart','f-planend'].forEach(id => { document.getElementById(id).value = ''; });
-  listFilter.name=''; listFilter.lang=''; listFilter.status=''; listFilter.owner=''; listFilter.remark='';
+  ['f-name','f-lang','f-status','f-owner','f-remark','f-planstart','f-planend','f-diff-min','f-diff-max'].forEach(id => { document.getElementById(id).value = ''; });
+  listFilter.name=''; listFilter.lang=''; listFilter.status=''; listFilter.owner=''; listFilter.remark=''; listFilter.diffMin=null; listFilter.diffMax=null;
   renderList();
   toast('已重置');
 });
