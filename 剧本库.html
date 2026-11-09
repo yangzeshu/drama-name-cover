@@ -165,7 +165,7 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 .cw-cols{display:flex;gap:40px;align-items:flex-start;}
 .cw-col-left{width:250px;flex-shrink:0;}
 .cw-col-right{flex:1;min-width:0;}
-/* 语言组（顶部语言行 + 场景模式 + 场景详情） */
+/* 差异化详情（场景多选 + 场景行） */
 .lg-block{border:1px solid var(--border-strong);border-radius:10px;margin-bottom:12px;overflow:hidden;}
 .lg-top{display:flex;align-items:center;gap:12px;background:#f7f8fa;padding:10px 16px;border-bottom:1px solid var(--border);}
 .lg-title{font-weight:600;font-size:13px;flex-shrink:0;}
@@ -304,7 +304,7 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 .ss-opt:hover{background:var(--fill-2);}
 .ss-empty{padding:10px 12px;font-size:12px;color:var(--text-3);text-align:center;}
 .ss-sub{float:right;margin-left:10px;color:var(--text-3);font-size:12px;font-style:normal;}
-/* ---------- 场景模式 / 选择场景 ---------- */
+/* ---------- 选择场景 ---------- */
 .mode-row .radio-group{display:flex;align-items:center;gap:20px;}
 .lg-scene-pick{display:flex;align-items:center;gap:10px;}
 .lg-scene-pick select{flex:1;min-width:0;}
@@ -329,13 +329,53 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 #scene-detail-modal,#reuse-scene-modal{z-index:1500;}
 .sd-name{font-size:14px;font-weight:600;margin-bottom:4px;}
 .sd-meta{font-size:12px;color:var(--text-3);margin-bottom:12px;}
-.sd-grp{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--fill-1);}
-.sd-grp-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;}
-.sd-row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;}
-.sd-row:last-child{margin-bottom:0;}
-.sd-label{flex-shrink:0;width:56px;font-size:12px;color:var(--text-3);line-height:22px;}
-.sd-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.sd-chips{display:inline-flex;flex-wrap:wrap;gap:4px;}
 .sd-chip{display:inline-flex;align-items:center;height:22px;padding:0 7px;background:var(--brand-light);color:var(--brand);border-radius:4px;font-size:12px;}
+.sd-cfg{border:1px solid var(--border-strong);border-radius:8px;padding:12px 14px;background:var(--fill-1);}
+.sd-cfg-head{font-size:12.5px;color:var(--text-2);line-height:1.8;margin-bottom:10px;overflow-wrap:anywhere;}
+.sd-cfg-body{display:flex;flex-direction:column;gap:8px;}
+.sd-gset{display:flex;align-items:flex-start;gap:8px;min-width:0;}
+.sd-gt{flex:none;font-size:11px;color:var(--text-3);background:#fff;border:1px solid var(--border-strong);border-radius:3px;padding:1px 6px;line-height:18px;margin-top:2px;white-space:nowrap;}
+.sd-chip-empty{font-size:12px;color:var(--text-3);}
+.sd-empty{font-size:12px;color:var(--text-3);padding:16px 12px;border:1px dashed var(--border-strong);border-radius:8px;}
+/* ---------- 差异化详情：常用场景多选 + 选中场景行 ---------- */
+.scene-sel{position:relative;}
+.scene-sel .sel-wrap{border:1px solid #d9d9d9;border-radius:6px;background:#fff;padding:4px 8px;min-height:36px;}
+.scene-sel .sel-wrap:hover{border-color:var(--brand);}
+.scene-sel.has-error .sel-wrap{border-color:var(--danger);}
+.scene-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.scene-row{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--fill-1);padding:10px 12px;}
+.scene-idx{flex:none;width:20px;height:20px;border-radius:4px;background:var(--brand-light);color:var(--brand);font-size:12px;display:inline-flex;align-items:center;justify-content:center;margin-top:1px;}
+.scene-main{flex:1;min-width:0;}
+.scene-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.6;overflow-wrap:anywhere;}
+.scene-langs{font-size:12px;color:var(--text-3);margin-top:2px;line-height:1.6;overflow-wrap:anywhere;}
+.scene-empty{font-size:12px;color:var(--text-3);padding:10px 12px;border:1px dashed var(--border-strong);border-radius:8px;background:#fff;}
+.scene-row .link{flex:none;margin-top:3px;}
+.ss-panel .sel-opt.checked{background:var(--brand-light);}
+
+/* ===================== 顶部规则列表 ===================== */
+.rl-entry{display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;color:var(--text-2);font-size:13px;cursor:pointer;transition:background .15s,color .15s;margin-right:6px;}
+.rl-entry:hover{background:var(--brand-weak);color:var(--brand);}
+.rl-entry svg{width:16px;height:16px;flex-shrink:0;}
+.rl-mask{position:fixed;inset:0;z-index:900;background:rgba(20,24,30,.45);display:none;align-items:flex-start;justify-content:center;padding:64px 24px;overflow-y:auto;}
+.rl-mask.show{display:flex;}
+.rl-modal{background:#fff;border-radius:14px;width:720px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,.24);margin:0 auto;}
+.rl-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 14px;border-bottom:1px solid var(--border);}
+.rl-title{font-size:16px;font-weight:600;}
+.rl-close{width:24px;height:24px;border-radius:6px;color:var(--text-3);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.rl-close:hover{background:var(--fill-2);color:var(--text);}
+.rl-body{padding:18px 24px 8px;max-height:64vh;overflow-y:auto;}
+.rl-sec{padding-bottom:16px;}
+.rl-sec + .rl-sec{border-top:1px dashed var(--border-strong);padding-top:16px;}
+.rl-sec-h{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.rl-sec-h .idx{width:18px;height:18px;flex:none;border-radius:4px;background:var(--brand-light);color:var(--brand);font-size:11px;display:inline-flex;align-items:center;justify-content:center;}
+.rl-item{display:flex;gap:8px;font-size:13px;color:var(--text-2);line-height:1.85;margin-bottom:8px;}
+.rl-item:last-child{margin-bottom:0;}
+.rl-item .no{flex:none;color:var(--text-3);}
+.rl-item b{color:var(--text);font-weight:600;}
+.rl-tip{margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--brand-weak);color:var(--brand);font-size:12.5px;line-height:1.7;}
+.rl-tip b{font-weight:600;}
+.rl-foot{display:flex;justify-content:flex-end;padding:14px 24px 20px;}
 </style>
 </head>
 <body>
@@ -349,6 +389,10 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
     </div>
     <div class="topbar-right">
       <div class="topbar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></div>
+      <div class="rl-entry" id="rl-entry" title="查看校验规则">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5h10M9 12h10M9 19h10"/><path d="M4.5 5h.01M4.5 12h.01M4.5 19h.01" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <span>规则列表</span>
+      </div>
       <div class="topbar-user"><div class="topbar-avatar">春</div><span class="topbar-name">春明</span></div>
     </div>
   </div>
@@ -374,6 +418,10 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
     <a class="sidebar-item" href="海报制作车间.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M4 17l5-4 4 3 3-3 4 4"/></svg>
       <span>海报制作车间</span>
+    </a>
+    <a class="sidebar-item" href="自动化引擎.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M3.7 7.3l2.3 1.3M18 15.4l2.3 1.3M3.7 16.7l2.3-1.3M18 8.6l2.3-1.3"/></svg>
+      <span>自动化引擎</span>
     </a>
   </div>
 
@@ -466,13 +514,6 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
       <!-- 模块2：差异化需求 -->
       <div class="diff-module">
         <div class="diff-module-title">差异化需求</div>
-        <div class="form-item" id="fi-bd-difftype" style="margin-bottom:16px;">
-          <label class="diff-field-label"><span class="req">*</span>场景类型</label>
-          <div class="radio-group">
-            <label class="radio-opt"><input type="radio" name="bd-diff-type" value="剧名剧封差异化" checked>剧名剧封差异化</label>
-            <label class="radio-opt"><input type="radio" name="bd-diff-type" value="仅剧封差异化">仅剧封差异化（独家标/尺度分场景）</label>
-          </div>
-        </div>
         <div class="form-item" style="margin-bottom:0;">
           <div class="diff-submod" id="bd-diff-cfg"></div>
           <div class="remark-row" style="margin-top:14px;">
@@ -658,14 +699,7 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
           <!-- 差异化需求 -->
           <div class="diff-check"><label class="radio-opt"><input type="checkbox" id="cb-need-diff">需要剧名剧封差异化</label></div>
           <div class="diff-body" id="diff-body">
-            <div class="form-item" style="margin-bottom:14px;">
-              <label class="diff-field-label"><span class="req">*</span>场景类型</label>
-              <div class="radio-group">
-                <label class="radio-opt"><input type="radio" name="nb-diff-type" value="剧名剧封差异化" checked>剧名剧封差异化</label>
-                <label class="radio-opt"><input type="radio" name="nb-diff-type" value="仅剧封差异化">仅剧封差异化（独家标/尺度分场景）</label>
-              </div>
-            </div>
-            <div class="diff-detail-head"><label class="diff-field-label"><span class="req">*</span>差异化详情</label><button class="btn btn-primary btn-sm" id="btn-add-lang-nb">新增语言组</button></div>
+            <div class="diff-detail-head"><label class="diff-field-label"><span class="req">*</span>差异化详情</label></div>
             <div id="nb-lang-groups"></div>
             <div class="remark-row" style="margin-top:14px;">
               <label class="form-label">差异化备注</label>
@@ -735,26 +769,32 @@ const IAP_MINI = ['iap小程序'];
 const IAA_MINI = ['iaa小程序'];
 const NS_EXCLUSIVE = ['ns_app','ns_官网','ns_h5'];
 const APP_PLUS_NS_WEB = APP_SET.concat(NS_WEB);
+/* 常用场景：每个场景自带「包含语言」，一处场景 = 一组语言 + 一套剧名剧封配置 */
 const scenes = [
-  {id:1, name:'主包/iap/iaa三套剧名剧封+ns独家标剧封', desc:'ns_app和官网加独家标，主包/iap/iaa小程序差异化', type:'name_cover', groups:[
+  {id:1, name:'主包/iap/iaa三套剧名剧封+ns独家标剧封', desc:'ns_app和官网加独家标，主包/iap/iaa小程序差异化', type:'name_cover',
+   langs:LANGUAGES.slice(0,9), groups:[
     {name:APP_PLUS_NS_WEB.slice(), covers:[NS_EXCLUSIVE.slice(), ['nt_app','fs_app','app_iaa马甲包','app_iap马甲包']]},
     {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
     {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
   ]},
-  {id:2, name:'主包/iap/iaa小程序三套剧名剧封', desc:'主包/iap/iaa小程序差异化', type:'name_cover', groups:[
+  {id:2, name:'主包/iap/iaa小程序三套剧名剧封', desc:'主包/iap/iaa小程序差异化', type:'name_cover',
+   langs:LANGUAGES.slice(9), groups:[
     {name:APP_PLUS_NS_WEB.slice(), covers:[APP_PLUS_NS_WEB.slice()]},
     {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
     {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
   ]},
-  {id:3, name:'全端通用剧名剧封+ns独家标', desc:'ns_app和官网加独家标，其他端共用剧名剧封', type:'name_cover', groups:[
+  {id:3, name:'全端通用剧名剧封+ns独家标', desc:'ns_app和官网加独家标，其他端共用剧名剧封', type:'name_cover',
+   langs:['英语','繁体中文'], groups:[
     {name:ALL_APP_NAMES.slice(), covers:[NS_EXCLUSIVE.slice(), ALL_APP_NAMES.filter(a=>NS_EXCLUSIVE.indexOf(a)<0)]},
   ]},
-  {id:4, name:'存量剧_iap/iaa剧名剧封差异化', desc:'iap/iaa小程序单独做差异化剧名剧封', type:'name_cover', groups:[
+  {id:4, name:'存量剧_iap/iaa剧名剧封差异化', desc:'iap/iaa小程序单独做差异化剧名剧封', type:'name_cover',
+   langs:['韩语','西班牙语','日语'], groups:[
     {name:IAP_MINI.slice(), covers:[IAP_MINI.slice()]},
     {name:IAA_MINI.slice(), covers:[IAA_MINI.slice()]},
   ]},
-  {id:5, name:'ns独家标剧封', desc:'为ns_app和官网新增独家标/做不同尺度剧封', type:'cover_only', covers:[
-    NS_EXCLUSIVE.slice(),
+  {id:5, name:'ns独家标剧名剧封', desc:'为ns_app和官网单独做一套独家标剧名剧封', type:'name_cover',
+   langs:['葡萄牙语','简体中文','法语'], groups:[
+    {name:NS_EXCLUSIVE.slice(), covers:[NS_EXCLUSIVE.slice()]},
   ]},
 ];
 function sceneName(id){ const s = scenes.find(x=>x.id===id); return s ? s.name : ''; }
@@ -1002,29 +1042,14 @@ document.getElementById('table-body').addEventListener('click', e => {
   if(ed){ openNb(ed.getAttribute('data-no')); }
 });
 
-/* ================= 语言组渲染（场景引用化） ================= */
+/* ================= 剧本差异化详情（常用场景多选） ================= */
+/* 剧本差异化详情：多选常用场景（场景内含语言）+ 兜底剧名剧封；场景类型固定为剧名剧封差异化 */
 const nbCw = {
-  needDiff:false, remark:'', diffType:'剧名剧封差异化',
-  langGroups:[
-    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', exclusive:'ns_app', ...sceneSeed(1)},
-    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', exclusive:'ns_官网', groups:[
-      {name:['ns_app','nt_app','fs_app','ns_官网'], covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
-      {name:['app_iaa马甲包','ns_h5'], covers:[['app_iaa马甲包'],['ns_h5']]},
-      {name:['iap小程序','iaa小程序'], covers:[['iap小程序'],['iaa小程序']]},
-    ]},
-  ],
-  coverLangGroups:[
-    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', fb:'ns_app', exclusive:'ns_官网', ...sceneSeed(5)},
-  ],
+  needDiff:false, remark:'',
+  diff:{scenes:[1, 2], fb:'ns_app'},
 };
-function groupsOf(ct){
-  if(ct === 'bd') return [bd.diff];
-  return (nbCw.diffType === '仅剧封差异化') ? nbCw.coverLangGroups : nbCw.langGroups;
-}
-function modeOf(ct){
-  if(ct === 'bd') return (bd.diffType === '仅剧封差异化') ? 'cover-only' : 'name-cover';
-  return (nbCw.diffType === '仅剧封差异化') ? 'cover-only' : 'name-cover';
-}
+function groupsOf(ct){ return [(ct === 'bd') ? bd.diff : nbCw.diff]; }
+function modeOf(){ return 'name-cover'; }
 function msHtml(uid){
   return '<div class="ms-wrap"><div class="ms-box" id="'+uid+'"><div id="'+uid+'-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>' +
     '<span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>' +
@@ -1190,95 +1215,49 @@ function initFbSelects(ct){
   });
 }
 
-/* 独家标应用端：可搜索单选，枚举=该语言组已选应用 */
-function initExSelects(ct){
-  bindSsScroll();
-  const groups = groupsOf(ct);
-  const mode = modeOf(ct);
-  groups.forEach((lg, g) => {
-    const input = document.querySelector('#'+ct+' input[data-role="ex"][data-g="'+g+'"]');
-    if(!input) return;
-    const panel = document.getElementById(ct+'-ex-panel-'+g);
-    if(!panel) return;
-    const render = kw => {
-      const k = (kw || '').trim().toLowerCase();
-      const list = exclusiveOpts(lg, mode).filter(a => !k || a.toLowerCase().indexOf(k) >= 0);
-      panel.innerHTML = list.length
-        ? list.map(a => '<div class="ss-opt" data-v="'+a+'">'+a+'</div>').join('')
-        : '<div class="ss-empty">请先选择上方应用</div>';
-    };
-    input.addEventListener('focus', () => { input.value = ''; render(''); panel._anchor = input; panel.classList.add('show'); placeSsPanel(input, panel); });
-    input.addEventListener('input', () => { panel._anchor = input; panel.classList.add('show'); render(input.value); placeSsPanel(input, panel); });
-    input.addEventListener('blur', () => {
-      setTimeout(() => { panel.classList.remove('show'); input.value = lg.exclusive || ''; }, 150);
-    });
-    panel.addEventListener('mousedown', e => {
-      const o = e.target.closest('.ss-opt');
-      if(!o) return;
-      e.preventDefault();
-      lg.exclusive = o.getAttribute('data-v');
-      input.value = lg.exclusive;
-      input.blur();
-    });
-  });
-}
-/* 语言组数量提示：上述X个语种分别生成X套剧名剧封 / X套剧封 */
-function langCountTip(lg, mode){
-  const nl = lg.langs.length;
-  if(mode === 'cover-only') return '上述' + nl + '个语种分别生成' + ((lg.covers || []).length) + '套剧封';
-  return '上述' + nl + '个语种分别生成' + ((lg.groups || []).length) + '套剧名剧封';
-}
-/* 独家标应用端枚举：该语言组已选的全部应用（去重、保持顺序） */
-function exclusiveOpts(lg, mode){
-  const out = [];
-  const push = arr => (arr || []).forEach(a => { if(out.indexOf(a) < 0) out.push(a); });
-  if(mode === 'cover-only'){ (lg.covers || []).forEach(push); }
-  else { (lg.groups || []).forEach(x => push(x.name)); }
-  return out;
-}
-/* 常用场景 → 语言组配置种子（深拷贝，可在其基础上继续编辑） */
+/* 常用场景 → 可编辑的配置种子（深拷贝） */
 function sceneSeed(id){
   const sc = scenes.find(x => x.id === id);
   if(!sc) return {groups:[{name:[], covers:[[]]}], covers:[[]]};
   if(sc.type === 'cover_only') return {covers: sc.covers.map(c => c.slice())};
   return {groups: sc.groups.map(gr => ({name: gr.name.slice(), covers: gr.covers.map(c => c.slice())}))};
 }
-/* ================= 场景模式：常用场景 / 自定义场景 ================= */
-/* 场景模式：显式设置优先，未设置时按是否已有场景引用推断（兼容历史数据） */
-function sceneModeOf(lg){ return lg.sceneMode || (lg.sceneId ? 'common' : 'custom'); }
-/* 场景枚举：按当前场景类型（剧名剧封差异化 / 仅剧封差异化）过滤，两类枚举值不同 */
-function sceneOptsOf(mode){ return scenes.filter(s => mode === 'cover-only' ? s.type === 'cover_only' : s.type === 'name_cover'); }
-/* 复用场景：用场景展开后的剧名/剧封套覆盖当前配置（之后仍可继续编辑） */
+/* ================= 常用场景枚举（场景类型已统一为剧名剧封差异化） ================= */
+function sceneOptsOf(){ return scenes.filter(s => s.type === 'name_cover'); }
+/* 复用场景（批量差异化 · 自定义场景）：用场景展开后的剧名剧封套填入当前配置 */
 function applySceneSingle(ct, g, id){
-  const key = (ct === 'bd-diff-cfg') ? 'bd' : ct;
-  const lg = key === 'bd' ? bd.diff : groupsOf(key)[g];
-  if(!lg) return;
   const seed = sceneSeed(id);
-  lg.sceneId = id;
-  lg.sceneMode = 'custom';
-  if(modeOf(key) === 'cover-only') lg.covers = seed.covers;
-  else lg.groups = seed.groups;
-  if(key === 'bd') renderBdDiffCfg(); else renderLangGroups(key);
+  bd.diff.sceneId = id;
+  bd.diff.groups = (seed.groups && seed.groups.length) ? seed.groups : [{name:[], covers:[[]]}];
+  renderBdDiffCfg();
   toast('已按场景「' + sceneName(id) + '」填入剧名剧封套，可继续编辑');
 }
-/* 场景详情弹窗内容（只读） */
+/* 场景详情：相同配置的语言聚合展示（语言 → 剧名剧封组 → 应用端） */
+function sceneSetsOf(sc){
+  if(!sc) return [];
+  if(sc.groups && sc.groups.length) return sc.groups.map(g => g.name || []);
+  return (sc.covers || []).map(c => c);
+}
 function sceneDetailHtml(sc){
   if(!sc) return '';
   let h = '<div class="sd-name">' + sc.name + '</div>';
   h += '<div class="sd-meta">' + (TYPE_TEXT[sc.type] || '') + (sc.desc ? ' · ' + sc.desc : '') + '</div>';
-  if(sc.type === 'cover_only'){
-    h += sc.covers.map((cv, ci) =>
-      '<div class="sd-grp"><div class="sd-grp-title">剧封套 ' + (ci+1) + '</div>' +
-      '<div class="sd-row"><span class="sd-label">剧封</span><div class="sd-chips">' + cv.map(a => '<span class="sd-chip">'+a+'</span>').join('') + '</div></div></div>'
-    ).join('');
-  }else{
-    h += sc.groups.map((grp, n) =>
-      '<div class="sd-grp"><div class="sd-grp-title">剧名套 ' + (n+1) + '</div>' +
-      '<div class="sd-row"><span class="sd-label">剧名</span><div class="sd-chips">' + grp.name.map(a => '<span class="sd-chip">'+a+'</span>').join('') + '</div></div>' +
-      grp.covers.map((cv, ci) => '<div class="sd-row"><span class="sd-label">剧封套'+(ci+1)+'</span><div class="sd-chips">' + cv.map(a => '<span class="sd-chip">'+a+'</span>').join('') + '</div></div>').join('') +
-      '</div>'
-    ).join('');
+  const langs = sc.langs || [];
+  const sets = sceneSetsOf(sc);
+  if(!langs.length){
+    return h + '<div class="sd-empty">该场景暂未配置语言</div>';
   }
+  const setHtml = sets.length
+    ? sets.map((apps, i) =>
+        '<div class="sd-gset"><span class="sd-gt">剧名剧封组 '+(i+1)+'</span>' +
+        '<span class="sd-chips">'+(apps.length ? apps.map(a => '<span class="sd-chip">'+a+'</span>').join('') : '<span class="sd-chip-empty">—</span>')+'</span></div>'
+      ).join('')
+    : '<span class="sd-chip-empty">该场景未配置应用端</span>';
+  /* 同一场景内各语言配置一致 → 聚合成一块；将来若出现不同配置，按配置分组各出一块 */
+  h += '<div class="sd-cfg">' +
+    '<div class="sd-cfg-head">语言（'+langs.length+'）：' + langs.join('、') + '</div>' +
+    '<div class="sd-cfg-body">' + setHtml + '</div>' +
+  '</div>';
   return h;
 }
 function openSceneDetail(id){
@@ -1383,91 +1362,114 @@ function initCfgSelects(ct){
     panel.addEventListener('click', e => e.preventDefault());
   });
 }
-/* 语言组渲染：顶部语言行 + 场景模式（常用场景=选场景看详情 / 自定义场景=套编辑器，可复用场景） */
+/* 差异化详情：常用场景多选（场景内含语言）+ 兜底剧名剧封 */
+function sceneTagHtml(id){
+  return '<span class="sel-tag">'+sceneName(id)+'<i class="sel-x" data-v="'+id+'">×</i></span>';
+}
+function sceneRowsHtml(){
+  const ids = nbCw.diff.scenes || [];
+  if(!ids.length) return '<div class="scene-empty">尚未选择场景，选择后在此展示「场景名称 — 包含语言」</div>';
+  return ids.map((id, i) => {
+    const sc = scenes.find(x => x.id === id);
+    if(!sc) return '';
+    return '<div class="scene-row">' +
+      '<span class="scene-idx">'+(i+1)+'</span>' +
+      '<div class="scene-main">' +
+        '<div class="scene-name">'+sc.name+'</div>' +
+        '<div class="scene-langs">语言：'+((sc.langs || []).join('、') || '—')+'</div>' +
+      '</div>' +
+      '<button class="link" data-act="scene-detail" data-id="'+sc.id+'">详情</button>' +
+    '</div>';
+  }).join('');
+}
 function renderLangGroups(ct){
-  const groups = groupsOf(ct);
-  const mode = modeOf(ct);
-  const scOpts = sceneOptsOf(mode);
-  let html = '';
-  groups.forEach((lg, g) => {
-    const sm = sceneModeOf(lg);
-    html += '<div class="lg-block" data-g="'+g+'">';
-    html += '<div class="lg-top">' +
-      '<span class="lg-title">语言组 <span class="idx">'+(g+1)+'</span></span>' +
-      '<div class="lang-pick">语言 ' + msHtml(ct+'-lang-'+g) + '</div>' +
-      '<div class="lg-count-tip" data-g="'+g+'">'+langCountTip(lg, mode)+'</div>' +
-      '<div class="spacer"></div>' +
-      '<button class="link danger btn-del-lang" data-act="del-lang" data-g="'+g+'" '+(groups.length<=1?'disabled':'')+'>删除语言组</button>' +
-      '</div>';
-    html += '<div class="lg-body">';
-    if(mode === 'cover-only' && !lg.covers) lg.covers = [[]];
-    if(mode === 'name-cover' && !lg.groups) lg.groups = [{name:[], covers:[[]]}];
-    /* 场景模式 */
-    html += '<div class="mode-row">' +
-      '<span class="mr-label"><span class="req">*</span>场景模式</span>' +
-      '<div class="radio-group">' +
-        '<label class="radio-opt"><input type="radio" name="'+ct+'-sm-'+g+'" data-role="scene-mode" data-g="'+g+'" value="common" '+(sm==='common'?'checked':'')+'>常用场景</label>' +
-        '<label class="radio-opt"><input type="radio" name="'+ct+'-sm-'+g+'" data-role="scene-mode" data-g="'+g+'" value="custom" '+(sm==='custom'?'checked':'')+'>自定义场景</label>' +
+  const ids = nbCw.diff.scenes || [];
+  let html = '<div class="form-item" style="margin-bottom:0;">' +
+    '<label class="diff-field-label"><span class="req">*</span>选择场景</label>' +
+    '<div class="scene-sel">' +
+      '<div class="sel-wrap">' + ids.map(sceneTagHtml).join('') +
+        '<input class="sel-input" data-role="scene" placeholder="'+(ids.length ? '' : '请选择场景，支持多选')+'" autocomplete="off">' +
       '</div>' +
-    '</div>';
-    if(sm === 'common'){
-      html += '<div class="form-item lg-scene-item" data-g="'+g+'">' +
-        '<label class="form-label"><span class="req">*</span>选择场景</label>' +
-        '<div class="lg-scene-pick">' +
-          '<select class="ant-input" data-role="scene-pick" data-g="'+g+'">' +
-            '<option value="">请选择场景</option>' +
-            scOpts.map(s => '<option value="'+s.id+'" '+(lg.sceneId===s.id?'selected':'')+'>'+s.name+'</option>').join('') +
-          '</select>' +
-          (lg.sceneId ? '<button class="link" data-act="scene-detail" data-g="'+g+'">详情</button>' : '') +
-        '</div>' +
-      '</div>';
-    }else{
-      html += '<div class="grp-top-row">' +
-        '<button class="btn btn-outline btn-sm" data-act="reuse-scene" data-g="'+g+'">复用场景</button>' +
-        (mode === 'name-cover'
-          ? '<button class="btn btn-primary btn-sm" data-act="add-group" data-g="'+g+'">+ 新增剧名套</button>' +
-            '<span class="grp-tip">每个剧名套代表一套独立剧名；每套剧名可对应多套使用该剧名的剧封</span>'
-          : '<span class="grp-tip">每个剧封套代表一套独立剧封，选择对应应用端</span>') +
-      '</div>';
-      html += customEditorHtml(ct, lg, g, mode);
-    }
-    /* 独家标应用端（非必填）：枚举取上方已选的全部应用组 */
-    html += '<div class="form-item fb-item" data-g="'+g+'" style="margin-top:16px;">' +
-      '<label class="form-label">独家标应用端</label>' +
-      '<div class="ss-wrap">' +
-        '<input class="ant-input ss-input" data-role="ex" data-g="'+g+'" value="'+(lg.exclusive || '')+'" placeholder="请选择应用端" autocomplete="off">' +
-        '<div class="ss-panel" id="'+ct+'-ex-panel-'+g+'"></div>' +
-      '</div>' +
-    '</div>';
-    /* 兜底：两种场景类型统一叫【兜底剧名剧封】（交互/枚举一致） */
-    const fbLabel = '兜底剧名剧封';
-    html += '<div class="form-item fb-item" data-g="'+g+'">' +
-      '<label class="form-label"><span class="req">*</span>'+fbLabel+'</label>' +
-      '<div class="ss-wrap">' +
-        '<input class="ant-input ss-input" data-role="fb" data-g="'+g+'" value="'+(lg.fb || '')+'" placeholder="请选择应用端" autocomplete="off">' +
-        '<div class="ss-panel" id="'+ct+'-fb-panel-'+g+'"></div>' +
-      '</div>' +
-      '<div class="error">请选择'+fbLabel+'</div>' +
-    '</div>';
-    html += '</div></div>';
-  });
-  const c = document.getElementById(ct);
-  c.innerHTML = html;
-  groups.forEach((lg, g) => {
-    const used = new Set();
-    groups.forEach((x,i)=>{ if(i!==g) x.langs.forEach(l=>used.add(l)); });
-    const lk = ct+'-lang-'+g;
-    const li = initMs(lk, lk+'-c', lk+'-p', LANGUAGES, arr=>{
-      lg.langs = arr;
-      const tipEl = document.querySelector('#'+ct+' .lg-count-tip[data-g="'+g+'"]');
-      if(tipEl) tipEl.textContent = langCountTip(lg, modeOf(ct));
-    }, true);
-    li.setValue(lg.langs);
-    li.setDisabled([...used]);
-  });
-  initCfgSelects(ct);
-  initExSelects(ct);
+      '<div class="ss-panel"></div>' +
+    '</div>' +
+    '<div class="error">请选择场景</div>' +
+  '</div>' +
+  '<div class="scene-list">' + sceneRowsHtml() + '</div>';
+  html += '<div class="form-item fb-item" data-g="0">' +
+    '<label class="form-label"><span class="req">*</span>兜底剧名剧封</label>' +
+    '<div class="ss-wrap">' +
+      '<input class="ant-input ss-input" data-role="fb" data-g="0" value="'+(nbCw.diff.fb || '')+'" placeholder="请选择应用端" autocomplete="off">' +
+      '<div class="ss-panel" id="'+ct+'-fb-panel-0"></div>' +
+    '</div>' +
+    '<div class="error">请选择兜底剧名剧封</div>' +
+  '</div>';
+  document.getElementById(ct).innerHTML = html;
+  initSceneSelect(ct);
   initFbSelects(ct);
+}
+/* 场景多选：勾选保持打开、chips 可删、全选 */
+function initSceneSelect(ct){
+  const box = document.querySelector('#'+ct+' .scene-sel');
+  if(!box) return;
+  bindSsScroll();
+  const wrap = box.querySelector('.sel-wrap');
+  const input = box.querySelector('input[data-role="scene"]');
+  const panel = box.querySelector('.ss-panel');
+  const idsOf = () => nbCw.diff.scenes || [];
+  const refresh = () => {
+    wrap.querySelectorAll('.sel-tag').forEach(t => t.remove());
+    wrap.insertAdjacentHTML('afterbegin', idsOf().map(sceneTagHtml).join(''));
+    input.placeholder = idsOf().length ? '' : '请选择场景，支持多选';
+    const le = document.querySelector('#'+ct+' .scene-list');
+    if(le) le.innerHTML = sceneRowsHtml();
+    const ids = idsOf();
+    panel.querySelectorAll('.sel-opt').forEach(o => {
+      const on = ids.indexOf(parseInt(o.getAttribute('data-v'), 10)) >= 0;
+      const cb = o.querySelector('input'); if(cb) cb.checked = on;
+      o.classList.toggle('checked', on);
+    });
+    const allBox = panel.querySelector('.sel-all input');
+    if(allBox) allBox.checked = ids.length === scenes.length;
+    box.classList.remove('has-error');
+    const fi = box.closest('.form-item');
+    if(fi) fi.classList.remove('has-error');
+  };
+  const renderPanel = () => {
+    const ids = idsOf();
+    panel.innerHTML =
+      '<div class="sel-all"><input type="checkbox" '+(ids.length === scenes.length ? 'checked' : '')+'><span>全选</span></div>' +
+      scenes.map(sc => '<div class="sel-opt'+(ids.indexOf(sc.id) >= 0 ? ' checked' : '')+'" data-v="'+sc.id+'">' +
+        '<input type="checkbox" '+(ids.indexOf(sc.id) >= 0 ? 'checked' : '')+'><span>'+sc.name+'</span></div>').join('');
+    panel.classList.add('show');
+    placeSsPanel(wrap, panel);
+  };
+  const toggle = id => {
+    const ids = idsOf().slice();
+    const i = ids.indexOf(id);
+    if(i >= 0) ids.splice(i, 1); else ids.push(id);
+    ids.sort((a, b) => a - b);
+    nbCw.diff.scenes = ids;
+    refresh();
+  };
+  wrap.addEventListener('click', e => {
+    const x = e.target.closest('.sel-x');
+    if(x){ e.stopPropagation(); toggle(parseInt(x.getAttribute('data-v'), 10)); return; }
+    input.focus();
+    renderPanel();
+  });
+  input.addEventListener('focus', renderPanel);
+  input.addEventListener('blur', () => setTimeout(() => panel.classList.remove('show'), 150));
+  panel.addEventListener('mousedown', e => {
+    e.preventDefault();
+    if(e.target.closest('.sel-all')){
+      nbCw.diff.scenes = (idsOf().length === scenes.length) ? [] : scenes.map(sc => sc.id);
+      refresh();
+      return;
+    }
+    const o = e.target.closest('.sel-opt');
+    if(o) toggle(parseInt(o.getAttribute('data-v'), 10));
+  });
+  panel.addEventListener('click', e => e.preventDefault());
 }
 
 /* ================= 选择应用子页面 ================= */
@@ -1562,10 +1564,6 @@ function markGrpErr(ct, g, n, msg){
   const err = card.querySelector('.grp-err');
   if(err){ err.textContent = msg; err.classList.add('show'); }
 }
-function markSceneErr(ct, g){
-  const item = document.querySelector('#'+ct+' .lg-scene-item[data-g="'+g+'"]');
-  if(item) item.classList.add('has-error');
-}
 function markFbErr(ct, g, msg){
   const item = document.querySelector('#'+ct+' .fb-item[data-g="'+g+'"]');
   if(!item) return;
@@ -1588,122 +1586,29 @@ function dupMark(list){
 }
 function validateLangGroups(ct){
   renderLangGroups(ct); /* 重建以清除上一次标红 */
-  const groups = groupsOf(ct);
-  const mode = modeOf(ct);
-  let ok = true;
-  const seen = new Set();
-  groups.forEach(lg => lg.langs.forEach(l => {
-    if(seen.has(l)){ toast('语言组之间存在重复语言：'+l+'，请检查', 'error'); ok = false; }
-    seen.add(l);
-  }));
-  if(!ok) return false;
-  for(let g=0; g<groups.length; g++){
-    const lg = groups[g];
-    if(!lg.langs.length){ toast('语言组'+(g+1)+'：请选择语言', 'error'); return false; }
-    if(!lg.fb){
-      markFbErr(ct, g, '请选择兜底剧名剧封'); ok = false;
+  if(!(nbCw.diff.scenes || []).length){
+    const box = document.querySelector('#'+ct+' .scene-sel');
+    if(box){
+      box.classList.add('has-error');
+      const fi = box.closest('.form-item');
+      if(fi) fi.classList.add('has-error');
     }
-    /* 常用场景：只需选择场景，套数由场景决定 */
-    if(sceneModeOf(lg) === 'common'){
-      if(!lg.sceneId){ markSceneErr(ct, g); toast('语言组'+(g+1)+'：请选择场景', 'error'); return false; }
-      continue;
-    }
-    if(mode === 'cover-only'){
-      if(!lg.covers.length){ toast('语言组'+(g+1)+'：请至少添加一个剧封套', 'error'); ok = false; continue; }
-      lg.covers.forEach((cv, ci) => {
-        if(!cv.length){ markCfgErr(ct, g, 0, 'cover', ci, '请选择应用'); ok = false; }
-      });
-      dupMark(lg.covers.map((cv, ci) => ({ci:ci, idx:ci+1, apps:cv})))
-        .forEach(b => { markCfgErr(ct, g, 0, 'cover', b.cfg.ci, '与剧封套'+b.x+'包含应用有重复'); ok = false; });
-    }else{
-      if(!lg.groups.length){ toast('语言组'+(g+1)+'：请至少添加一个剧名套', 'error'); ok = false; continue; }
-      lg.groups.forEach((grp, n) => {
-        if(!grp.name.length){ markCfgErr(ct, g, n, 'name', -1, '请选择应用'); ok = false; }
-        if(!grp.covers.length){ markGrpErr(ct, g, n, '请至少添加一个剧封套'); ok = false; }
-        grp.covers.forEach((cv, ci) => {
-          if(!cv.length){ markCfgErr(ct, g, n, 'cover', ci, '请选择应用'); ok = false; }
-        });
-      });
-      dupMark(lg.groups.map((grp, n) => ({n:n, idx:n+1, apps:grp.name})))
-        .forEach(b => { markCfgErr(ct, g, b.cfg.n, 'name', -1, '与第'+b.x+'套包含应用有重复'); ok = false; });
-      const coverCfgs = [];
-      lg.groups.forEach((grp, n) => grp.covers.forEach((cv, ci) => coverCfgs.push({n:n, ci:ci, idx:n+1, apps:cv})));
-      dupMark(coverCfgs).forEach(b => { markCfgErr(ct, g, b.cfg.n, 'cover', b.cfg.ci, '与第'+b.x+'套包含应用有重复'); ok = false; });
-      lg.groups.forEach((grp, n) => {
-        const ns = [...new Set(grp.name)];
-        const cs = [...new Set([].concat.apply([], grp.covers))];
-        if(ns.length !== cs.length || !ns.every(a => cs.includes(a))){
-          markGrpErr(ct, g, n, '剧名-剧封套包含应用不相等'); ok = false;
-        }
-      });
-    }
+    toast('请选择场景', 'error');
+    return false;
   }
-  if(!ok){ toast('校验未通过，请检查标红项', 'error'); return false; }
+  if(!nbCw.diff.fb){
+    markFbErr(ct, 0, '请选择兜底剧名剧封');
+    toast('校验未通过，请检查标红项', 'error');
+    return false;
+  }
   return true;
 }
 
-/* 语言组容器事件：场景模式 / 选择场景 / 场景详情 / 复用场景 / 编辑器增删 */
-['nb-lang-groups'].forEach(ct => {
-  const c = document.getElementById(ct);
-  c.addEventListener('change', e => {
-    const lgBlock = e.target.closest('.lg-block');
-    if(!lgBlock) return;
-    const g = parseInt(lgBlock.getAttribute('data-g'));
-    const groups = groupsOf(ct);
-    const lg = groups[g];
-    const md = modeOf(ct);
-    if(e.target.matches('input[data-role="scene-mode"]')){
-      lg.sceneMode = e.target.value;
-      if(lg.sceneMode === 'common'){
-        if(lg.sceneId){
-          const seed = sceneSeed(lg.sceneId);
-          if(md === 'cover-only') lg.covers = seed.covers || [[]];
-          else lg.groups = seed.groups || [{name:[], covers:[[]]}];
-        }
-      }else{
-        if(md === 'cover-only' && (!lg.covers || !lg.covers.length)) lg.covers = [[]];
-        if(md === 'name-cover' && (!lg.groups || !lg.groups.length)) lg.groups = [{name:[], covers:[[]]}];
-      }
-      renderLangGroups(ct);
-    }else if(e.target.matches('select[data-role="scene-pick"]')){
-      const id = e.target.value ? parseInt(e.target.value) : null;
-      lg.sceneId = id;
-      if(id){
-        const seed = sceneSeed(id);
-        if(md === 'cover-only') lg.covers = seed.covers || [[]];
-        else lg.groups = seed.groups || [{name:[], covers:[[]]}];
-      }
-      renderLangGroups(ct);
-      if(id) toast('已选择场景「' + sceneName(id) + '」');
-    }
-  });
-  c.addEventListener('click', e => {
-    const t = e.target.closest('[data-act]');
-    if(!t || t.hasAttribute('disabled')) return;
-    const act = t.getAttribute('data-act');
-    const g = parseInt(t.getAttribute('data-g'));
-    const n = parseInt(t.getAttribute('data-n'));
-    const ci = parseInt(t.getAttribute('data-c'));
-    const groups = groupsOf(ct);
-    const lg = groups[g];
-    if(act === 'reuse-scene'){ openReuseScene(ct, g); return; }
-    if(act === 'scene-detail'){ openSceneDetail(lg.sceneId); return; }
-    if(act === 'del-lang'){
-      if(groups.length <= 1){ toast('至少保留一个语言组','warning'); return; }
-      groups.splice(g, 1);
-    }else if(act === 'add-group'){
-      lg.groups.push({name:[], covers:[[]]});
-    }else if(act === 'del-group'){
-      lg.groups.splice(n, 1);
-    }else if(act === 'add-cover'){
-      if(modeOf(ct) === 'cover-only') lg.covers.push([]);
-      else lg.groups[n].covers.push([]);
-    }else if(act === 'del-cover'){
-      if(modeOf(ct) === 'cover-only') lg.covers.splice(ci, 1);
-      else lg.groups[n].covers.splice(ci, 1);
-    }else return;
-    renderLangGroups(ct);
-  });
+/* 场景详情：选中场景行右侧「详情」 */
+document.getElementById('nb-lang-groups').addEventListener('click', e => {
+  const b = e.target.closest('[data-act="scene-detail"]');
+  if(!b) return;
+  openSceneDetail(parseInt(b.getAttribute('data-id'), 10));
 });
 
 /* 场景详情 / 复用场景 弹窗关闭 */
@@ -1716,173 +1621,63 @@ document.querySelectorAll('[data-close="scene-detail-modal"],[data-close="reuse-
 });
 document.getElementById('rs-ok').addEventListener('click', submitReuseScene);
 
-/* ================= 批量差异化（选择短剧；短剧具体到语言，差异化固定单组剧名/剧封套配置） ================= */
-function bdDefaultDiff(){
-  return {sceneId:null, sceneMode:'custom',
-    groups:[
-      {name:['ns_app','nt_app','fs_app','ns_官网'], covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
-      {name:['app_iaa马甲包','ns_h5'], covers:[['app_iaa马甲包'],['ns_h5']]},
-    ],
-    covers:[['ns_app','ns_官网']],
-  };
-}
-/* 空白的单组差异化配置（场景类型切换后使用） */
-function bdBlankDiff(){
-  return {sceneId:null, sceneMode:'custom', groups:[{name:[], covers:[[]]}], covers:[[]]};
-}
-const bd = {ids:'', diffType:'剧名剧封差异化', diff:bdDefaultDiff(), remark:''};
-/* 差异化配置（无语言组）：场景模式（常用场景 / 自定义场景） */
+/* ================= 批量差异化（选择短剧；短剧具体到语言，差异化固定为自定义场景单组配置） ================= */
+const bdDefaultDiff = () => ({sceneId:null, groups:[
+  {name:['ns_app','nt_app','fs_app','ns_官网'], covers:[['ns_app','nt_app','fs_app','ns_官网']]},
+  {name:['app_iaa马甲包','ns_h5'], covers:[['app_iaa马甲包','ns_h5']]},
+]});
+const bd = {ids:'', diff:bdDefaultDiff(), remark:''};
 function renderBdDiffCfg(){
-  const mode = modeOf('bd');
   const lg = bd.diff;
-  const sm = sceneModeOf(lg);
-  if(mode === 'cover-only' && !lg.covers) lg.covers = [[]];
-  if(mode === 'name-cover' && !lg.groups) lg.groups = [{name:[], covers:[[]]}];
-  let html = '<div class="mode-row">' +
-    '<span class="mr-label"><span class="req">*</span>场景模式</span>' +
-    '<div class="radio-group">' +
-      '<label class="radio-opt"><input type="radio" name="bd-sm" data-role="scene-mode" data-g="0" value="common" '+(sm==='common'?'checked':'')+'>常用场景</label>' +
-      '<label class="radio-opt"><input type="radio" name="bd-sm" data-role="scene-mode" data-g="0" value="custom" '+(sm==='custom'?'checked':'')+'>自定义场景</label>' +
-    '</div>' +
+  if(!lg.groups || !lg.groups.length) lg.groups = [{name:[], covers:[[]]}];
+  let html = '<div class="grp-top-row">' +
+    '<button class="btn btn-outline btn-sm" data-act="reuse-scene" data-g="0">复用场景</button>' +
+    '<button class="btn btn-primary btn-sm" data-act="add-group" data-g="0">+ 新增剧名剧封套</button>' +
+    '<span class="grp-tip">每个套代表一组独立的剧名剧封适用端，套与套之间应用不重复</span>' +
   '</div>';
-  if(sm === 'common'){
-    html += '<div class="form-item lg-scene-item" data-g="0">' +
-      '<label class="form-label"><span class="req">*</span>选择场景</label>' +
-      '<div class="lg-scene-pick">' +
-        '<select class="ant-input" data-role="scene-pick" data-g="0">' +
-          '<option value="">请选择场景</option>' +
-          sceneOptsOf(mode).map(s => '<option value="'+s.id+'" '+(lg.sceneId===s.id?'selected':'')+'>'+s.name+'</option>').join('') +
-        '</select>' +
-        (lg.sceneId ? '<button class="link" data-act="scene-detail" data-g="0">详情</button>' : '') +
-      '</div>' +
-    '</div>';
-  }else{
-    html += '<div class="grp-top-row">' +
-      '<button class="btn btn-outline btn-sm" data-act="reuse-scene" data-g="0">复用场景</button>' +
-      (mode === 'name-cover'
-        ? '<button class="btn btn-primary btn-sm" data-act="add-group" data-g="0">+ 新增剧名套</button>' +
-          '<span class="grp-tip">每个剧名套代表一套独立剧名；每套剧名可对应多套使用该剧名的剧封</span>'
-        : '<span class="grp-tip">每个剧封套代表一套独立剧封，选择对应应用端</span>') +
-    '</div>';
-    html += customEditorHtml('bd', lg, 0, mode);
-  }
+  html += customEditorHtml('bd', lg, 0, 'name-cover');
   document.getElementById('bd-diff-cfg').innerHTML = html;
   initCfgSelects('bd-diff-cfg');
 }
 function openBatchModal(){
   bd.ids = '';
-  bd.diffType = '剧名剧封差异化';
   bd.diff = bdDefaultDiff();
   document.getElementById('bd-ids').value = '';
   document.getElementById('fi-bd-ids').classList.remove('has-error');
-  document.querySelector('input[name="bd-diff-type"][value="剧名剧封差异化"]').checked = true;
   document.getElementById('bd-remark').value = '';
   renderBdDiffCfg();
   document.getElementById('batch-modal').classList.add('show');
 }
 
 document.getElementById('btn-batch-stock').addEventListener('click', openBatchModal);
-/* 批量弹窗 · 场景类型切换（两类配置结构不同，切换即清空差异化详情） */
-document.querySelectorAll('input[name="bd-diff-type"]').forEach(r => {
-  r.addEventListener('change', () => {
-    const v = document.querySelector('input[name="bd-diff-type"]:checked').value;
-    if(bd.diffType === v) return;
-    bd.diffType = v;
-    bd.diff = bdBlankDiff();
-    renderBdDiffCfg();
-    toast('已切换场景类型，差异化详情已清空');
-  });
-});
 document.querySelectorAll('[data-close="batch-modal"]').forEach(b => b.addEventListener('click', ()=>document.getElementById('batch-modal').classList.remove('show')));
 document.getElementById('batch-modal').addEventListener('click', e => { if(e.target === document.getElementById('batch-modal')) document.getElementById('batch-modal').classList.remove('show'); });
-/* 差异化配置容器：模式切换 / 场景下拉 / 套编辑器增删 / 选择应用 */
+/* 差异化配置容器：套编辑器增删 / 复用场景 */
 const bdCfg = document.getElementById('bd-diff-cfg');
 bdCfg.addEventListener('click', e => {
   const t = e.target.closest('[data-act]');
   if(!t) return;
   const act = t.getAttribute('data-act');
-  const n = parseInt(t.getAttribute('data-n'));
-  const ci = parseInt(t.getAttribute('data-c'));
+  const n = parseInt(t.getAttribute('data-n'), 10);
+  const ci = parseInt(t.getAttribute('data-c'), 10);
   const lg = bd.diff;
   if(act === 'add-group'){ lg.groups.push({name:[], covers:[[]]}); }
   else if(act === 'del-group'){ lg.groups.splice(n, 1); }
-  else if(act === 'add-cover'){
-    if(modeOf('bd') === 'cover-only') lg.covers.push([]); else lg.groups[n].covers.push([]);
-  }
-  else if(act === 'del-cover'){
-    if(modeOf('bd') === 'cover-only') lg.covers.splice(ci, 1); else lg.groups[n].covers.splice(ci, 1);
-  }
   else if(act === 'reuse-scene'){ openReuseScene('bd-diff-cfg', 0); return; }
-  else if(act === 'scene-detail'){ openSceneDetail(bd.diff.sceneId); return; }
   else return;
   renderBdDiffCfg();
 });
-bdCfg.addEventListener('change', e => {
-  const md = modeOf('bd');
-  if(e.target.matches('input[data-role="scene-mode"]')){
-    bd.diff.sceneMode = e.target.value;
-    if(bd.diff.sceneMode === 'common'){
-      if(bd.diff.sceneId){
-        const seed = sceneSeed(bd.diff.sceneId);
-        if(md === 'cover-only') bd.diff.covers = seed.covers || [[]];
-        else bd.diff.groups = seed.groups || [{name:[], covers:[[]]}];
-      }
-    }else{
-      if(md === 'cover-only' && (!bd.diff.covers || !bd.diff.covers.length)) bd.diff.covers = [[]];
-      if(md === 'name-cover' && (!bd.diff.groups || !bd.diff.groups.length)) bd.diff.groups = [{name:[], covers:[[]]}];
-    }
-    renderBdDiffCfg();
-  }else if(e.target.matches('select[data-role="scene-pick"]')){
-    const id = e.target.value ? parseInt(e.target.value) : null;
-    bd.diff.sceneId = id;
-    if(id){
-      const seed = sceneSeed(id);
-      if(md === 'cover-only') bd.diff.covers = seed.covers || [[]];
-      else bd.diff.groups = seed.groups || [{name:[], covers:[[]]}];
-    }
-    renderBdDiffCfg();
-    if(id) toast('已选择场景「' + sceneName(id) + '」');
-  }
-});
-/* 批量差异化校验（单组配置） */
+/* 批量差异化校验（自定义场景 · 单组配置） */
 function validateBdDiff(){
   renderBdDiffCfg(); /* 重建以清除上一次标红 */
-  const mode = modeOf('bd');
   const lg = bd.diff;
   let ok = true;
-  if(sceneModeOf(lg) === 'common'){
-    if(!lg.sceneId){ markSceneErr('bd-diff-cfg', 0); toast('请选择场景', 'error'); return false; }
-    return true;
-  }
-  if(mode === 'cover-only'){
-    if(!lg.covers.length){ toast('请至少添加一个剧封套', 'error'); ok = false; }
-    lg.covers.forEach((cv, ci) => {
-      if(!cv.length){ markCfgErr('bd-diff-cfg', 0, 0, 'cover', ci, '请选择应用'); ok = false; }
-    });
-    dupMark(lg.covers.map((cv, ci) => ({ci:ci, idx:ci+1, apps:cv})))
-      .forEach(b => { markCfgErr('bd-diff-cfg', 0, 0, 'cover', b.cfg.ci, '与剧封套'+b.x+'包含应用有重复'); ok = false; });
-  }else{
-    if(!lg.groups.length){ toast('请至少添加一个剧名套', 'error'); ok = false; }
-    lg.groups.forEach((grp, n) => {
-      if(!grp.name.length){ markCfgErr('bd-diff-cfg', 0, n, 'name', -1, '请选择应用'); ok = false; }
-      if(!grp.covers.length){ markGrpErr('bd-diff-cfg', 0, n, '请至少添加一个剧封套'); ok = false; }
-      grp.covers.forEach((cv, ci) => {
-        if(!cv.length){ markCfgErr('bd-diff-cfg', 0, n, 'cover', ci, '请选择应用'); ok = false; }
-      });
-    });
-    dupMark(lg.groups.map((grp, n) => ({n:n, idx:n+1, apps:grp.name})))
-      .forEach(b => { markCfgErr('bd-diff-cfg', 0, b.cfg.n, 'name', -1, '与第'+b.x+'套包含应用有重复'); ok = false; });
-    const coverCfgs = [];
-    lg.groups.forEach((grp, n) => grp.covers.forEach((cv, ci) => coverCfgs.push({n:n, ci:ci, idx:n+1, apps:cv})));
-    dupMark(coverCfgs).forEach(b => { markCfgErr('bd-diff-cfg', 0, b.cfg.n, 'cover', b.cfg.ci, '与第'+b.x+'套包含应用有重复'); ok = false; });
-    lg.groups.forEach((grp, n) => {
-      const ns = [...new Set(grp.name)];
-      const cs = [...new Set([].concat.apply([], grp.covers))];
-      if(ns.length !== cs.length || !ns.every(a => cs.includes(a))){
-        markGrpErr('bd-diff-cfg', 0, n, '剧名-剧封套包含应用不相等'); ok = false;
-      }
-    });
-  }
+  if(!lg.groups.length){ toast('请至少添加一个剧名剧封套', 'error'); return false; }
+  lg.groups.forEach((grp, n) => {
+    if(!grp.name.length){ markCfgErr('bd-diff-cfg', 0, n, 'name', -1, '请选择应用'); ok = false; }
+  });
+  dupMark(lg.groups.map((grp, n) => ({n:n, idx:n+1, apps:grp.name})))
+    .forEach(b => { markCfgErr('bd-diff-cfg', 0, b.cfg.n, 'name', -1, '与第'+b.x+'套包含应用有重复'); ok = false; });
   if(!ok){ toast('校验未通过，请检查标红项', 'error'); return false; }
   return true;
 }
@@ -1944,19 +1739,7 @@ function openNb(no){
   document.getElementById('diff-body').classList.remove('show');
   document.getElementById('nb-remark').value = '';
   nbCw.needDiff = false;
-  nbCw.diffType = '剧名剧封差异化';
-  document.querySelector('input[name="nb-diff-type"][value="剧名剧封差异化"]').checked = true;
-  nbCw.langGroups = [
-    {langs:LANGUAGES.slice(0,9), sceneId:1, sceneMode:'common', fb:'ns_app', exclusive:'ns_app', ...sceneSeed(1)},
-    {langs:LANGUAGES.slice(9), sceneId:null, sceneMode:'custom', fb:'iaa小程序', exclusive:'ns_官网', groups:[
-      {name:['ns_app','nt_app','fs_app','ns_官网'], covers:[['ns_app','ns_官网'],['nt_app','fs_app']]},
-      {name:['app_iaa马甲包','ns_h5'], covers:[['app_iaa马甲包'],['ns_h5']]},
-      {name:['iap小程序','iaa小程序'], covers:[['iap小程序'],['iaa小程序']]},
-    ]},
-  ];
-  nbCw.coverLangGroups = [
-    {langs:LANGUAGES.slice(), sceneId:5, sceneMode:'common', fb:'ns_app', exclusive:'ns_官网', ...sceneSeed(5)},
-  ];
+  nbCw.diff = {scenes:[1, 2], fb:'ns_app'};
   renderLangGroups('nb-lang-groups');
   document.getElementById('nb-drawer').classList.add('show');
 }
@@ -1965,26 +1748,6 @@ document.getElementById('btn-create').addEventListener('click', ()=>openNb());
 document.getElementById('nb-close').addEventListener('click', closeNb);
 document.getElementById('nb-cancel').addEventListener('click', closeNb);
 document.getElementById('nb-drawer').addEventListener('click', e => { if(e.target === document.getElementById('nb-drawer')) closeNb(); });
-document.getElementById('btn-add-lang-nb').addEventListener('click', ()=>{
-  if(modeOf('nb-lang-groups') === 'cover-only') nbCw.coverLangGroups.push({langs:[], sceneId:null, sceneMode:'common', fb:'', covers:[[]]});
-  else nbCw.langGroups.push({langs:[], sceneId:null, sceneMode:'common', fb:'', groups:[{name:[], covers:[[]]}]});
-  renderLangGroups('nb-lang-groups');
-});
-/* 场景类型切换：两类配置结构/交互完全不同，切换时清空已配置的差异化详情 */
-function resetNbDiffDetail(){
-  const blank = () => ({langs:[], sceneId:null, sceneMode:'common', fb:'', groups:[{name:[], covers:[[]]}], covers:[[]]});
-  nbCw.langGroups = [blank()];
-  nbCw.coverLangGroups = [blank()];
-}
-document.querySelectorAll('input[name="nb-diff-type"]').forEach(r => {
-  r.addEventListener('change', () => {
-    const v = document.querySelector('input[name="nb-diff-type"]:checked').value;
-    const changed = (nbCw.diffType !== v);
-    nbCw.diffType = v;
-    if(changed){ resetNbDiffDetail(); toast('已切换场景类型，差异化详情已清空'); }
-    renderLangGroups('nb-lang-groups');
-  });
-});
 document.getElementById('cb-need-diff').addEventListener('change', e => {
   nbCw.needDiff = e.target.checked;
   document.getElementById('diff-body').classList.toggle('show', e.target.checked);
@@ -2091,6 +1854,44 @@ document.getElementById('picker-modal').addEventListener('click', e => { if(e.ta
 
   renderTable();
 });
+</script>
+
+<!-- 规则列表弹窗 -->
+<div class="rl-mask" id="rl-mask">
+  <div class="rl-modal">
+    <div class="rl-head">
+      <div class="rl-title">规则列表</div>
+      <span class="rl-close" id="rl-close"><svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="rl-body">
+      <div class="rl-sec">
+        <div class="rl-sec-h"><span class="idx">一</span>剧本创建</div>
+        <div class="rl-item"><span class="no">1.</span><div>勾选<b>剧名剧封差异化</b>时，提交校验<b>所选场景的语言是否包含全部语言</b>；未包含全部语言时给出<b>软提示</b>（不阻断提交）。</div></div>
+        <div class="rl-tip">软提示文案：<b>差异化场景未包含全部语言，请确认是否提交</b></div>
+      </div>
+      <div class="rl-sec">
+        <div class="rl-sec-h"><span class="idx">二</span>存量剧批量差异化（提交校验）</div>
+        <div class="rl-item"><span class="no">1.</span><div>同一<b>剧本-语言</b>不能有正在进行中的工单；若存在，该剧本-语言的差异化<b>提交失败</b>。</div></div>
+        <div class="rl-item"><span class="no">2.</span><div>所选<b>剧名剧封套</b>之间不能有<b>应用交叉</b>（同一应用端不可同时出现在两个套中）。</div></div>
+        <div class="rl-item"><span class="no">3.</span><div>所选剧名剧封套的<b>适用端</b>若与<b>已有剧名剧封套</b>有交叉，只能是已有套的<b>子集</b>；<b>不能相等</b>，也<b>不能跨套</b>。</div></div>
+      </div>
+    </div>
+    <div class="rl-foot"><button class="btn btn-outline" id="rl-ok">关闭</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var entry = document.getElementById('rl-entry');
+  var mask = document.getElementById('rl-mask');
+  if(!entry || !mask) return;
+  function open(){ mask.classList.add('show'); }
+  function close(){ mask.classList.remove('show'); }
+  entry.addEventListener('click', open);
+  var c = document.getElementById('rl-close'); if(c) c.addEventListener('click', close);
+  var ok = document.getElementById('rl-ok'); if(ok) ok.addEventListener('click', close);
+  mask.addEventListener('click', function(e){ if(e.target === mask) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+})();
 </script>
 </body>
 </html>

@@ -379,6 +379,30 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
 .pf-app{display:inline-block;padding:1px 7px;margin:2px 4px 2px 0;border-radius:4px;background:var(--fill-2);color:var(--text-2);font-size:12px;line-height:18px;}
 .pf-app.app-merge{background:#e8f1ff;color:#2f6bdc;cursor:default;}
 .pf-thumb{width:48px;height:64px;border-radius:5px;margin:0 auto;display:flex;align-items:center;justify-content:center;padding:4px;color:#fff;font-size:10px;line-height:1.3;text-align:center;overflow-wrap:anywhere;}
+
+/* ===================== 顶部规则列表 ===================== */
+.rl-entry{display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;color:var(--text-2);font-size:13px;cursor:pointer;transition:background .15s,color .15s;margin-right:6px;}
+.rl-entry:hover{background:var(--brand-weak);color:var(--brand);}
+.rl-entry svg{width:16px;height:16px;flex-shrink:0;}
+.rl-mask{position:fixed;inset:0;z-index:900;background:rgba(20,24,30,.45);display:none;align-items:flex-start;justify-content:center;padding:64px 24px;overflow-y:auto;}
+.rl-mask.show{display:flex;}
+.rl-modal{background:#fff;border-radius:14px;width:720px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,.24);margin:0 auto;}
+.rl-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 14px;border-bottom:1px solid var(--border);}
+.rl-title{font-size:16px;font-weight:600;}
+.rl-close{width:24px;height:24px;border-radius:6px;color:var(--text-3);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.rl-close:hover{background:var(--fill-2);color:var(--text);}
+.rl-body{padding:18px 24px 8px;max-height:64vh;overflow-y:auto;}
+.rl-sec{padding-bottom:16px;}
+.rl-sec + .rl-sec{border-top:1px dashed var(--border-strong);padding-top:16px;}
+.rl-sec-h{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.rl-sec-h .idx{width:18px;height:18px;flex:none;border-radius:4px;background:var(--brand-light);color:var(--brand);font-size:11px;display:inline-flex;align-items:center;justify-content:center;}
+.rl-item{display:flex;gap:8px;font-size:13px;color:var(--text-2);line-height:1.85;margin-bottom:8px;}
+.rl-item:last-child{margin-bottom:0;}
+.rl-item .no{flex:none;color:var(--text-3);}
+.rl-item b{color:var(--text);font-weight:600;}
+.rl-tip{margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--brand-weak);color:var(--brand);font-size:12.5px;line-height:1.7;}
+.rl-tip b{font-weight:600;}
+.rl-foot{display:flex;justify-content:flex-end;padding:14px 24px 20px;}
 </style>
 </head>
 <body>
@@ -392,6 +416,10 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
     </div>
     <div class="topbar-right">
       <div class="topbar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot"></span></div>
+      <div class="rl-entry" id="rl-entry" title="查看校验规则">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5h10M9 12h10M9 19h10"/><path d="M4.5 5h.01M4.5 12h.01M4.5 19h.01" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <span>规则列表</span>
+      </div>
       <div class="topbar-user"><div class="topbar-avatar">春</div><span class="topbar-name">春明</span></div>
     </div>
   </div>
@@ -417,6 +445,10 @@ select.ant-input:disabled{color:var(--text-2);background:#f5f5f5;cursor:not-allo
     <a class="sidebar-item" href="海报制作车间.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M4 17l5-4 4 3 3-3 4 4"/></svg>
       <span>海报制作车间</span>
+    </a>
+    <a class="sidebar-item" href="自动化引擎.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M3.7 7.3l2.3 1.3M18 15.4l2.3 1.3M3.7 16.7l2.3-1.3M18 8.6l2.3-1.3"/></svg>
+      <span>自动化引擎</span>
     </a>
   </div>
 
@@ -840,6 +872,44 @@ document.getElementById('btn-submit').addEventListener('click', () => {
 /* 初始化 */
 updateNameCount();
 renderSyncModal();
+</script>
+
+<!-- 规则列表弹窗 -->
+<div class="rl-mask" id="rl-mask">
+  <div class="rl-modal">
+    <div class="rl-head">
+      <div class="rl-title">规则列表</div>
+      <span class="rl-close" id="rl-close"><svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="rl-body">
+      <div class="rl-sec">
+        <div class="rl-sec-h"><span class="idx">一</span>剧本创建</div>
+        <div class="rl-item"><span class="no">1.</span><div>勾选<b>剧名剧封差异化</b>时，提交校验<b>所选场景的语言是否包含全部语言</b>；未包含全部语言时给出<b>软提示</b>（不阻断提交）。</div></div>
+        <div class="rl-tip">软提示文案：<b>差异化场景未包含全部语言，请确认是否提交</b></div>
+      </div>
+      <div class="rl-sec">
+        <div class="rl-sec-h"><span class="idx">二</span>存量剧批量差异化（提交校验）</div>
+        <div class="rl-item"><span class="no">1.</span><div>同一<b>剧本-语言</b>不能有正在进行中的工单；若存在，该剧本-语言的差异化<b>提交失败</b>。</div></div>
+        <div class="rl-item"><span class="no">2.</span><div>所选<b>剧名剧封套</b>之间不能有<b>应用交叉</b>（同一应用端不可同时出现在两个套中）。</div></div>
+        <div class="rl-item"><span class="no">3.</span><div>所选剧名剧封套的<b>适用端</b>若与<b>已有剧名剧封套</b>有交叉，只能是已有套的<b>子集</b>；<b>不能相等</b>，也<b>不能跨套</b>。</div></div>
+      </div>
+    </div>
+    <div class="rl-foot"><button class="btn btn-outline" id="rl-ok">关闭</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var entry = document.getElementById('rl-entry');
+  var mask = document.getElementById('rl-mask');
+  if(!entry || !mask) return;
+  function open(){ mask.classList.add('show'); }
+  function close(){ mask.classList.remove('show'); }
+  entry.addEventListener('click', open);
+  var c = document.getElementById('rl-close'); if(c) c.addEventListener('click', close);
+  var ok = document.getElementById('rl-ok'); if(ok) ok.addEventListener('click', close);
+  mask.addEventListener('click', function(e){ if(e.target === mask) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+})();
 </script>
 </body>
 </html>

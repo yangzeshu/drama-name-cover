@@ -286,12 +286,35 @@ tr.row-locked .tag{opacity:.55;}
 .wb-hist-row:last-child{margin-bottom:0;}
 .wb-hist-name{font-size:13px;font-weight:600;line-height:1.55;word-break:break-word;}
 .wb-hist-apps{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
-.wb-new-tag{display:inline-flex;align-items:center;gap:3px;padding:0 6px;border-radius:3px;background:var(--danger);color:#fff;font-size:10px;line-height:16px;font-weight:500;margin-left:6px;}
 /* 编辑页子模块标题 / 历史剧名容器 / 剧名海报缩略图 */
 .sec-sub{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin:18px 0 12px;}
 .sec-sub .bar{width:3px;height:14px;background:var(--brand);border-radius:2px;display:inline-block;}
 .np-thumb{width:52px;height:69px;border-radius:6px;background:var(--fill-2);display:flex;align-items:center;justify-content:center;color:var(--text-3);margin:0 auto;}
 
+
+/* ===================== 顶部规则列表 ===================== */
+.rl-entry{display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;color:var(--text-2);font-size:13px;cursor:pointer;transition:background .15s,color .15s;margin-right:6px;}
+.rl-entry:hover{background:var(--brand-weak);color:var(--brand);}
+.rl-entry svg{width:16px;height:16px;flex-shrink:0;}
+.rl-mask{position:fixed;inset:0;z-index:900;background:rgba(20,24,30,.45);display:none;align-items:flex-start;justify-content:center;padding:64px 24px;overflow-y:auto;}
+.rl-mask.show{display:flex;}
+.rl-modal{background:#fff;border-radius:14px;width:720px;max-width:96vw;box-shadow:0 20px 60px rgba(0,0,0,.24);margin:0 auto;}
+.rl-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 14px;border-bottom:1px solid var(--border);}
+.rl-title{font-size:16px;font-weight:600;}
+.rl-close{width:24px;height:24px;border-radius:6px;color:var(--text-3);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.rl-close:hover{background:var(--fill-2);color:var(--text);}
+.rl-body{padding:18px 24px 8px;max-height:64vh;overflow-y:auto;}
+.rl-sec{padding-bottom:16px;}
+.rl-sec + .rl-sec{border-top:1px dashed var(--border-strong);padding-top:16px;}
+.rl-sec-h{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.rl-sec-h .idx{width:18px;height:18px;flex:none;border-radius:4px;background:var(--brand-light);color:var(--brand);font-size:11px;display:inline-flex;align-items:center;justify-content:center;}
+.rl-item{display:flex;gap:8px;font-size:13px;color:var(--text-2);line-height:1.85;margin-bottom:8px;}
+.rl-item:last-child{margin-bottom:0;}
+.rl-item .no{flex:none;color:var(--text-3);}
+.rl-item b{color:var(--text);font-weight:600;}
+.rl-tip{margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--brand-weak);color:var(--brand);font-size:12.5px;line-height:1.7;}
+.rl-tip b{font-weight:600;}
+.rl-foot{display:flex;justify-content:flex-end;padding:14px 24px 20px;}
 </style>
 </head>
 <body>
@@ -304,6 +327,10 @@ tr.row-locked .tag{opacity:.55;}
       <span class="topbar-sub">管理后台</span>
     </div>
     <div class="topbar-right">
+      <div class="rl-entry" id="rl-entry" title="查看校验规则">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5h10M9 12h10M9 19h10"/><path d="M4.5 5h.01M4.5 12h.01M4.5 19h.01" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <span>规则列表</span>
+      </div>
       <div class="topbar-user"><div class="topbar-avatar">春</div><span class="topbar-name">春明</span></div>
     </div>
   </div>
@@ -329,6 +356,10 @@ tr.row-locked .tag{opacity:.55;}
     <a class="sidebar-item" href="海报制作车间.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M4 17l5-4 4 3 3-3 4 4"/></svg>
       <span>海报制作车间</span>
+    </a>
+    <a class="sidebar-item" href="自动化引擎.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M3.7 7.3l2.3 1.3M18 15.4l2.3 1.3M3.7 16.7l2.3-1.3M18 8.6l2.3-1.3"/></svg>
+      <span>自动化引擎</span>
     </a>
   </div>
 
@@ -692,32 +723,40 @@ const NAME_COVER_SCENES = scenes.filter(s => s.type === 'name_cover');
 let tasks = [
   {id:'LOC1', no:'N6788', name:'w测试0911', lang:'马来西亚语', srcLang:'中文', priority:'P1', episodes:'1~5', intro:'w测试0911简介', remark:'-',
    diffs:[
-     {woId:'W20260928001', mode:'common', sceneId:1, createTime:'2026-09-28 16:28:36', creator:'春明'},
-     {woId:'W20260929007', mode:'custom', groups:[
+     {woId:'W20260928001', mode:'custom', groups:[
        {name:['ns_app','ns_官网']},
        {name:['ns_app','ns_h5']},
+     ], createTime:'2026-09-28 16:28:36', creator:'春明'},
+     {woId:'W20260929007', mode:'custom', groups:[
+       {name:['iap小程序']},
+       {name:['iaa小程序']},
+       {name:['ns_app','ns_官网','ns_h5']},
        {name:['iap小程序','iaa小程序']},
      ], createTime:'2026-09-29 10:12:08', creator:'李婉'},
    ],
    syncedNames:['Permainan Nyawa 0911','Cerita Hidupku 0911','Rebirth 0911','Nyawa Kedua 0911','Hidup Baru 0911','Permainan 0911'],
-   nameSync:['已同步','已同步','未同步','已同步','未同步','未同步'],
-   nameLock:[false,false,false,true,false,true],
+   nameSync:['已同步','未同步','已同步','未同步','已同步','已同步'],
+   nameLock:[false,false,false,false,true,true],
    status:'未开始', owner:'-', proofread:'-', qc:'王强', planStart:'2026-09-30 16:28:36', planEnd:'-', creator:'春明', createTime:'2026-09-30 16:28:36', sysNo:'643969', taskId:'455489', taskCat:'翻译', flow:'校对-质检',
    detailLangs:['马来西亚语','土耳其语','英语']},
   {id:'LOC2', no:'B0930', name:'嫡女她有备而来', lang:'英语', srcLang:'中文', priority:'P0', episodes:'1~5', intro:'沈明珠上一世被庶妹夺了婚约、被继母推进枯井。重生在及笄前夜，她不再争一句宠爱。', remark:'-',
    diffs:[
-     {woId:'W20260927008', mode:'common', sceneId:2, createTime:'2026-09-27 09:30:00', creator:'春明'},
-     {woId:'W20260926015', mode:'custom', groups:[{name:['ns_官网','ns_h5']}], createTime:'2026-09-28 14:20:00', creator:'李婉'},
+     {woId:'W20260927008', mode:'custom', groups:[{name:['ns_app']}], createTime:'2026-09-27 09:30:00', creator:'春明'},
+     {woId:'W20260926015', mode:'custom', groups:[
+       {name:['ns_app','ns_官网']},
+       {name:['ns_app','ns_官网','ns_h5']},
+       {name:['ns_官网']},
+     ], createTime:'2026-09-28 14:20:00', creator:'李婉'},
    ],
    syncedNames:['The Legitimate Daughter Came Prepared','La Hija Legitima','Putri Sah','Frozen Throne of the Capital'],
    nameSync:['已同步','未同步','已同步','未同步'],
-   nameLock:[false,true,false,false],
+   nameLock:[false,false,true,false],
    status:'未开始', owner:'-', proofread:'-', qc:'李婉', planStart:'2026-09-30 15:37:01', planEnd:'-', creator:'春明', createTime:'2026-09-30 15:37:01', sysNo:'295233', taskId:'114753', taskCat:'精修', flow:'校对-质检',
    detailLangs:['英语','法语']},
   {id:'LOC3', no:'N0001', name:'重生之都市仙尊', lang:'英语,西班牙语', srcLang:'中文', priority:'P0+', episodes:'', intro:'重生都市，逆天改命。', remark:'-',
    diffs:[
-     {woId:'W20260925003', mode:'common', sceneId:4, createTime:'2026-09-25 10:00:00', creator:'春明'},
-     {woId:'W20260924012', mode:'custom', groups:[{name:['ns_app','ns_官网']}], createTime:'2026-09-26 11:00:00', creator:'王强'},
+     {woId:'W20260925003', mode:'custom', groups:[{name:['ns_app','ns_官网']},{name:['iap小程序']}], createTime:'2026-09-25 10:00:00', creator:'春明'},
+     {woId:'W20260924012', mode:'custom', groups:[{name:['ns_app','ns_官网','iap小程序','iaa小程序']}], createTime:'2026-09-26 11:00:00', creator:'王强'},
    ],
    syncedNames:['Reborn City Immortal','El Inmortal de la Ciudad','The Immortal Reborn'],
    nameSync:['已同步','未同步','已同步'],
@@ -1298,32 +1337,34 @@ function locInfoHtml(t){
 function mainNamesHtml(t){
   const isStock = isNameTask(t);
   const groups = nameGroups(t);
-  /* 随机取一个剧名行标记「新需求」（按任务 ID 稳定取，刷新不变） */
-  const newIdx = groups.length ? ([...t.id].reduce((a,c)=>a+c.charCodeAt(0), 0) % groups.length) : -1;
   const nameRows = groups.length ? groups.length : 1;
   const machine = Array.from({length:nameRows}, (_,i)=>'blablabla'+(i+1));
   const proofed = Array.from({length:nameRows}, (_,i)=>'blablabla'+(i+1));
   let rows = '';
   const lockArr = t.nameLock || [];
   const syncArr = t.nameSync || [];
-  for(let i=0; i<nameRows; i++){
+  /* 置灰数据统一排到后面，且固定为「已同步」 */
+  const order = [];
+  for(let i=0; i<nameRows; i++){ if(!lockArr[i]) order.push(i); }
+  for(let i=0; i<nameRows; i++){ if(lockArr[i]) order.push(i); }
+  order.forEach((i, pos) => {
     const apps = groups[i] || [];
     const locked = !!lockArr[i];
-    const sync = syncArr[i] || '未同步';
-    /* 已同步 / 置灰行不给单独同步 */
-    const oneSync = (!locked && sync !== '已同步')
+    const sync = locked ? '已同步' : (syncArr[i] || '未同步');
+    /* 非置灰行不论同步状态，都支持单独同步 */
+    const oneSync = !locked
       ? '<span class="op-link" data-act="name-sync-one" data-id="'+t.id+'" data-i="'+i+'" style="margin:0 0 0 6px;">单独同步</span>'
       : '';
     rows += '<tr'+(locked ? ' class="row-locked"' : '')+'>' +
-      (i===0 ? '<td rowspan="'+nameRows+'" style="font-weight:500;">剧名</td>' : '') +
+      (pos===0 ? '<td rowspan="'+nameRows+'" style="font-weight:500;">剧名</td>' : '') +
       '<td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(machine[i])+'</td>' +
       '<td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(proofed[i])+posterBtnHtml(t, i)+'</td>' +
-      '<td class="wrap-cell" style="text-align:left;"><div class="chips-row">'+appDisplayHtml(apps,'tag tag-blue')+(i===newIdx?'<span class="wb-new-tag">✦ 新需求</span>':'')+'</div></td>' +
+      '<td class="wrap-cell" style="text-align:left;"><div class="chips-row">'+appDisplayHtml(apps,'tag tag-blue')+'</div></td>' +
       '<td>'+nameSyncTag(sync)+oneSync+'</td>' +
-      (i===0 ? '<td rowspan="'+nameRows+'">blablabla<br>blablabla<br>blablabla<br>blablabla</td>' : '') +
-      (i===0 ? '<td rowspan="'+nameRows+'"><div class="op-col"><span class="op-link" data-act="editinfo" data-id="'+t.id+'">编辑</span><span class="op-link" data-demo="派发海报">派发海报</span><span class="op-link" data-demo="批量同步" style="color:var(--danger);">批量同步</span><span class="op-link" data-demo="机翻校验" style="color:var(--info);">机翻校验</span></div></td>' : '') +
+      (pos===0 ? '<td rowspan="'+nameRows+'">blablabla<br>blablabla<br>blablabla<br>blablabla</td>' : '') +
+      (pos===0 ? '<td rowspan="'+nameRows+'"><div class="op-col"><span class="op-link" data-act="editinfo" data-id="'+t.id+'">编辑</span><span class="op-link" data-demo="派发海报">派发海报</span><span class="op-link" data-demo="批量同步" style="color:var(--danger);">批量同步</span><span class="op-link" data-demo="机翻校验" style="color:var(--info);">机翻校验</div></td>' : '') +
       '</tr>';
-  }
+  });
   const otherCats = isStock ? '' :
     '<tr><td style="font-weight:500;">剧本简介</td><td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(t.intro)+'</td><td class="wrap-cell" style="max-width:200px;word-break:break-all;">'+textCell(t.intro)+'</td><td>-</td><td>已同步</td><td>暂无</td><td><div class="op-col"><span class="op-link" data-demo="编辑">编辑</span><span class="op-link" data-demo="机翻校验" style="color:var(--info);">机翻校验</span></div></td></tr>' +
     '<tr><td style="font-weight:500;">演员名称</td><td>暂无</td><td>暂无</td><td>-</td><td>未开始</td><td>暂无</td><td><div class="op-col"><span class="op-link" data-demo="编辑">编辑</span></div></td></tr>' +
@@ -1370,43 +1411,56 @@ function renderEditInfo(t){
   let html = '<div class="sec-sub"><span class="bar"></span>历史剧名</div>' +
     '<div class="name-icon-grid">'+histRows+'</div>';
   html += '<div class="sec-sub"><span class="bar"></span>本次剧名校对</div>';
-  html += '<div class="edit-name-grid">' +
-    '<div><div class="col-h">机翻剧名（按评分降序）</div>' + machine.map((m,i)=>'<div class="machine-item">'+(i+1)+'. '+m+'</div>').join('') + '</div>' +
-    '<div><div class="col-h">校对剧名</div><div class="proof-row">' +
-    groups.map((g,i)=>{
-      const lk = (t.nameLock||[])[i];
-      return '<div class="proof-line'+(lk?' locked':'')+'"><span class="no">'+(i+1)+'.</span><input type="text" class="ant-input" id="proof-'+i+'" value="'+(machine[i]||'')+'"'+(lk?' disabled':'')+'></div>';
-    }).join('') +
-    '</div><button class="btn btn-outline btn-sm" id="btn-fill-machine" style="margin-top:8px;">应用机翻</button></div>' +
-    '<div><div class="col-h">差异化场景组</div><div class="proof-row">' +
-    groups.map((g,i)=>'<div class="proof-line"><div class="ms-wrap"><div class="ms-box" id="eg-'+i+'"><div id="eg-'+i+'-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>' +
-      '<span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>' +
-      '<div class="ms-panel" id="eg-'+i+'-p" style="width:240px;"></div></div></div>').join('') +
-    '</div></div></div>';
+  /* 置灰（锁定）数据不参与校对：机翻剧名 / 校对剧名 / 差异化场景组 只展示非置灰项 */
+  const lockArr = t.nameLock || [];
+  const editIdx = groups.map((_, i) => i).filter(i => !lockArr[i]);
+  if(!editIdx.length){
+    html += '<div style="font-size:12.5px;color:var(--text-3);padding:14px 12px;border:1px dashed var(--border-strong);border-radius:8px;background:#fff;">该任务剧名均为置灰数据，无需校对</div>';
+  }else{
+    html += '<div class="edit-name-grid">' +
+      '<div><div class="col-h">机翻剧名（按评分降序）</div>' +
+        editIdx.map((i, k) => '<div class="machine-item">'+(k+1)+'. '+machine[i]+'</div>').join('') + '</div>' +
+      '<div><div class="col-h">校对剧名</div><div class="proof-row">' +
+        editIdx.map((i, k) =>
+          '<div class="proof-line"><span class="no">'+(k+1)+'.</span>' +
+          '<input type="text" class="ant-input" id="proof-'+i+'" value="'+(machine[i]||'')+'"></div>').join('') +
+      '</div><button class="btn btn-outline btn-sm" id="btn-fill-machine" style="margin-top:8px;">应用机翻</button></div>' +
+      '<div><div class="col-h">差异化场景组</div><div class="proof-row">' +
+        editIdx.map((i, k) =>
+          '<div class="proof-line"><div class="ms-wrap"><div class="ms-box" id="eg-'+i+'"><div id="eg-'+i+'-c" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"></div>' +
+          '<span class="ms-arrow"><svg viewBox="0 0 20 20" fill="none" width="14" height="14"><path d="m5 8 5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>' +
+          '<div class="ms-panel" id="eg-'+i+'-p" style="width:240px;"></div></div></div>').join('') +
+      '</div></div></div>';
+  }
   document.getElementById('edit-name-box').innerHTML = html;
-  // 绑定场景组 msel（互斥；枚举=该任务的剧名套应用端）
-  const insts = groups.map((g,i) => {
-    const inst = initMs('eg-'+i, 'eg-'+i+'-c', 'eg-'+i+'-p', groupOpts, arr=>{
-      const all = new Set();
-      insts.forEach(x=>x.value.forEach(s=>all.add(s)));
-      insts.forEach((x,j)=>{
-        const others = new Set(all);
-        x.value.forEach(s=>others.delete(s));
-        x.setDisabled([...others]);
+  if(editIdx.length){
+    // 绑定场景组 msel（互斥；枚举=该任务的剧名套应用端）
+    const insts = editIdx.map(i => {
+      const inst = initMs('eg-'+i, 'eg-'+i+'-c', 'eg-'+i+'-p', groupOpts, arr=>{
+        const all = new Set();
+        insts.forEach(x=>x.value.forEach(s=>all.add(s)));
+        insts.forEach((x,j)=>{
+          const others = new Set(all);
+          x.value.forEach(s=>others.delete(s));
+          x.setDisabled([...others]);
+        });
+      }, {showAll:true});
+      inst.setValue([groupOpts[i]]);
+      return inst;
+    });
+    insts.forEach((x,i)=>{
+      const others = new Set();
+      insts.forEach((y,j)=>{ if(j!==i) y.value.forEach(s=>others.add(s)); });
+      x.setDisabled([...others]);
+    });
+    document.getElementById('btn-fill-machine').addEventListener('click', ()=>{
+      editIdx.forEach(i=>{
+        const el = document.getElementById('proof-'+i);
+        if(el) el.value = machine[i]||'';
       });
-    }, {showAll:true});
-    inst.setValue([groupOpts[i]]);
-    return inst;
-  });
-  insts.forEach((x,i)=>{
-    const others = new Set();
-    insts.forEach((y,j)=>{ if(j!==i) y.value.forEach(s=>others.add(s)); });
-    x.setDisabled([...others]);
-  });
-  document.getElementById('btn-fill-machine').addEventListener('click', ()=>{
-    groups.forEach((g,i)=>{ document.getElementById('proof-'+i).value = machine[i]||''; });
-    toast('已按机翻剧名一键重填');
-  });
+      toast('已按机翻剧名一键重填');
+    });
+  }
   // 本地化简介 / 本地化演员信息（仅正片，占位展示）
   document.getElementById('edit-intro-sec').style.display = isStock ? 'none' : '';
   document.getElementById('edit-cast-sec').style.display = isStock ? 'none' : '';
@@ -1661,6 +1715,44 @@ renderTasks();
 (function(){
   const q = new URLSearchParams(location.search);
   if(q.get('view') === 'detail' && tasks.length){ openDetail(tasks[0].id); }
+})();
+</script>
+
+<!-- 规则列表弹窗 -->
+<div class="rl-mask" id="rl-mask">
+  <div class="rl-modal">
+    <div class="rl-head">
+      <div class="rl-title">规则列表</div>
+      <span class="rl-close" id="rl-close"><svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="rl-body">
+      <div class="rl-sec">
+        <div class="rl-sec-h"><span class="idx">一</span>剧本创建</div>
+        <div class="rl-item"><span class="no">1.</span><div>勾选<b>剧名剧封差异化</b>时，提交校验<b>所选场景的语言是否包含全部语言</b>；未包含全部语言时给出<b>软提示</b>（不阻断提交）。</div></div>
+        <div class="rl-tip">软提示文案：<b>差异化场景未包含全部语言，请确认是否提交</b></div>
+      </div>
+      <div class="rl-sec">
+        <div class="rl-sec-h"><span class="idx">二</span>存量剧批量差异化（提交校验）</div>
+        <div class="rl-item"><span class="no">1.</span><div>同一<b>剧本-语言</b>不能有正在进行中的工单；若存在，该剧本-语言的差异化<b>提交失败</b>。</div></div>
+        <div class="rl-item"><span class="no">2.</span><div>所选<b>剧名剧封套</b>之间不能有<b>应用交叉</b>（同一应用端不可同时出现在两个套中）。</div></div>
+        <div class="rl-item"><span class="no">3.</span><div>所选剧名剧封套的<b>适用端</b>若与<b>已有剧名剧封套</b>有交叉，只能是已有套的<b>子集</b>；<b>不能相等</b>，也<b>不能跨套</b>。</div></div>
+      </div>
+    </div>
+    <div class="rl-foot"><button class="btn btn-outline" id="rl-ok">关闭</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var entry = document.getElementById('rl-entry');
+  var mask = document.getElementById('rl-mask');
+  if(!entry || !mask) return;
+  function open(){ mask.classList.add('show'); }
+  function close(){ mask.classList.remove('show'); }
+  entry.addEventListener('click', open);
+  var c = document.getElementById('rl-close'); if(c) c.addEventListener('click', close);
+  var ok = document.getElementById('rl-ok'); if(ok) ok.addEventListener('click', close);
+  mask.addEventListener('click', function(e){ if(e.target === mask) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
 })();
 </script>
 </body>
